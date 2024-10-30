@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { type User } from "@supabase/supabase-js";
 import { UserData } from "@/types/UserData";
+import Avatar from "./avatar";
 
 // ...
 
@@ -80,10 +81,24 @@ export default function AccountForm({ user }: { user: User | null }) {
   return (
     <div className="form-widget">
       {/* ... */}
-
+      <Avatar
+        uid={user?.id ?? null}
+        url={avatar_url}
+        size={150}
+        onUpload={(url) => {
+          setAvatarUrl(url);
+          updateProfile({ fullname, username, website, avatar_url: url });
+        }}
+      />
       <div>
         <label htmlFor="email">Email</label>
-        <input id="email" type="text" value={user?.email} disabled />
+        <input
+          id="email"
+          type="text"
+          value={user?.email}
+          className="text-white"
+          disabled
+        />
       </div>
       <div>
         <label htmlFor="fullName">Full Name</label>
@@ -92,6 +107,7 @@ export default function AccountForm({ user }: { user: User | null }) {
           type="text"
           value={fullname || ""}
           onChange={(e) => setFullname(e.target.value)}
+          className="text-white"
         />
       </div>
       <div>
@@ -101,6 +117,7 @@ export default function AccountForm({ user }: { user: User | null }) {
           type="text"
           value={username || ""}
           onChange={(e) => setUsername(e.target.value)}
+          className="text-white"
         />
       </div>
       <div>
@@ -110,6 +127,7 @@ export default function AccountForm({ user }: { user: User | null }) {
           type="url"
           value={website || ""}
           onChange={(e) => setWebsite(e.target.value)}
+          className="text-white"
         />
       </div>
 
