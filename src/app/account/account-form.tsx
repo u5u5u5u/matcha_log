@@ -80,7 +80,6 @@ export default function AccountForm({ user }: { user: User | null }) {
 
   return (
     <div className="form-widget">
-      {/* ... */}
       <Avatar
         uid={user?.id ?? null}
         url={avatar_url}
