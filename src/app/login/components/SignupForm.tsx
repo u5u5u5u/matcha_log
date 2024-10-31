@@ -1,12 +1,11 @@
 import Link from "next/link";
-import { signup } from "@/app/(auth)/actions";
+import { signup } from "@/app/login/actions";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,7 +14,6 @@ export function SignupForm() {
   return (
     <Card className="mx-auto max-w-sm">
       <CardHeader>
-        <CardTitle className="text-2xl">Sign up</CardTitle>
         <CardDescription>
           Enter your email below to login to your account
         </CardDescription>
@@ -44,14 +42,8 @@ export function SignupForm() {
             Sign up
           </Button>
           <Button variant="outline" className="w-full">
-            Sign up with Google
+            Login with Google
           </Button>
-        </div>
-        <div className="mt-4 text-center text-sm">
-          Don&apos;t have an account?{" "}
-          <Link href="/login" className="underline">
-            Login
-          </Link>
         </div>
       </CardContent>
     </Card>
