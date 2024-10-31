@@ -25,8 +25,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
+      <style>
+        {`
+          .container {
+            max-width: 414px;
+            with: 100%;
+            margin: 0 auto;
+            padding: 0 1rem;
+            background-color: #fff;
+          }
+        `}
+      </style>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {children}
+        <div className="container">{children}</div>
       </body>
     </html>
   );
