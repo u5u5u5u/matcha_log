@@ -10,7 +10,6 @@ html {
 body {
   display: flex;
   justify-content: center;
-  background-color: #f0f0f0;
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -96,4 +95,13 @@ a {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.container {
+  max-width: 414px;
+  width: 100%;
+  height: 100vh;
+  margin: 0 auto;
+  padding: 0 1rem;
+  background-color: #d9d9d9;
 }
