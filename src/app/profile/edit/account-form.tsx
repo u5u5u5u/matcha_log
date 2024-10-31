@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { type User } from "@supabase/supabase-js";
 import { UserData } from "@/types/UserData";
-import Avatar from "./avatar";
+import AvatarIcon from "./avatar";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -82,7 +82,7 @@ export default function AccountForm({ user }: { user: User | null }) {
   return (
     <>
       <div className="form-widget">
-        <Avatar
+        <AvatarIcon
           uid={user?.id ?? null}
           url={avatar_url}
           size={150}

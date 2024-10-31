@@ -1,9 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
-import Image from "next/image";
+import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 
-export default function Avatar({
+export default function AvatarIcon({
   uid,
   url,
   size,
@@ -70,21 +70,23 @@ export default function Avatar({
 
   return (
     <div>
-      {avatarUrl ? (
-        <Image
-          width={size}
-          height={size}
-          src={avatarUrl}
-          alt="Avatar"
-          className="avatar image"
-          style={{ height: size, width: size }}
-        />
-      ) : (
-        <div
-          className="avatar no-image"
-          style={{ height: size, width: size }}
-        />
-      )}
+      <Avatar>
+        {avatarUrl ? (
+          <AvatarImage
+            width={size}
+            height={size}
+            src={avatarUrl}
+            alt="Avatar"
+            style={{ height: size, width: size }}
+          />
+        ) : (
+          <div
+            className="avatar no-image"
+            style={{ height: size, width: size }}
+          />
+        )}
+        <AvatarFallback></AvatarFallback>
+      </Avatar>
       <div style={{ width: size }}>
         <label className="button primary block" htmlFor="single">
           {uploading ? "Uploading ..." : "Upload"}
