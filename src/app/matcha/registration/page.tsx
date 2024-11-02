@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { SelectScrollable } from "./components/SelectScrollable";
+import { DatePickerDemo } from "./components/DatePicker";
 
 const formSchema = z.object({
   name: z.string(),
@@ -109,6 +110,7 @@ const Registration = () => {
           />
         ))} */}
         <SelectScrollable />
+        <DatePickerDemo />
         <Button
           type="submit"
           className="text-secondary-950 font-bold bg-primary-400 hover:bg-primary-500"
