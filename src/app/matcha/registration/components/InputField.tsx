@@ -10,15 +10,28 @@ import { ControllerRenderProps } from "react-hook-form";
 interface InputProps {
   label: string;
   field: ControllerRenderProps;
+  type?: string;
   placeholder?: string;
 }
 
-const InputField: React.FC<InputProps> = ({ label, field, placeholder }) => {
+const InputField: React.FC<InputProps> = ({
+  label,
+  field,
+  type,
+  placeholder,
+}) => {
   return (
     <FormItem>
       <FormLabel>{label}</FormLabel>
       <FormControl>
-        <Input {...field} placeholder={placeholder} />
+        <Input
+          {...field}
+          type={type}
+          placeholder={placeholder}
+          onChange={(e) =>
+            field.onChange(type === "number" ? +e.target.value : e.target.value) // typeがnumberの場合は数値に変換
+          }
+        />
       </FormControl>
       <FormMessage />
     </FormItem>
