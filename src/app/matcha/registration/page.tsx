@@ -2,19 +2,20 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { number, z } from "zod";
+import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Form, FormField } from "@/components/ui/form";
 
 import InputField from "./components/InputField";
 import GenreSelectField from "./components/GenreSelectField";
+import DatePickerField from "./components/DatePickerField";
 
 const formSchema = z.object({
   name: z.string(),
   genre: z.string(),
-  price: z.number().positive(), 
-  // date: z.string(),
+  price: z.number().positive(),
+  date: z.date(),
   // shop: z.number(),
   // prefecture: z.number(),
   // bitterness: z.number(),
@@ -29,7 +30,7 @@ const Registration = () => {
       name: "",
       genre: "",
       price: 0,
-      // date: "",
+      date: new Date(),
       // shop: 0,
       // prefecture: 0,
       // bitterness: 0,
@@ -97,6 +98,13 @@ const Registration = () => {
               type="number"
               placeholder="価格を入力してください"
             />
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="date"
+          render={({ field }) => (
+            <DatePickerField field={field} />
           )}
         />
         <Button
