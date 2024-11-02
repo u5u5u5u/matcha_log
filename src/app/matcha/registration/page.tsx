@@ -10,6 +10,7 @@ import { Form, FormField } from "@/components/ui/form";
 import InputField from "./components/InputField";
 import GenreSelectField from "./components/GenreSelectField";
 import DatePickerField from "./components/DatePickerField";
+import PrefectureSelectField from "./components/PrefectureSelectField";
 
 const formSchema = z.object({
   name: z.string(),
@@ -17,7 +18,7 @@ const formSchema = z.object({
   price: z.number().positive(),
   date: z.date(),
   // shop: z.number(),
-  // prefecture: z.number(),
+  prefecture: z.string(),
   // bitterness: z.number(),
   // sweetness: z.number(),
   // richness: z.number(),
@@ -32,7 +33,7 @@ const Registration = () => {
       price: 0,
       date: new Date(),
       // shop: 0,
-      // prefecture: 0,
+      prefecture: "",
       // bitterness: 0,
       // sweetness: 0,
       // richness: 0,
@@ -106,6 +107,11 @@ const Registration = () => {
           render={({ field }) => (
             <DatePickerField field={field} />
           )}
+        />
+        <FormField
+          control={form.control}
+          name="prefecture"
+          render={({ field }) => <PrefectureSelectField field={field} />}
         />
         <Button
           type="submit"

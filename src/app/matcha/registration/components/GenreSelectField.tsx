@@ -46,7 +46,7 @@ const GenreSelectField: React.FC<GenreSelectProps> = ({ field }) => {
       <FormControl>
         <Select onValueChange={field.onChange} defaultValue={field.value}>
           <SelectTrigger className="w-[280px]">
-            <SelectValue placeholder="Select a genre" {...field} />
+            <SelectValue placeholder="ジャンルを選択してください" {...field} />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
