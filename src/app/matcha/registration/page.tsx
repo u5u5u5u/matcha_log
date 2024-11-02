@@ -11,6 +11,7 @@ import InputField from "./components/InputField";
 import GenreSelectField from "./components/GenreSelectField";
 import DatePickerField from "./components/DatePickerField";
 import PrefectureSelectField from "./components/PrefectureSelectField";
+import TasteSlider from "./components/TasteSlider";
 
 const formSchema = z.object({
   name: z.string(),
@@ -19,9 +20,9 @@ const formSchema = z.object({
   date: z.date(),
   // shop: z.number(),
   prefecture: z.string(),
-  // bitterness: z.number(),
-  // sweetness: z.number(),
-  // richness: z.number(),
+  bitterness: z.number(),
+  sweetness: z.number(),
+  richness: z.number(),
 });
 
 const Registration = () => {
@@ -34,41 +35,15 @@ const Registration = () => {
       date: new Date(),
       // shop: 0,
       prefecture: "",
-      // bitterness: 0,
-      // sweetness: 0,
-      // richness: 0,
+      bitterness: 5,
+      sweetness: 5,
+      richness: 5,
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
   }
-
-  // const formFields: Array<{
-  //   name:
-  //     | "name"
-  //     | "genre"
-  //     | "price"
-  //     | "date"
-  //     | "shop"
-  //     | "prefecture"
-  //     | "bitterness"
-  //     | "sweetness"
-  //     | "richness";
-  //   label: string;
-  //   type?: string;
-  //   placeholder?: string;
-  // }> = [
-  //   { name: "name", label: "料理名" }, // Input
-  //   { name: "genre", label: "ジャンル" }, // Select
-  //   { name: "price", label: "価格" }, // Input
-  //   { name: "date", label: "日付" }, // Date Picker
-  //   { name: "shop", label: "店舗" }, // Combobox
-  //   { name: "prefecture", label: "都道府県" }, // Select
-  //   { name: "bitterness", label: "苦さ" }, // Slider
-  //   { name: "sweetness", label: "甘さ" }, // Slider
-  //   { name: "richness", label: "濃さ" }, // Slider
-  // ];
 
   return (
     <Form {...form}>
@@ -104,14 +79,27 @@ const Registration = () => {
         <FormField
           control={form.control}
           name="date"
-          render={({ field }) => (
-            <DatePickerField field={field} />
-          )}
+          render={({ field }) => <DatePickerField field={field} />}
         />
         <FormField
           control={form.control}
           name="prefecture"
           render={({ field }) => <PrefectureSelectField field={field} />}
+        />
+        <FormField
+          control={form.control}
+          name="bitterness"
+          render={({ field }) => <TasteSlider label="苦さ" field={field} />}
+        />
+        <FormField
+          control={form.control}
+          name="sweetness"
+          render={({ field }) => <TasteSlider label="甘さ" field={field} />}
+        />
+        <FormField
+          control={form.control}
+          name="richness"
+          render={({ field }) => <TasteSlider label="濃さ" field={field} />}
         />
         <Button
           type="submit"
