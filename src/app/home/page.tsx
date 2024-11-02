@@ -9,7 +9,7 @@ const Home = () => {
           <Link href="/matcha">Matcha</Link>
         </li>
         <li>
-          <Link href="/registration">Registration</Link>
+          <Link href="/matcha/registration">Registration</Link>
         </li>
         <li>
           <Link href="/ranking">Ranking</Link>

@@ -14,6 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { SelectScrollable } from "./components/SelectScrollable";
 
 const formSchema = z.object({
   name: z.string(),
@@ -75,7 +76,7 @@ const Registration = () => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        {formFields.map((field) => (
+        {/* {formFields.map((field) => (
           <FormField
             key={field.name}
             control={form.control}
@@ -84,17 +85,30 @@ const Registration = () => {
               <FormItem>
                 <FormLabel>{field.label}</FormLabel>
                 <FormControl>
-                  <Input
-                    type={field.type ?? "text"}
-                    placeholder={field.placeholder}
-                    {...inputField}
-                  />
+                  {field.name === "genre" || field.name === "prefecture" ? (
+                    <Select {...inputField} /> // Render Select component for genre and prefecture
+                  ) : field.name === "date" ? (
+                    <DatePicker {...inputField} /> // Render DatePicker component for date
+                  ) : field.name === "shop" ? (
+                    <Combobox {...inputField} /> // Render Combobox component for shop
+                  ) : field.name === "bitterness" ||
+                    field.name === "sweetness" ||
+                    field.name === "richness" ? (
+                    <Slider {...inputField} min={0} max={10} /> // Render Slider component for taste attributes
+                  ) : (
+                    <Input
+                      type={field.type ?? "text"}
+                      placeholder={field.placeholder}
+                      {...inputField}
+                    /> // Default to Input component for text and number fields
+                  )}
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-        ))}
+        ))} */}
+        <SelectScrollable />
         <Button
           type="submit"
           className="text-secondary-950 font-bold bg-primary-400 hover:bg-primary-500"
