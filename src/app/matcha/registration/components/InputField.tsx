@@ -9,7 +9,7 @@ import { ControllerRenderProps } from "react-hook-form";
 
 interface InputProps {
   label: string;
-  field: ControllerRenderProps<{ name: string }>;
+  field: ControllerRenderProps;
   placeholder?: string;
 }
 

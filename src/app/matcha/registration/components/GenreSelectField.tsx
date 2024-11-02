@@ -1,0 +1,67 @@
+import * as React from "react";
+
+import {
+  FormControl,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { ControllerRenderProps } from "react-hook-form";
+
+interface GenreSelectProps {
+  field: ControllerRenderProps;
+}
+
+const DummyGenre = [
+  {
+    id: 1,
+    name: "スイーツ",
+  },
+  {
+    id: 2,
+    name: "ドリンク",
+  },
+  {
+    id: 3,
+    name: "フード",
+  },
+  {
+    id: 4,
+    name: "その他",
+  },
+];
+
+const GenreSelectField: React.FC<GenreSelectProps> = ({ field }) => {
+  return (
+    <FormItem>
+      <FormLabel>ジャンル</FormLabel>
+      <FormControl>
+        <Select onValueChange={field.onChange} defaultValue={field.value}>
+          <SelectTrigger className="w-[280px]">
+            <SelectValue placeholder="Select a genre" {...field} />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {DummyGenre.map((genre) => (
+                <SelectItem key={genre.id} value={genre.name}>
+                  {genre.name}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </FormControl>
+      <FormMessage />
+    </FormItem>
+  );
+};
+
+export default GenreSelectField;

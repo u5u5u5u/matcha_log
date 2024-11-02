@@ -7,18 +7,15 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Form,
-  FormControl,
   FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+
 import InputField from "./components/InputField";
+import GenreSelectField from "./components/GenreSelectField";
 
 const formSchema = z.object({
   name: z.string(),
-  // genre: z.number(),
+  genre: z.string(),
   // price: z.number(),
   // date: z.string(),
   // shop: z.number(),
@@ -33,7 +30,7 @@ const Registration = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      // genre: 0,
+      genre: "",
       // date: "",
       // shop: 0,
       // prefecture: 0,
@@ -86,6 +83,11 @@ const Registration = () => {
               placeholder="料理名を入力してください"
             />
           )}
+        />
+        <FormField
+          control={form.control}
+          name="genre"
+          render={({ field }) => <GenreSelectField field={field} />}
         />
         <Button
           type="submit"
