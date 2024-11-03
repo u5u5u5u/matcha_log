@@ -18,7 +18,7 @@ const formSchema = z.object({
   genre: z.string(),
   price: z.number().positive(),
   date: z.date(),
-  // shop: z.number(),
+  shop: z.string(),
   prefecture: z.string(),
   bitterness: z.number(),
   sweetness: z.number(),
@@ -33,7 +33,7 @@ const Registration = () => {
       genre: "",
       price: 0,
       date: new Date(),
-      // shop: 0,
+      shop: "",
       prefecture: "",
       bitterness: 5,
       sweetness: 5,
@@ -45,62 +45,59 @@ const Registration = () => {
     console.log(values);
   }
 
+  const formFields = [
+    { name: "name", label: "料理名" },
+    { name: "genre", label: "ジャンル" },
+    { name: "price", label: "価格" },
+    { name: "date", label: "日付" },
+    { name: "shop", label: "店舗" },
+    { name: "prefecture", label: "都道府県" },
+    { name: "bitterness", label: "苦さ" },
+    { name: "sweetness", label: "甘さ" },
+    { name: "richness", label: "濃さ" },
+  ];
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <InputField
-              label="料理名"
-              field={field}
-              placeholder="料理名を入力してください"
-            />
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="genre"
-          render={({ field }) => <GenreSelectField field={field} />}
-        />
-        <FormField
-          control={form.control}
-          name="price"
-          render={({ field }) => (
-            <InputField
-              label="価格"
-              field={field}
-              type="number"
-              placeholder="価格を入力してください"
-            />
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="date"
-          render={({ field }) => <DatePickerField field={field} />}
-        />
-        <FormField
-          control={form.control}
-          name="prefecture"
-          render={({ field }) => <PrefectureSelectField field={field} />}
-        />
-        <FormField
-          control={form.control}
-          name="bitterness"
-          render={({ field }) => <TasteSlider label="苦さ" field={field} />}
-        />
-        <FormField
-          control={form.control}
-          name="sweetness"
-          render={({ field }) => <TasteSlider label="甘さ" field={field} />}
-        />
-        <FormField
-          control={form.control}
-          name="richness"
-          render={({ field }) => <TasteSlider label="濃さ" field={field} />}
-        />
+        {formFields.map((field) => (
+          <FormField
+            key={field.name}
+            control={form.control}
+            name={field.name}
+            render={({ field }) => (
+              <>
+                {field.name === "genre" ? (
+                  <GenreSelectField field={field} />
+                ) : field.name === "date" ? (
+                  <DatePickerField field={field} />
+                ) : field.name === "prefecture" ? (
+                  <PrefectureSelectField field={field} />
+                ) : field.name === "bitterness" ||
+                  field.name === "sweetness" ||
+                  field.name === "richness" ? (
+                  <TasteSlider
+                    label={
+                      formFields.find((f) => f.name === field.name)?.label || ""
+                    }
+                    field={field}
+                  />
+                ) : (
+                  <InputField
+                    label={
+                      formFields.find((f) => f.name === field.name)?.label || ""
+                    }
+                    field={field}
+                    {...(field.name === "price" ? { type: "number" } : {})}
+                    placeholder={`${
+                      formFields.find((f) => f.name === field.name)?.label || ""
+                    }を入力してください`}
+                  />
+                )}
+              </>
+            )}
+          />
+        ))}
         <Button
           type="submit"
           className="text-secondary-950 font-bold bg-primary-400 hover:bg-primary-500"
