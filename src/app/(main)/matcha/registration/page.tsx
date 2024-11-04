@@ -59,7 +59,6 @@ const Registration = () => {
 
   return (
     <>
-      <h1 className="text-center text-2xl font-bold mt-4">新規登録</h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           {formFields.map((field) => (

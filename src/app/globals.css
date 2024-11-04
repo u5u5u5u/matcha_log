@@ -103,6 +103,6 @@ a {
   height: 100vh;
   overflow: auto;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 3.5rem 1rem 0;
   background-color: #d9d9d9;
 }
