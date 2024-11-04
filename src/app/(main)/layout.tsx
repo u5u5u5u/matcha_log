@@ -4,13 +4,13 @@ import { usePathname } from "next/navigation";
 import Header from "@/components/Header/Header";
 
 const PageTitleMap = [
-  { path: /^\/home$/, title: "Home" },
+  { path: /^\/home$/, title: "ほーむ" },
   { path: /^\/matcha$/, title: "まっちゃ" },
-  { path: /^\/matcha\/[^/]+$/, title: "詳細" },
-  { path: /^\/matcha\/[^/]+\/edit$/, title: "編集" },
-  { path: /^\/matcha\/registration$/, title: "新規登録" },
-  { path: /^\/profile$/, title: "プロフィール" },
-  { path: /^\/ranking$/, title: "ランキング" },
+  { path: /^\/matcha\/[^/]+$/, title: "しょうさい" },
+  { path: /^\/matcha\/[^/]+\/edit$/, title: "へんしゅう" },
+  { path: /^\/matcha\/registration$/, title: "とうろく" },
+  { path: /^\/profile$/, title: "ぷろふぃーる" },
+  { path: /^\/ranking$/, title: "らんきんぐ" },
 ];
 
 export default function RootLayout({
