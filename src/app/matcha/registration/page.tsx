@@ -58,54 +58,62 @@ const Registration = () => {
   ];
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        {formFields.map((field) => (
-          <FormField
-            key={field.name}
-            control={form.control}
-            name={field.name}
-            render={({ field }) => (
-              <>
-                {field.name === "genre" ? (
-                  <GenreSelectField field={field} />
-                ) : field.name === "date" ? (
-                  <DatePickerField field={field} />
-                ) : field.name === "prefecture" ? (
-                  <PrefectureSelectField field={field} />
-                ) : field.name === "bitterness" ||
-                  field.name === "sweetness" ||
-                  field.name === "richness" ? (
-                  <TasteSlider
-                    label={
-                      formFields.find((f) => f.name === field.name)?.label || ""
-                    }
-                    field={field}
-                  />
-                ) : (
-                  <InputField
-                    label={
-                      formFields.find((f) => f.name === field.name)?.label || ""
-                    }
-                    field={field}
-                    {...(field.name === "price" ? { type: "number" } : {})}
-                    placeholder={`${
-                      formFields.find((f) => f.name === field.name)?.label || ""
-                    }を入力してください`}
-                  />
-                )}
-              </>
-            )}
-          />
-        ))}
-        <Button
-          type="submit"
-          className="text-secondary-950 font-bold bg-primary-400 hover:bg-primary-500"
-        >
-          登録
-        </Button>
-      </form>
-    </Form>
+    <>
+      <h1 className="text-center text-2xl font-bold mt-4">新規登録</h1>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          {formFields.map((field) => (
+            <FormField
+              key={field.name}
+              control={form.control}
+              name={field.name}
+              render={({ field }) => (
+                <>
+                  {field.name === "genre" ? (
+                    <GenreSelectField field={field} />
+                  ) : field.name === "date" ? (
+                    <DatePickerField field={field} />
+                  ) : field.name === "prefecture" ? (
+                    <PrefectureSelectField field={field} />
+                  ) : field.name === "bitterness" ||
+                    field.name === "sweetness" ||
+                    field.name === "richness" ? (
+                    <TasteSlider
+                      label={
+                        formFields.find((f) => f.name === field.name)?.label ||
+                        ""
+                      }
+                      field={field}
+                    />
+                  ) : (
+                    <InputField
+                      label={
+                        formFields.find((f) => f.name === field.name)?.label ||
+                        ""
+                      }
+                      field={field}
+                      {...(field.name === "price" ? { type: "number" } : {})}
+                      placeholder={`${
+                        formFields.find((f) => f.name === field.name)?.label ||
+                        ""
+                      }を入力してください`}
+                    />
+                  )}
+                </>
+              )}
+            />
+          ))}
+          <div className="flex justify-center">
+            <Button
+              type="submit"
+              className="text-secondary-950 font-bold bg-primary-400 hover:bg-primary-500 mt-4"
+            >
+              登録
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </>
   );
 };
 
