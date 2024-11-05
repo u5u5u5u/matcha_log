@@ -17,20 +17,20 @@ const MatchaDetail = () => {
           </AspectRatio>
         </div>
 
-        <div className="flex flex-col w-full mt-1">
+        <div className="flex flex-col w-full p-1">
           <p className="text-right text-sm">2021年7月1日</p>
-          <div className="w-full">
-            <div>
-              <h3 className="text-xl">抹茶かき氷</h3>
-              <Badge>スイーツ</Badge>
+          <div className="w-full mt-2 mb-10 ml-2">
+            <div className="flex">
+              <h3 className="text-xl mr-6">抹茶かき氷</h3>
+              <Badge variant="default">スイーツ</Badge>
             </div>
             <p>¥1,000</p>
             <div className="flex">
+              <p className="mr-4">東京都</p>
               <p>AZUMIYA</p>
-              <p>東京都</p>
             </div>
           </div>
-          <div className="w-2/3">
+          <div className="w-2/3 m-auto">
             <ul className="flex justify-between">
               <li className="text-center">
                 <p>苦さ</p>
