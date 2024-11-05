@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Badge } from "@/components/ui/badge";
 
 const MatchaDetail = () => {
   return (
@@ -21,7 +22,7 @@ const MatchaDetail = () => {
           <div className="w-full">
             <div>
               <h3 className="text-xl">抹茶かき氷</h3>
-              <p>スイーツ</p>
+              <Badge>スイーツ</Badge>
             </div>
             <p>¥1,000</p>
             <div className="flex">
