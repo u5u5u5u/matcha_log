@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import LatestMatcha from "./components/LatestMatcha";
+import TopFive from "./components/TopFive";
 
 const Home = () => {
   return (
@@ -10,13 +11,11 @@ const Home = () => {
           <Link href="/matcha/registration">Registration</Link>
         </li>
         <li>
-          <Link href="/ranking">Ranking</Link>
-        </li>
-        <li>
           <Link href="/profile">Profile</Link>
         </li>
       </ul>
       <LatestMatcha />
+      <TopFive />
     </>
 );
 };
