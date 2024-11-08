@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { type User } from "@supabase/supabase-js";
-import { Profile } from "@/types/Profile";
+import { Profile } from "@/types/profile";
 import AvatarIcon from "./avatar";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
