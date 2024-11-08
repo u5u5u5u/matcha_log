@@ -12,7 +12,7 @@ import {
 
 const LatestMatcha = () => {
   return (
-    <>
+    <div>
       <h2 className="text-lg ml-2">最新の抹茶</h2>
       <Card className="flex flex-col items-center p-2">
         <Table>
@@ -55,7 +55,7 @@ const LatestMatcha = () => {
           もっと見る
         </Link>
       </Card>
-    </>
+    </div>
   );
 };
 
