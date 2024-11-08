@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { type User } from "@supabase/supabase-js";
-import { UserData } from "@/types/UserData";
+import { Profile } from "@/types/Profile";
 import AvatarIcon from "./avatar";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -32,7 +32,7 @@ export default function AccountForm({ user }: { user: User | null }) {
       }
 
       if (data) {
-        const userData = data as unknown as UserData;
+        const userData = data as unknown as Profile;
         setFullname(userData.full_name);
         setUsername(userData.username);
         setWebsite(userData.website);

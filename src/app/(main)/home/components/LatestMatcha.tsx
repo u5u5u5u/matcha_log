@@ -18,36 +18,36 @@ const LatestMatcha = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[180px]">抹茶</TableHead>
-              <TableHead>都道府県</TableHead>
-              <TableHead className="text-right">価格</TableHead>
+              <TableHead className="w-[150px]">抹茶</TableHead>
+              <TableHead className="w-[100px]">都道府県</TableHead>
+              <TableHead className="text-right">追加日</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             <TableRow>
               <TableCell className="font-medium">抹茶かき氷</TableCell>
               <TableCell>熊本県</TableCell>
-              <TableCell className="text-right">¥500</TableCell>
+              <TableCell className="text-right">2024年11月8日</TableCell>
             </TableRow>
             <TableRow>
               <TableCell className="font-medium">抹茶かき氷</TableCell>
               <TableCell>熊本県</TableCell>
-              <TableCell className="text-right">¥500</TableCell>
+              <TableCell className="text-right">2024年11月8日</TableCell>
             </TableRow>
             <TableRow>
               <TableCell className="font-medium">抹茶かき氷</TableCell>
               <TableCell>熊本県</TableCell>
-              <TableCell className="text-right">¥500</TableCell>
+              <TableCell className="text-right">2024年11月8日</TableCell>
             </TableRow>
             <TableRow>
               <TableCell className="font-medium">抹茶かき氷</TableCell>
               <TableCell>熊本県</TableCell>
-              <TableCell className="text-right">¥500</TableCell>
+              <TableCell className="text-right">2024年11月8日</TableCell>
             </TableRow>
             <TableRow>
               <TableCell className="font-medium">抹茶かき氷</TableCell>
               <TableCell>熊本県</TableCell>
-              <TableCell className="text-right">¥500</TableCell>
+              <TableCell className="text-right">2024年11月8日</TableCell>
             </TableRow>
           </TableBody>
         </Table>
