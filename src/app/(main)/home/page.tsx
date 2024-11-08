@@ -1,12 +1,11 @@
 import Link from "next/link";
 
+import LatestMatcha from "./components/LatestMatcha";
+
 const Home = () => {
   return (
     <>
       <ul>
-        <li>
-          <Link href="/matcha">Matcha</Link>
-        </li>
         <li>
           <Link href="/matcha/registration">Registration</Link>
         </li>
@@ -17,8 +16,9 @@ const Home = () => {
           <Link href="/profile">Profile</Link>
         </li>
       </ul>
+      <LatestMatcha />
     </>
-  );
+);
 };
 
 export default Home;
