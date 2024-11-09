@@ -20,26 +20,10 @@ interface GenreSelectProps {
   field: ControllerRenderProps;
 }
 
-const DummyGenre = [
-  {
-    id: 1,
-    name: "スイーツ",
-  },
-  {
-    id: 2,
-    name: "ドリンク",
-  },
-  {
-    id: 3,
-    name: "フード",
-  },
-  {
-    id: 4,
-    name: "その他",
-  },
-];
+import { dummyGenre } from "@/utils/dummy/genre";
 
 const GenreSelectField: React.FC<GenreSelectProps> = ({ field }) => {
+
   return (
     <FormItem>
       <FormLabel>ジャンル</FormLabel>
@@ -50,7 +34,7 @@ const GenreSelectField: React.FC<GenreSelectProps> = ({ field }) => {
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              {DummyGenre.map((genre) => (
+              {dummyGenre.map((genre) => (
                 <SelectItem key={genre.id} value={genre.name}>
                   {genre.name}
                 </SelectItem>
