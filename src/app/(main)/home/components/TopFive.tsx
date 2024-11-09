@@ -10,7 +10,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+import { dummyMatcha } from "@/utils/dummy/matcha";
+import { dummyPrefecture } from "@/utils/dummy/prefecture";
+import { dummyShop } from "@/utils/dummy/shop";
+
 const TopFive = () => {
+  const topFiveMatcha = dummyMatcha.slice(0, 5);
+  const prefecture = dummyPrefecture;
+  const shop = dummyShop;
+
   return (
     <div>
       <h2 className="text-lg ml-2">Top 5</h2>
@@ -25,36 +33,24 @@ const TopFive = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow>
-              <TableCell className="font-medium text-center">1</TableCell>
-              <TableCell className="font-medium">抹茶かき氷</TableCell>
-              <TableCell>熊本県</TableCell>
-              <TableCell className="text-right">100</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className="font-medium text-center">2</TableCell>
-              <TableCell className="font-medium">抹茶かき氷</TableCell>
-              <TableCell>熊本県</TableCell>
-              <TableCell className="text-right">100</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className="font-medium text-center">3</TableCell>
-              <TableCell className="font-medium">抹茶かき氷</TableCell>
-              <TableCell>熊本県</TableCell>
-              <TableCell className="text-right">100</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className="font-medium text-center">4</TableCell>
-              <TableCell className="font-medium">抹茶かき氷</TableCell>
-              <TableCell>熊本県</TableCell>
-              <TableCell className="text-right">100</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className="font-medium text-center">5</TableCell>
-              <TableCell className="font-medium">抹茶かき氷</TableCell>
-              <TableCell>熊本県</TableCell>
-              <TableCell className="text-right">100</TableCell>
-            </TableRow>
+            {topFiveMatcha.map((matcha, index) => (
+              <TableRow key={matcha.id}>
+                <TableCell className="font-medium text-center">
+                  {index + 1}
+                </TableCell>
+                <TableCell className="font-medium">{matcha.name}</TableCell>
+                <TableCell>
+                  {
+                    prefecture.find(
+                      (p) =>
+                        p.id ===
+                        shop.find((s) => s.id === matcha.shop_id)?.prefecture_id
+                    )?.name
+                  }
+                </TableCell>
+                <TableCell className="text-right">{matcha.price}</TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
         <Link href="/ranking" className="text-xs">
@@ -63,6 +59,6 @@ const TopFive = () => {
       </Card>
     </div>
   );
-}
+};
 
 export default TopFive;
