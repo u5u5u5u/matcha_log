@@ -15,10 +15,6 @@ import { dummyPrefecture } from "@/utils/dummy/prefecture";
 import { dummyShop } from "@/utils/dummy/shop";
 
 const LatestMatcha = () => {
-  const latestFiveMatcha = dummyMatcha.slice(0, 5);
-  const prefecture = dummyPrefecture;
-  const shop = dummyShop;
-
   return (
     <div>
       <h2 className="text-lg ml-2">最新の抹茶</h2>
@@ -32,15 +28,15 @@ const LatestMatcha = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {latestFiveMatcha.map((matcha) => (
+            {dummyMatcha.slice(0, 5).map((matcha) => (
               <TableRow key={matcha.id}>
                 <TableCell className="truncate">{matcha.name}</TableCell>
                 <TableCell>
                   {
-                    prefecture.find(
+                    dummyPrefecture.find(
                       (p) =>
                         p.id ===
-                        shop.find((s) => s.id === matcha.shop_id)?.prefecture_id
+                        dummyShop.find((s) => s.id === matcha.shop_id)?.prefecture_id
                     )?.name
                   }
                 </TableCell>

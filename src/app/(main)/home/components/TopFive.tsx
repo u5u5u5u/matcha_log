@@ -15,10 +15,6 @@ import { dummyPrefecture } from "@/utils/dummy/prefecture";
 import { dummyShop } from "@/utils/dummy/shop";
 
 const TopFive = () => {
-  const topFiveMatcha = dummyMatcha.slice(0, 5);
-  const prefecture = dummyPrefecture;
-  const shop = dummyShop;
-
   return (
     <div>
       <h2 className="text-lg ml-2">Top 5</h2>
@@ -33,7 +29,7 @@ const TopFive = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {topFiveMatcha.map((matcha, index) => (
+            {dummyMatcha.slice(0, 5).map((matcha, index) => (
               <TableRow key={matcha.id}>
                 <TableCell className="font-medium text-center">
                   {index + 1}
@@ -41,10 +37,11 @@ const TopFive = () => {
                 <TableCell className="font-medium">{matcha.name}</TableCell>
                 <TableCell>
                   {
-                    prefecture.find(
+                    dummyPrefecture.find(
                       (p) =>
                         p.id ===
-                        shop.find((s) => s.id === matcha.shop_id)?.prefecture_id
+                        dummyShop.find((s) => s.id === matcha.shop_id)
+                          ?.prefecture_id
                     )?.name
                   }
                 </TableCell>
