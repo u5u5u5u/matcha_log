@@ -10,7 +10,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+import { dummyMatcha } from "@/utils/dummy/matcha";
+import { dummyPrefecture } from "@/utils/dummy/prefecture";
+import { dummyShop } from "@/utils/dummy/shop";
+
 const LatestMatcha = () => {
+  const latestFiveMatcha = dummyMatcha.slice(0, 5);
+  const prefecture = dummyPrefecture;
+  const shop = dummyShop;
+
   return (
     <div>
       <h2 className="text-lg ml-2">最新の抹茶</h2>
@@ -24,31 +32,23 @@ const LatestMatcha = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow>
-              <TableCell className="font-medium">抹茶かき氷</TableCell>
-              <TableCell>熊本県</TableCell>
-              <TableCell className="text-right">2024年11月8日</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className="font-medium">抹茶かき氷</TableCell>
-              <TableCell>熊本県</TableCell>
-              <TableCell className="text-right">2024年11月8日</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className="font-medium">抹茶かき氷</TableCell>
-              <TableCell>熊本県</TableCell>
-              <TableCell className="text-right">2024年11月8日</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className="font-medium">抹茶かき氷</TableCell>
-              <TableCell>熊本県</TableCell>
-              <TableCell className="text-right">2024年11月8日</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className="font-medium">抹茶かき氷</TableCell>
-              <TableCell>熊本県</TableCell>
-              <TableCell className="text-right">2024年11月8日</TableCell>
-            </TableRow>
+            {latestFiveMatcha.map((matcha) => (
+              <TableRow key={matcha.id}>
+                <TableCell className="truncate">{matcha.name}</TableCell>
+                <TableCell>
+                  {
+                    prefecture.find(
+                      (p) =>
+                        p.id ===
+                        shop.find((s) => s.id === matcha.shop_id)?.prefecture_id
+                    )?.name
+                  }
+                </TableCell>
+                <TableCell className="text-right">
+                  {matcha.date.toLocaleDateString()}
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
         <Link href="/matcha" className="text-xs">
