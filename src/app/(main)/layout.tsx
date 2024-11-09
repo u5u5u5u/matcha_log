@@ -6,9 +6,9 @@ import Header from "@/components/Header/Header";
 const PageTitleMap = [
   { path: /^\/home$/, title: "ほーむ" },
   { path: /^\/matcha$/, title: "まっちゃ" },
+  { path: /^\/matcha\/registration$/, title: "とうろく" },
   { path: /^\/matcha\/[^/]+$/, title: "しょうさい" },
   { path: /^\/matcha\/[^/]+\/edit$/, title: "へんしゅう" },
-  { path: /^\/matcha\/registration$/, title: "とうろく" },
   { path: /^\/profile$/, title: "ぷろふぃーる" },
   { path: /^\/ranking$/, title: "らんきんぐ" },
 ];
