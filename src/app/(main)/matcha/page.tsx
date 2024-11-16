@@ -15,7 +15,15 @@ import { Pencil } from "lucide-react";
 
 import { dummyMatcha } from "@/utils/dummy/matcha";
 
-const Matcha = () => {
+import { createClient } from "@/utils/supabase/client";
+
+const Matcha = async () => {
+  const supabase = createClient();
+  const { data, error } = await supabase.from("matchas").select();
+
+  console.log("Data: ", data);
+  console.log("Error: ", error);
+
   return (
     <div>
       <ul>
