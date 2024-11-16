@@ -1,31 +1,19 @@
-import {
-  FormControl,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Slider } from "@/components/ui/slider";
 import { ControllerRenderProps } from "react-hook-form";
 
+import { Matcha } from "@/types/matcha";
 interface TasteProps {
-  label: string;
-  field: ControllerRenderProps;
+  field: ControllerRenderProps<Matcha, "bitterness" | "sweetness" | "richness">;
 }
 
-const TasteSlider: React.FC<TasteProps> = ({ label, field }) => {
+const TasteSlider: React.FC<TasteProps> = ({ field }) => {
   return (
-    <FormItem>
-      <FormLabel>{label}</FormLabel>
-      <FormControl>
-        <Slider
-          value={[field.value || 0]}
-          onValueChange={(value) => field.onChange(value[0])}
-          max={10}
-          step={1}
-        />
-      </FormControl>
-      <FormMessage />
-    </FormItem>
+    <Slider
+      value={[field.value || 0]}
+      onValueChange={(value) => field.onChange(value[0])}
+      max={10}
+      step={1}
+    />
   );
 };
 

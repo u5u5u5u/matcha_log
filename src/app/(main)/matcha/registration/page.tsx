@@ -5,11 +5,17 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import { Form, FormField } from "@/components/ui/form";
+import {
+  Form,
+  FormField,
+  FormControl,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
 
-import InputField from "./components/InputField";
-import GenreSelectField from "./components/GenreSelectField";
 import DatePickerField from "./components/DatePickerField";
+import GenreSelectField from "./components/GenreSelectField";
+import InputField from "./components/InputField";
 import PrefectureSelectField from "./components/PrefectureSelectField";
 import TasteSlider from "./components/TasteSlider";
 
@@ -25,8 +31,10 @@ const formSchema = z.object({
   richness: z.number(),
 });
 
+type FormValues = z.infer<typeof formSchema>;
+
 const Registration = () => {
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
@@ -41,16 +49,21 @@ const Registration = () => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  const onSubmit = (values: FormValues) => {
     console.log(values);
-  }
+  };
 
-  const formFields = [
-    { name: "name", label: "料理名" },
+  const registrationValues: Array<{
+    name: keyof FormValues;
+    label: string;
+    type?: string;
+    placeholder?: string;
+  }> = [
+    { name: "name", label: "料理名", placeholder: "料理名を入力" },
     { name: "genre", label: "ジャンル" },
-    { name: "price", label: "価格" },
+    { name: "price", label: "価格", type: "number", placeholder: "価格を入力" },
     { name: "date", label: "日付" },
-    { name: "shop", label: "店舗" },
+    { name: "shop", label: "店舗", placeholder: "店舗名を入力" },
     { name: "prefecture", label: "都道府県" },
     { name: "bitterness", label: "苦さ" },
     { name: "sweetness", label: "甘さ" },
@@ -58,61 +71,76 @@ const Registration = () => {
   ];
 
   return (
-    <>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          {formFields.map((field) => (
-            <FormField
-              key={field.name}
-              control={form.control}
-              name={field.name}
-              render={({ field }) => (
-                <>
-                  {field.name === "genre" ? (
-                    <GenreSelectField field={field} />
-                  ) : field.name === "date" ? (
-                    <DatePickerField field={field} />
-                  ) : field.name === "prefecture" ? (
-                    <PrefectureSelectField field={field} />
-                  ) : field.name === "bitterness" ||
-                    field.name === "sweetness" ||
-                    field.name === "richness" ? (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        {registrationValues.map((value) => (
+          <FormField
+            key={value.name}
+            control={form.control}
+            name={value.name}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{value.label}</FormLabel>
+                <FormControl>
+                  {value.name === "prefecture" ? (
+                    <PrefectureSelectField
+                      field={{
+                        ...field,
+                        name: field.name as "prefecture",
+                        value: field.value as string,
+                      }}
+                    />
+                  ) : value.name === "genre" ? (
+                    <GenreSelectField
+                      field={{
+                        ...field,
+                        name: "genre",
+                        value: field.value as string,
+                      }}
+                    />
+                  ) : value.name === "date" ? (
+                    <DatePickerField
+                      field={{
+                        ...field,
+                        name: field.name as "date",
+                        value: field.value as Date,
+                      }}
+                    />
+                  ) : value.name === "bitterness" ||
+                    value.name === "sweetness" ||
+                    value.name === "richness" ? (
                     <TasteSlider
-                      label={
-                        formFields.find((f) => f.name === field.name)?.label ||
-                        ""
-                      }
-                      field={field}
+                      field={{
+                        ...field,
+                        name: field.name as
+                          | "bitterness"
+                          | "sweetness"
+                          | "richness",
+                        value: Number(field.value),
+                      }}
                     />
                   ) : (
                     <InputField
-                      label={
-                        formFields.find((f) => f.name === field.name)?.label ||
-                        ""
-                      }
                       field={field}
-                      {...(field.name === "price" ? { type: "number" } : {})}
-                      placeholder={`${
-                        formFields.find((f) => f.name === field.name)?.label ||
-                        ""
-                      }を入力してください`}
+                      type={value.type}
+                      placeholder={value.placeholder}
                     />
                   )}
-                </>
-              )}
-            />
-          ))}
-          <div className="flex justify-center">
-            <Button
-              type="submit"
-              className="text-secondary-950 font-bold bg-primary-400 hover:bg-primary-500 mt-4"
-            >
-              登録
-            </Button>
-          </div>
-        </form>
-      </Form>
-    </>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        ))}
+        <div className="flex justify-center">
+          <Button
+            type="submit"
+            className="text-secondary-950 font-bold bg-primary-400 hover:bg-primary-500 mt-4"
+          >
+            登録
+          </Button>
+        </div>
+      </form>
+    </Form>
   );
 };
 
