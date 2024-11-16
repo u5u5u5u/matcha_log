@@ -16,16 +16,14 @@ import {
 import DatePickerField from "./components/DatePickerField";
 import GenreSelectField from "./components/GenreSelectField";
 import InputField from "./components/InputField";
-import PrefectureSelectField from "./components/PrefectureSelectField";
 import TasteSlider from "./components/TasteSlider";
 
 const formSchema = z.object({
   name: z.string(),
-  genre: z.string(),
+  genre_id: z.number(),
   price: z.number().positive(),
   date: z.date(),
-  shop: z.string(),
-  prefecture: z.string(),
+  shop_id: z.number(),
   bitterness: z.number(),
   sweetness: z.number(),
   richness: z.number(),
@@ -38,11 +36,10 @@ const Registration = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      genre: "",
+      genre_id: undefined,
       price: undefined,
       date: new Date(),
-      shop: "",
-      prefecture: "",
+      shop_id: undefined,
       bitterness: 5,
       sweetness: 5,
       richness: 5,
@@ -60,11 +57,10 @@ const Registration = () => {
     placeholder?: string;
   }> = [
     { name: "name", label: "料理名", placeholder: "料理名を入力" },
-    { name: "genre", label: "ジャンル" },
+    { name: "genre_id", label: "ジャンル" },
     { name: "price", label: "価格", type: "number", placeholder: "価格を入力" },
     { name: "date", label: "日付" },
-    { name: "shop", label: "店舗", placeholder: "店舗名を入力" },
-    { name: "prefecture", label: "都道府県" },
+    { name: "shop_id", label: "店舗", placeholder: "店舗名を入力" },
     { name: "bitterness", label: "苦さ" },
     { name: "sweetness", label: "甘さ" },
     { name: "richness", label: "濃さ" },
@@ -82,20 +78,12 @@ const Registration = () => {
               <FormItem>
                 <FormLabel>{value.label}</FormLabel>
                 <FormControl>
-                  {value.name === "prefecture" ? (
-                    <PrefectureSelectField
-                      field={{
-                        ...field,
-                        name: field.name as "prefecture",
-                        value: field.value as string,
-                      }}
-                    />
-                  ) : value.name === "genre" ? (
+                  {value.name === "genre_id" ? (
                     <GenreSelectField
                       field={{
                         ...field,
-                        name: "genre",
-                        value: field.value as string,
+                        name: "genre_id",
+                        value: field.value as number,
                       }}
                     />
                   ) : value.name === "date" ? (
@@ -116,7 +104,7 @@ const Registration = () => {
                           | "bitterness"
                           | "sweetness"
                           | "richness",
-                        value: Number(field.value),
+                        value: field.value as number,
                       }}
                     />
                   ) : (

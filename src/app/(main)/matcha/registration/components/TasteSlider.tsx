@@ -1,9 +1,8 @@
 import { Slider } from "@/components/ui/slider";
 import { ControllerRenderProps } from "react-hook-form";
 
-import { MatchaRegistrationValues } from "@/types/matcha";
 interface TasteProps {
-  field: ControllerRenderProps<MatchaRegistrationValues, "bitterness" | "sweetness" | "richness">;
+  field: ControllerRenderProps;
 }
 
 const TasteSlider: React.FC<TasteProps> = ({ field }) => {

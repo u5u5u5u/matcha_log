@@ -1,9 +1,9 @@
 import { Input } from "@/components/ui/input";
 import { ControllerRenderProps } from "react-hook-form";
 
-import { MatchaRegistrationValues } from "@/types/matcha";
+import { Matcha } from "@/types/matcha";
 interface InputProps {
-  field: ControllerRenderProps<MatchaRegistrationValues, keyof MatchaRegistrationValues>;
+  field: ControllerRenderProps<Matcha, keyof Matcha>;
   type?: string;
   placeholder?: string;
 }
