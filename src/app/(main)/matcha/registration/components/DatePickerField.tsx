@@ -16,9 +16,9 @@ import {
 } from "@/components/ui/popover";
 import { ControllerRenderProps } from "react-hook-form";
 
-import { Matcha } from "@/types/matcha";
+import { MatchaRegistrationValues } from "@/types/matcha";
 interface DatePickerProps {
-  field: ControllerRenderProps<Matcha, "date">;
+  field: ControllerRenderProps<MatchaRegistrationValues, "date">;
 }
 
 const DatePickerField: React.FC<DatePickerProps> = ({ field }) => {

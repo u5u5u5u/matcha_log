@@ -39,7 +39,7 @@ const Registration = () => {
     defaultValues: {
       name: "",
       genre: "",
-      price: 0,
+      price: undefined,
       date: new Date(),
       shop: "",
       prefecture: "",

@@ -10,9 +10,9 @@ import {
 } from "@/components/ui/select";
 import { ControllerRenderProps } from "react-hook-form";
 
-import {Matcha} from "@/types/matcha";
+import { MatchaRegistrationValues } from "@/types/matcha";
 interface prefectureSelectProps {
-  field: ControllerRenderProps<Matcha, "prefecture">;
+  field: ControllerRenderProps<MatchaRegistrationValues, "prefecture">;
 }
 
 import { dummyPrefecture } from "@/utils/dummy/prefecture";

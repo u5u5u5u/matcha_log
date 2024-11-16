@@ -10,10 +10,10 @@ import {
 } from "@/components/ui/select";
 import { ControllerRenderProps } from "react-hook-form";
 
-import { Matcha } from "@/types/matcha";
+import { MatchaRegistrationValues } from "@/types/matcha";
 
 interface GenreSelectProps {
-  field: ControllerRenderProps<Matcha, "genre">;
+  field: ControllerRenderProps<MatchaRegistrationValues, "genre">;
 }
 
 import { dummyGenre } from "@/utils/dummy/genre";

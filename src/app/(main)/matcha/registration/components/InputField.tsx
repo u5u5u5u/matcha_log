@@ -1,9 +1,9 @@
 import { Input } from "@/components/ui/input";
 import { ControllerRenderProps } from "react-hook-form";
 
-import { Matcha } from "@/types/matcha";
+import { MatchaRegistrationValues } from "@/types/matcha";
 interface InputProps {
-  field: ControllerRenderProps<Matcha, keyof Matcha>;
+  field: ControllerRenderProps<MatchaRegistrationValues, keyof MatchaRegistrationValues>;
   type?: string;
   placeholder?: string;
 }
@@ -14,7 +14,9 @@ const InputField: React.FC<InputProps> = ({ field, type, placeholder }) => {
       {...field}
       type={type}
       placeholder={placeholder}
-      onChange={(e) => field.onChange(type === "number" ? +e.target.value : e.target.value)} // typeがnumberの場合は数値に変換
+      onChange={(e) =>
+        field.onChange(type === "number" ? +e.target.value : e.target.value)
+      } // typeがnumberの場合は数値に変換
       value={typeof field.value === "object" ? "" : field.value}
     />
   );
