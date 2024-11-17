@@ -17,6 +17,7 @@ import DatePickerField from "./components/DatePickerField";
 import GenreSelectField from "./components/GenreSelectField";
 import InputField from "./components/InputField";
 import TasteSlider from "./components/TasteSlider";
+import ShopSelectField from "./components/ShopSelectField";
 
 const formSchema = z.object({
   name: z.string(),
@@ -92,6 +93,14 @@ const Registration = () => {
                         ...field,
                         name: field.name as "date",
                         value: field.value as Date,
+                      }}
+                    />
+                  ) : value.name === "shop_id" ? (
+                    <ShopSelectField
+                      field={{
+                        ...field,
+                        name: "shop_id",
+                        value: field.value as number,
                       }}
                     />
                   ) : value.name === "bitterness" ||
