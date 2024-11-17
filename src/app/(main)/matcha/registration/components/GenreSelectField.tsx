@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useEffect, useState } from "react";
 
 import {
   Select,
@@ -11,22 +11,48 @@ import {
 import { ControllerRenderProps } from "react-hook-form";
 
 import { Matcha } from "@/types/matcha";
+import { Genre } from "@/types/genre";
 
 interface GenreSelectProps {
   field: ControllerRenderProps<Matcha, "genre_id">;
 }
 
-import { dummyGenre } from "@/utils/dummy/genre";
+import { createClient } from "@/utils/supabase/client";
 
 const GenreSelectField: React.FC<GenreSelectProps> = ({ field }) => {
+  const supabase = createClient();
+
+  const [genres, setGenres] = useState<Genre[]>([]);
+
+  useEffect(() => {
+    const getGenres = async () => {
+      const { data, error } = await supabase
+        .from("genres")
+        .select("id, name")
+        .returns<Genre[]>();
+
+      if (error) {
+        console.error("Error: ", error);
+      }
+      if (data) {
+        setGenres(data);
+      }
+    };
+
+    getGenres();
+  }, []);
+
   return (
-    <Select onValueChange={field.onChange} defaultValue={field.value?.toString()}>
+    <Select
+      onValueChange={field.onChange}
+      defaultValue={field.value?.toString()}
+    >
       <SelectTrigger className="w-[280px]">
         <SelectValue placeholder="ジャンルを選択してください" {...field} />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          {dummyGenre.map((genre) => (
+          {genres.map((genre) => (
             <SelectItem key={genre.id} value={genre.id.toString()}>
               {genre.name}
             </SelectItem>
