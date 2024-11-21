@@ -71,6 +71,7 @@ const Registration = () => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <GenreSelectField form={form} />
+        <DatePickerField form={form} />
         {registrationValues.map((value) => (
           <FormField
             key={value.name}
@@ -80,15 +81,7 @@ const Registration = () => {
               <FormItem>
                 <FormLabel>{value.label}</FormLabel>
                 <FormControl>
-                  {value.name === "date" ? (
-                    <DatePickerField
-                      field={{
-                        ...field,
-                        name: field.name as "date",
-                        value: field.value as Date,
-                      }}
-                    />
-                  ) : value.name === "shop_id" ? (
+                  {value.name === "shop_id" ? (
                     <ShopSelectField
                       field={{
                         ...field,

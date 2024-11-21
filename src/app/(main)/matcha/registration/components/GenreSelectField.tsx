@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/select";
 
 import { Genre } from "@/types/genre";
-import type { FormValues } from "@/app/(main)/matcha/registration/page";
+import type { FormValues } from "../page";
 
 interface GenreSelectProps {
   form: UseFormReturn<FormValues>;
