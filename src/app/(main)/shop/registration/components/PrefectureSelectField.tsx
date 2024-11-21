@@ -43,7 +43,6 @@ const PrefectureSelectField = ({ form }: PrefectureSelectProps) => {
       }
       if (data) {
         setPrefectures(data);
-        console.log(data);
       }
     };
 

@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 
+import NameInputField from "./components/NameInputField";
 import PrefectureSelectField from "./components/PrefectureSelectField";
 
 const formSchema = z.object({
@@ -39,6 +40,7 @@ const ShopRegistration = () => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <NameInputField form={form} />
         <PrefectureSelectField form={form} />
         <div className="flex justify-center">
           <Button
