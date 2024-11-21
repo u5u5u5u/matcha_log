@@ -12,11 +12,13 @@ import GenreSelectField from "./components/GenreSelectField";
 import InputField from "./components/InputField";
 import ShopSelectField from "./components/ShopSelectField";
 import TasteSliders from "./components/TasteSliders";
+import ImageSelect from "./components/ImageSelect";
 
 const formSchema = z.object({
   name: z.string(),
-  genre_id: z.string(),
+  imageUrl: z.string(),
   price: z.number().positive(),
+  genre_id: z.string(),
   date: z.date(),
   shop_id: z.string(),
   bitterness: z.number(),
@@ -31,8 +33,9 @@ const Registration = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      genre_id: "0",
+      imageUrl: "",
       price: undefined,
+      genre_id: "0",
       date: new Date(),
       shop_id: "0",
       bitterness: 5,
@@ -54,6 +57,7 @@ const Registration = () => {
           label="料理名"
           placeholder="料理名を入力"
         />
+        <ImageSelect form={form} />
         <InputField
           form={form}
           name="price"
