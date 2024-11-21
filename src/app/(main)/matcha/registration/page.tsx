@@ -21,7 +21,7 @@ import ShopSelectField from "./components/ShopSelectField";
 
 const formSchema = z.object({
   name: z.string(),
-  genre_id: z.number(),
+  genre_id: z.string(),
   price: z.number().positive(),
   date: z.date(),
   shop_id: z.number(),
@@ -30,14 +30,14 @@ const formSchema = z.object({
   richness: z.number(),
 });
 
-type FormValues = z.infer<typeof formSchema>;
+export type FormValues = z.infer<typeof formSchema>;
 
 const Registration = () => {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      genre_id: undefined,
+      genre_id: "",
       price: undefined,
       date: new Date(),
       shop_id: undefined,
@@ -70,6 +70,7 @@ const Registration = () => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <GenreSelectField form={form} />
         {registrationValues.map((value) => (
           <FormField
             key={value.name}
@@ -79,15 +80,7 @@ const Registration = () => {
               <FormItem>
                 <FormLabel>{value.label}</FormLabel>
                 <FormControl>
-                  {value.name === "genre_id" ? (
-                    <GenreSelectField
-                      field={{
-                        ...field,
-                        name: "genre_id",
-                        value: field.value as number,
-                      }}
-                    />
-                  ) : value.name === "date" ? (
+                  {value.name === "date" ? (
                     <DatePickerField
                       field={{
                         ...field,

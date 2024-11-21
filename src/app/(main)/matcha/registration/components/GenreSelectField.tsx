@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react";
+import { UseFormReturn } from "react-hook-form";
 
+import {
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
 import {
   Select,
   SelectContent,
@@ -8,18 +16,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ControllerRenderProps } from "react-hook-form";
 
-import { Matcha } from "@/types/matcha";
 import { Genre } from "@/types/genre";
+import type { FormValues } from "@/app/(main)/matcha/registration/page";
 
 interface GenreSelectProps {
-  field: ControllerRenderProps<Matcha, "genre_id">;
+  form: UseFormReturn<FormValues>;
 }
 
 import { createClient } from "@/utils/supabase/client";
 
-const GenreSelectField: React.FC<GenreSelectProps> = ({ field }) => {
+const GenreSelectField = ({ form }: GenreSelectProps) => {
   const supabase = createClient();
 
   const [genres, setGenres] = useState<Genre[]>([]);
@@ -43,23 +50,38 @@ const GenreSelectField: React.FC<GenreSelectProps> = ({ field }) => {
   }, []);
 
   return (
-    <Select
-      onValueChange={field.onChange}
-      defaultValue={field.value?.toString()}
-    >
-      <SelectTrigger className="w-[280px]">
-        <SelectValue placeholder="ジャンルを選択してください" {...field} />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectGroup>
-          {genres.map((genre) => (
-            <SelectItem key={genre.id} value={genre.id.toString()}>
-              {genre.name}
-            </SelectItem>
-          ))}
-        </SelectGroup>
-      </SelectContent>
-    </Select>
+    <FormField
+      control={form.control}
+      name="genre_id"
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>ジャンル</FormLabel>
+          <FormControl>
+            <Select
+              onValueChange={field.onChange}
+              defaultValue={field.value?.toString()}
+            >
+              <SelectTrigger className="w-[280px]">
+                <SelectValue
+                  placeholder="ジャンルを選択してください"
+                  {...field}
+                />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {genres.map((genre) => (
+                    <SelectItem key={genre.id} value={genre.id.toString()}>
+                      {genre.name}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
   );
 };
 
