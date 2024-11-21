@@ -1,3 +1,12 @@
+import { UseFormReturn } from "react-hook-form";
+
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import {
   Select,
   SelectContent,
@@ -6,36 +15,50 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ControllerRenderProps } from "react-hook-form";
 
-import { Matcha } from "@/types/matcha";
+import type { FormValues } from "../page";
 
 import { dummyShop } from "@/utils/dummy/shop";
 
-interface GenreSelectProps {
-  field: ControllerRenderProps<Matcha, "shop_id">;
+interface ShopSelectProps {
+  form: UseFormReturn<FormValues>;
 }
 
-const GenreSelectField: React.FC<GenreSelectProps> = ({ field }) => {
+const ShopSelectField = ({ form }: ShopSelectProps) => {
   return (
-    <Select
-      onValueChange={field.onChange}
-      defaultValue={field.value?.toString()}
-    >
-      <SelectTrigger className="w-[280px]">
-        <SelectValue placeholder="お店を選択してください" {...field} />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectGroup>
-          {dummyShop.map((shop) => (
-            <SelectItem key={shop.id} value={shop.id.toString()}>
-              {shop.name}
-            </SelectItem>
-          ))}
-        </SelectGroup>
-      </SelectContent>
-    </Select>
+      <FormField
+        control={form.control}
+        name="shop_id"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>お店</FormLabel>
+            <FormControl>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value?.toString()}
+              >
+                <SelectTrigger className="w-[280px]">
+                  <SelectValue
+                    placeholder="お店を選択してください"
+                    {...field}
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {dummyShop.map((shop) => (
+                      <SelectItem key={shop.id} value={shop.id.toString()}>
+                        {shop.name}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
   );
 };
 
-export default GenreSelectField;
+export default ShopSelectField;

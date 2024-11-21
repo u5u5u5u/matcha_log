@@ -24,7 +24,7 @@ const formSchema = z.object({
   genre_id: z.string(),
   price: z.number().positive(),
   date: z.date(),
-  shop_id: z.number(),
+  shop_id: z.string(),
   bitterness: z.number(),
   sweetness: z.number(),
   richness: z.number(),
@@ -37,10 +37,10 @@ const Registration = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      genre_id: "",
+      genre_id: "0",
       price: undefined,
       date: new Date(),
-      shop_id: undefined,
+      shop_id: "0",
       bitterness: 5,
       sweetness: 5,
       richness: 5,
@@ -58,10 +58,7 @@ const Registration = () => {
     placeholder?: string;
   }> = [
     { name: "name", label: "料理名", placeholder: "料理名を入力" },
-    { name: "genre_id", label: "ジャンル" },
     { name: "price", label: "価格", type: "number", placeholder: "価格を入力" },
-    { name: "date", label: "日付" },
-    { name: "shop_id", label: "店舗", placeholder: "店舗名を入力" },
     { name: "bitterness", label: "苦さ" },
     { name: "sweetness", label: "甘さ" },
     { name: "richness", label: "濃さ" },
@@ -72,6 +69,7 @@ const Registration = () => {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <GenreSelectField form={form} />
         <DatePickerField form={form} />
+        <ShopSelectField form={form} />
         {registrationValues.map((value) => (
           <FormField
             key={value.name}
@@ -81,15 +79,7 @@ const Registration = () => {
               <FormItem>
                 <FormLabel>{value.label}</FormLabel>
                 <FormControl>
-                  {value.name === "shop_id" ? (
-                    <ShopSelectField
-                      field={{
-                        ...field,
-                        name: "shop_id",
-                        value: field.value as number,
-                      }}
-                    />
-                  ) : value.name === "bitterness" ||
+                  {value.name === "bitterness" ||
                     value.name === "sweetness" ||
                     value.name === "richness" ? (
                     <TasteSlider
