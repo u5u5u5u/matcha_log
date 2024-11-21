@@ -40,15 +40,24 @@ const ImageSelect = ({ form }: ImageSelectProps) => {
           <FormLabel>画像</FormLabel>
           <FormControl>
             <div>
+              <label
+                className="button block text-sm text-[#71717A] bg-white rounded p-2 mb-2"
+                htmlFor="image-upload"
+              >
+                画像を選択
+              </label>
               <Input
                 {...field}
+                id="image-upload"
                 type="file"
+                accept="image/*"
+                className="hidden"
                 onChange={(e) => {
                   field.onChange(e);
                   onFileInputChange(e);
                 }}
               />
-              <Image src={imagePath} width={100} height={100} alt="matcha" />
+              <Image src={imagePath} width={100} height={100} alt="preview" />
             </div>
           </FormControl>
           <FormMessage />

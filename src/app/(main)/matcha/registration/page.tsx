@@ -3,10 +3,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 
+import { createClient } from "@/utils/supabase/client";
 import DatePickerField from "./components/DatePickerField";
 import GenreSelectField from "./components/GenreSelectField";
 import InputField from "./components/InputField";
@@ -29,6 +31,9 @@ const formSchema = z.object({
 export type FormValues = z.infer<typeof formSchema>;
 
 const Registration = () => {
+  const supabase = createClient();
+  const [uploading, setUploading] = useState(false);
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -44,8 +49,50 @@ const Registration = () => {
     },
   });
 
-  const onSubmit = (values: FormValues) => {
-    console.log(values);
+  const onSubmit = async (values: FormValues) => {
+    try {
+      setUploading(true);
+
+      // ファイル入力フィールドからファイルを取得
+      const fileInput = document.getElementById(
+        "image-upload"
+      ) as HTMLInputElement;
+      if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+        throw new Error("画像ファイルを選択してください");
+      }
+
+      const file = fileInput.files[0];
+      const fileExt = file.name.split(".").pop();
+      const filePath = `matchas/${values.name}-${Date.now()}.${fileExt}`;
+
+      // Supabase ストレージにアップロード
+      const { error: uploadError } = await supabase.storage
+        .from("matchas")
+        .upload(filePath, file);
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      // アップロードした画像のパスをフォームデータにセット
+      values.imageUrl = filePath;
+
+      // データベースに保存 (例: "dishes" テーブル)
+      const { error: insertError } = await supabase
+        .from("matchas") // テーブル名を適切に置き換える
+        .insert([values]);
+
+      if (insertError) {
+        throw insertError;
+      }
+
+      alert("登録が完了しました！");
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      alert("登録中にエラーが発生しました");
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
@@ -72,9 +119,12 @@ const Registration = () => {
         <div className="flex justify-center">
           <Button
             type="submit"
-            className="text-secondary-950 font-bold bg-primary-400 hover:bg-primary-500 mt-4"
+            disabled={uploading}
+            className={`text-secondary-950 font-bold bg-primary-400 hover:bg-primary-500 mt-4 ${
+              uploading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
           >
-            登録
+            {uploading ? "登録中..." : "登録"}
           </Button>
         </div>
       </form>
