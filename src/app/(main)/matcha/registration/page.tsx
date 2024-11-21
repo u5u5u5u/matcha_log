@@ -5,19 +5,13 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormField,
-  FormControl,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 
 import DatePickerField from "./components/DatePickerField";
 import GenreSelectField from "./components/GenreSelectField";
 import InputField from "./components/InputField";
-import TasteSliders from "./components/TasteSliders";
 import ShopSelectField from "./components/ShopSelectField";
+import TasteSliders from "./components/TasteSliders";
 
 const formSchema = z.object({
   name: z.string(),
@@ -51,42 +45,26 @@ const Registration = () => {
     console.log(values);
   };
 
-  const registrationValues: Array<{
-    name: keyof FormValues;
-    label: string;
-    type?: string;
-    placeholder?: string;
-  }> = [
-    { name: "name", label: "料理名", placeholder: "料理名を入力" },
-    { name: "price", label: "価格", type: "number", placeholder: "価格を入力" },
-  ];
-
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <InputField
+          form={form}
+          name="name"
+          label="料理名"
+          placeholder="料理名を入力"
+        />
+        <InputField
+          form={form}
+          name="price"
+          label="価格"
+          type="number"
+          placeholder="価格を入力"
+        />
         <GenreSelectField form={form} />
         <DatePickerField form={form} />
         <ShopSelectField form={form} />
         <TasteSliders form={form} />
-        {registrationValues.map((value) => (
-          <FormField
-            key={value.name}
-            control={form.control}
-            name={value.name}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{value.label}</FormLabel>
-                <FormControl>
-                  <InputField
-                    field={field}
-                    type={value.type}
-                    placeholder={value.placeholder}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-        ))}
         <div className="flex justify-center">
           <Button
             type="submit"
