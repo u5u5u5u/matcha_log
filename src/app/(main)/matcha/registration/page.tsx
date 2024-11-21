@@ -16,7 +16,7 @@ import {
 import DatePickerField from "./components/DatePickerField";
 import GenreSelectField from "./components/GenreSelectField";
 import InputField from "./components/InputField";
-import TasteSlider from "./components/TasteSlider";
+import TasteSliders from "./components/TasteSliders";
 import ShopSelectField from "./components/ShopSelectField";
 
 const formSchema = z.object({
@@ -59,9 +59,6 @@ const Registration = () => {
   }> = [
     { name: "name", label: "料理名", placeholder: "料理名を入力" },
     { name: "price", label: "価格", type: "number", placeholder: "価格を入力" },
-    { name: "bitterness", label: "苦さ" },
-    { name: "sweetness", label: "甘さ" },
-    { name: "richness", label: "濃さ" },
   ];
 
   return (
@@ -70,6 +67,7 @@ const Registration = () => {
         <GenreSelectField form={form} />
         <DatePickerField form={form} />
         <ShopSelectField form={form} />
+        <TasteSliders form={form} />
         {registrationValues.map((value) => (
           <FormField
             key={value.name}
@@ -79,26 +77,11 @@ const Registration = () => {
               <FormItem>
                 <FormLabel>{value.label}</FormLabel>
                 <FormControl>
-                  {value.name === "bitterness" ||
-                    value.name === "sweetness" ||
-                    value.name === "richness" ? (
-                    <TasteSlider
-                      field={{
-                        ...field,
-                        name: field.name as
-                          | "bitterness"
-                          | "sweetness"
-                          | "richness",
-                        value: field.value as number,
-                      }}
-                    />
-                  ) : (
-                    <InputField
-                      field={field}
-                      type={value.type}
-                      placeholder={value.placeholder}
-                    />
-                  )}
+                  <InputField
+                    field={field}
+                    type={value.type}
+                    placeholder={value.placeholder}
+                  />
                 </FormControl>
               </FormItem>
             )}
