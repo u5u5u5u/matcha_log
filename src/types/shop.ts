@@ -1,6 +1,6 @@
 export interface Shop {
   id: number;
-  yolp_id: string;
+  place_id: string;
   name: string;
   prefecture_id: number;
   latitude: number;

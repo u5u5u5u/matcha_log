@@ -12,7 +12,7 @@ import NameInputField from "./components/NameInputField";
 import PrefectureSelectField from "./components/PrefectureSelectField";
 
 const formSchema = z.object({
-  yolp_id: z.string(),
+  place_id: z.string(),
   name: z.string(),
   prefecture_id: z.string(),
   latitude: z.number(),
@@ -25,7 +25,7 @@ const ShopRegistration = () => {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      yolp_id: "",
+      place_id: "",
       name: "",
       prefecture_id: "",
       latitude: 0,
