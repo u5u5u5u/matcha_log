@@ -17,11 +17,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 
 import type { FormValues } from "../page";
 
@@ -75,8 +70,7 @@ const NameInputField = ({ form }: NameInputFieldProps) => {
                 }}
                 placeholder="店名を入力"
               />
-              <SelectTrigger>
-              </SelectTrigger>
+              <SelectTrigger></SelectTrigger>
               <SelectContent>
                 <SelectGroup>
                   {filteredStores.map((store, index) => (
