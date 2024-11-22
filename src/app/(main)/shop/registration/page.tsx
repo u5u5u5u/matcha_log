@@ -15,8 +15,6 @@ const formSchema = z.object({
   place_id: z.string(),
   name: z.string(),
   prefecture_id: z.string(),
-  latitude: z.number(),
-  longitude: z.number(),
 });
 
 export type FormValues = z.infer<typeof formSchema>;
@@ -28,8 +26,6 @@ const ShopRegistration = () => {
       place_id: "",
       name: "",
       prefecture_id: "",
-      latitude: 0,
-      longitude: 0,
     },
   });
 

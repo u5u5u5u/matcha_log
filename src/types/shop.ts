@@ -3,6 +3,4 @@ export interface Shop {
   place_id: string;
   name: string;
   prefecture_id: number;
-  latitude: number;
-  longitude: number;
 }

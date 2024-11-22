@@ -14,28 +14,19 @@ import {
   SelectGroup,
   SelectItem,
   SelectTrigger,
-  SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 
 import type { FormValues } from "../page";
+import { dummyShop } from "@/utils/dummy/shop";
 
 interface NameInputFieldProps {
   form: UseFormReturn<FormValues>;
 }
 
-// ダミーデータ
-const dummyStores = [
-  "スターバックス コーヒー 渋谷店",
-  "タリーズ コーヒー 新宿店",
-  "ドトール コーヒー 池袋店",
-  "ブルーボトル コーヒー 六本木店",
-  "エクセルシオール カフェ 銀座店",
-];
-
 const NameInputField = ({ form }: NameInputFieldProps) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredStores, setFilteredStores] = useState<string[]>([]);
+  const [filteredStores, setFilteredStores] = useState<string[] | null>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -43,12 +34,14 @@ const NameInputField = ({ form }: NameInputFieldProps) => {
 
     // 入力に基づいて候補をフィルタリング
     if (value) {
-      const matches = dummyStores.filter((store) =>
-        store.toLowerCase().includes(value.toLowerCase())
-      );
+      const matches = dummyShop
+        .filter((shop) =>
+          shop.name.toLowerCase().includes(value.toLowerCase())
+        )
+        .map((shop) => shop.name);
       setFilteredStores(matches);
     } else {
-      setFilteredStores([]);
+      setFilteredStores(null);
     }
   };
 
@@ -73,7 +66,7 @@ const NameInputField = ({ form }: NameInputFieldProps) => {
               <SelectTrigger></SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  {filteredStores.map((store, index) => (
+                  {filteredStores && filteredStores.map((store, index) => (
                     <SelectItem
                       key={index}
                       value={store}
