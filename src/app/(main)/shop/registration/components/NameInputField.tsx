@@ -35,9 +35,7 @@ const NameInputField = ({ form }: NameInputFieldProps) => {
     // 入力に基づいて候補をフィルタリング
     if (value) {
       const matches = dummyShop
-        .filter((shop) =>
-          shop.name.toLowerCase().includes(value.toLowerCase())
-        )
+        .filter((shop) => shop.name.toLowerCase().includes(value.toLowerCase()))
         .map((shop) => shop.name);
       setFilteredShops(matches);
     } else {
@@ -64,23 +62,25 @@ const NameInputField = ({ form }: NameInputFieldProps) => {
                 placeholder="店名を入力"
               />
               <SelectTrigger></SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  {filteredShops && filteredShops.map((store, index) => (
-                    <SelectItem
-                      key={index}
-                      value={store}
-                      onClick={() => {
-                        setSearchTerm(store); // 選択された値を入力フィールドに反映
-                        setFilteredShops([]); // 候補を非表示
-                        field.onChange(store); // フォームの値を更新
-                      }}
-                    >
-                      {store}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
+              {filteredShops && (
+                <SelectContent>
+                  <SelectGroup>
+                    {filteredShops.map((store, index) => (
+                      <SelectItem
+                        key={index}
+                        value={store}
+                        onClick={() => {
+                          setSearchTerm(store); // 選択された値を入力フィールドに反映
+                          setFilteredShops([]); // 候補を非表示
+                          field.onChange(store); // フォームの値を更新
+                        }}
+                      >
+                        {store}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              )}
             </Select>
           </FormControl>
           <FormMessage />
