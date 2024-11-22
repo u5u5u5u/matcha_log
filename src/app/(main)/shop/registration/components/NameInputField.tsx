@@ -26,7 +26,7 @@ interface NameInputFieldProps {
 
 const NameInputField = ({ form }: NameInputFieldProps) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredStores, setFilteredStores] = useState<string[] | null>(null);
+  const [filteredShops, setFilteredShops] = useState<string[] | null>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -39,9 +39,9 @@ const NameInputField = ({ form }: NameInputFieldProps) => {
           shop.name.toLowerCase().includes(value.toLowerCase())
         )
         .map((shop) => shop.name);
-      setFilteredStores(matches);
+      setFilteredShops(matches);
     } else {
-      setFilteredStores(null);
+      setFilteredShops(null);
     }
   };
 
@@ -66,16 +66,15 @@ const NameInputField = ({ form }: NameInputFieldProps) => {
               <SelectTrigger></SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  {filteredStores && filteredStores.map((store, index) => (
+                  {filteredShops && filteredShops.map((store, index) => (
                     <SelectItem
                       key={index}
                       value={store}
                       onClick={() => {
                         setSearchTerm(store); // 選択された値を入力フィールドに反映
-                        setFilteredStores([]); // 候補を非表示
+                        setFilteredShops([]); // 候補を非表示
                         field.onChange(store); // フォームの値を更新
                       }}
-                      className={index === 0 ? "hidden" : ""}
                     >
                       {store}
                     </SelectItem>
