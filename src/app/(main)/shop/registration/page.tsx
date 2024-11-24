@@ -35,13 +35,21 @@ const ShopRegistration = () => {
 
   const onSubmit = async (values: FormValues) => {
     try {
-      const { data, error } = await supabase.from("shops").insert(values);
+      const { error } = await supabase.from("shops").insert({
+        name: values.name,
+        place_id: values.place_id || null,
+        prefecture_id: parseInt(values.prefecture_id, 10),
+        user_id: (await supabase.auth.getUser()).data.user?.id,
+      });
+
       if (error) {
         throw error;
       }
-      console.log(data);
+      console.log("登録が完了しました");
+      form.reset();
     } catch (error) {
-      console.error(error);
+      console.error("エラーが発生しました:", error);
+      alert("登録に失敗しました。再度お試しください。");
     }
   };
 

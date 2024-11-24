@@ -1,6 +1,7 @@
 export interface Shop {
   id: number;
-  place_id: string;
   name: string;
+  place_id: string;
   prefecture_id: number;
+  user_id: string;
 }
