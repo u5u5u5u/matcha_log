@@ -8,6 +8,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 
+import { createClient } from "@/utils/supabase/client";
+
 import NameInputField from "./components/NameInputField";
 import PrefectureSelectField from "./components/PrefectureSelectField";
 
@@ -20,6 +22,8 @@ const formSchema = z.object({
 export type FormValues = z.infer<typeof formSchema>;
 
 const ShopRegistration = () => {
+  const supabase = createClient();
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -30,7 +34,15 @@ const ShopRegistration = () => {
   });
 
   const onSubmit = async (values: FormValues) => {
-    console.log(values);
+    try {
+      const { data, error } = await supabase.from("shops").insert(values);
+      if (error) {
+        throw error;
+      }
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
