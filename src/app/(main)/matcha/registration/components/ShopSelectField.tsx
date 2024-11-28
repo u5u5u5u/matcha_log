@@ -20,8 +20,6 @@ import {
 import { Shop } from "@/types/shop";
 import type { FormValues } from "../page";
 
-import { dummyShop } from "@/utils/dummy/shop";
-
 import { createClient } from "@/utils/supabase/client";
 
 interface ShopSelectProps {

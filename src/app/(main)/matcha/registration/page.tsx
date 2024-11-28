@@ -50,6 +50,8 @@ const Registration = () => {
   });
 
   const onSubmit = async (values: FormValues) => {
+    console.log("Form values", values);
+    console.log((await supabase.auth.getUser()).data.user?.id);
     try {
       setUploading(true);
 
@@ -74,13 +76,18 @@ const Registration = () => {
         throw uploadError;
       }
 
-      // アップロードした画像のパスをフォームデータにセット
       values.imageUrl = filePath;
+      console.log(values);
 
-      // データベースに保存 (例: "dishes" テーブル)
-      const { error: insertError } = await supabase
-        .from("matchas") // テーブル名を適切に置き換える
-        .insert([values]);
+      const { error: insertError } = await supabase.from("matchas").insert({
+        name: values.name,
+        genre_id: parseInt(values.genre_id, 10),
+        date: values.date,
+        shop_id: values.shop_id,
+        user_id: (await supabase.auth.getUser()).data.user?.id,
+        price: values.price,
+        imageUrl: values.imageUrl,
+      });
 
       if (insertError) {
         throw insertError;
