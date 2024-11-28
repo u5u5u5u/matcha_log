@@ -34,6 +34,7 @@ const ShopRegistration = () => {
   });
 
   const onSubmit = async (values: FormValues) => {
+    console.log(values);
     try {
       const { error } = await supabase.from("shops").insert({
         name: values.name,
