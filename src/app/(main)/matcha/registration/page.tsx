@@ -55,6 +55,8 @@ const Registration = () => {
     try {
       setUploading(true);
 
+      const uid = (await supabase.auth.getUser()).data.user?.id;
+
       // ファイル入力フィールドからファイルを取得
       const fileInput = document.getElementById(
         "image-upload"
@@ -65,7 +67,7 @@ const Registration = () => {
 
       const file = fileInput.files[0];
       const fileExt = file.name.split(".").pop();
-      const filePath = `matchas/${values.name}-${Date.now()}.${fileExt}`;
+      const filePath = `${uid}-${Date.now()}.${fileExt}`;
 
       // Supabase ストレージにアップロード
       const { error: uploadError } = await supabase.storage
@@ -84,7 +86,7 @@ const Registration = () => {
         genre_id: parseInt(values.genre_id, 10),
         date: values.date,
         shop_id: values.shop_id,
-        user_id: (await supabase.auth.getUser()).data.user?.id,
+        user_id: uid,
         price: values.price,
         imageUrl: values.imageUrl,
       });
