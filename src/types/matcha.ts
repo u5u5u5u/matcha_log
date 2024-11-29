@@ -8,3 +8,14 @@ export interface Matcha {
   user_id: number;
   price: number;
 }
+
+export interface LatestMatcha {
+  id: number;
+  name: string;
+  date: Date;
+  shops: {
+    prefecture_id: {
+      name: string;
+    };
+  }
+}

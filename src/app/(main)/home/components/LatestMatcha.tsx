@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 import { Card } from "@/components/ui/card";
 import {
@@ -10,11 +13,34 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { dummyMatcha } from "@/utils/dummy/matcha";
-import { dummyPrefecture } from "@/utils/dummy/prefecture";
-import { dummyShop } from "@/utils/dummy/shop";
+import { createClient } from "@/utils/supabase/client";
+import type { LatestMatcha } from "@/types/matcha";
 
 const LatestMatcha = () => {
+  const supabase = createClient();
+  const [latestMatcha, setLatestMatcha] = useState<LatestMatcha[]>([]);
+
+  useEffect(() => {
+    const getLatestMatcha = async () => {
+      const { data, error } = await supabase
+        .from("matchas")
+        .select(`id, name, date, shops (prefecture_id (name))`)
+        .order("date", { ascending: false })
+        .limit(5)
+        .returns<LatestMatcha[]>();
+
+      if (error) {
+        console.error("Error: ", error);
+      }
+      if (data) {
+        setLatestMatcha(data);
+        console.log(data);
+      }
+    };
+
+    getLatestMatcha();
+  }, []);
+
   return (
     <div>
       <h2 className="text-lg ml-2">最新の抹茶</h2>
@@ -28,20 +54,14 @@ const LatestMatcha = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {dummyMatcha.slice(0, 5).map((matcha) => (
+            {latestMatcha.map((matcha) => (
               <TableRow key={matcha.id}>
                 <TableCell className="truncate">{matcha.name}</TableCell>
-                <TableCell>
-                  {
-                    dummyPrefecture.find(
-                      (p) =>
-                        p.id ===
-                        dummyShop.find((s) => s.id === matcha.shop_id)?.prefecture_id
-                    )?.name
-                  }
-                </TableCell>
+                <TableCell>{matcha.shops.prefecture_id.name}</TableCell>
                 <TableCell className="text-right">
-                  {matcha.date.toLocaleDateString()}
+                  {matcha.date
+                    ? new Date(matcha.date).toLocaleDateString()
+                    : "日付不明"}
                 </TableCell>
               </TableRow>
             ))}
