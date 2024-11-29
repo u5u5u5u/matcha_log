@@ -81,18 +81,36 @@ const Registration = () => {
       values.imageUrl = filePath;
       console.log(values);
 
-      const { error: insertError } = await supabase.from("matchas").insert({
-        name: values.name,
-        genre_id: parseInt(values.genre_id, 10),
-        date: values.date,
-        shop_id: values.shop_id,
-        user_id: uid,
-        price: values.price,
-        imageUrl: values.imageUrl,
+      const { data: matchaData, error: insertMatchaError } = await supabase
+        .from("matchas")
+        .insert({
+          name: values.name,
+          genre_id: parseInt(values.genre_id, 10),
+          date: values.date,
+          shop_id: values.shop_id,
+          user_id: uid,
+          price: values.price,
+          imageUrl: values.imageUrl,
+        })
+        .select("id")
+        .single();
+      console.log(matchaData);
+
+      if (insertMatchaError) {
+        throw insertMatchaError;
+      }
+
+      const matchaId = matchaData.id;
+
+      const { error: insertTasteError } = await supabase.from("tastes").insert({
+        matcha_id: matchaId,
+        bitterness: values.bitterness,
+        sweetness: values.sweetness,
+        richness: values.richness,
       });
 
-      if (insertError) {
-        throw insertError;
+      if (insertTasteError) {
+        throw insertTasteError;
       }
 
       alert("登録が完了しました！");
