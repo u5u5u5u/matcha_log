@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 import { Card } from "@/components/ui/card";
 import {
@@ -10,11 +13,46 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { dummyMatcha } from "@/utils/dummy/matcha";
-import { dummyPrefecture } from "@/utils/dummy/prefecture";
-import { dummyShop } from "@/utils/dummy/shop";
+import { createClient } from "@/utils/supabase/client";
+import type { TopFiveTaste } from "@/types/taste";
 
 const TopFive = () => {
+  const supabase = createClient();
+  const [topFiveTaste, setTopFiveTaste] = useState<TopFiveTaste[]>([]);
+
+  useEffect(() => {
+    const getTopFiveTaste = async () => {
+      const { data, error } = await supabase
+        .from("tastes")
+        .select(
+          `id, bitterness, sweetness, richness, matchas (name, shops (prefectures (name)))`
+        )
+        .returns<TopFiveTaste[]>();
+
+      if (error) {
+        console.error("Error: ", error);
+      }
+
+      if (data) {
+        console.log("top5: ", data);
+      }
+      const scores = data?.map((taste) => {
+        const score = taste.bitterness + taste.sweetness + taste.richness;
+        return { ...taste, score };
+      });
+
+      const sortedTopFive = scores
+        ?.sort((a, b) => b.score - a.score)
+        .slice(0, 5);
+
+      if (sortedTopFive) {
+        setTopFiveTaste(sortedTopFive);
+      }
+    };
+
+    getTopFiveTaste();
+  }, []);
+
   return (
     <div>
       <h2 className="text-lg ml-2">Top 5</h2>
@@ -29,23 +67,16 @@ const TopFive = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {dummyMatcha.slice(0, 5).map((matcha, index) => (
-              <TableRow key={matcha.id}>
+            {topFiveTaste.slice(0, 5).map((taste, index) => (
+              <TableRow key={taste.id}>
                 <TableCell className="font-medium text-center">
                   {index + 1}
                 </TableCell>
-                <TableCell className="font-medium">{matcha.name}</TableCell>
-                <TableCell>
-                  {
-                    dummyPrefecture.find(
-                      (p) =>
-                        p.id ===
-                        dummyShop.find((s) => s.id === matcha.shop_id)
-                          ?.prefecture_id
-                    )?.name
-                  }
+                <TableCell className="font-medium">
+                  {taste.matchas.name}
                 </TableCell>
-                <TableCell className="text-right">{matcha.price}</TableCell>
+                <TableCell>{taste.matchas.shops.prefectures.name}</TableCell>
+                <TableCell className="text-right">{taste.bitterness}</TableCell>
               </TableRow>
             ))}
           </TableBody>

@@ -14,7 +14,7 @@ export interface LatestMatcha {
   name: string;
   date: Date;
   shops: {
-    prefecture_id: {
+    prefectures: {
       name: string;
     };
   }

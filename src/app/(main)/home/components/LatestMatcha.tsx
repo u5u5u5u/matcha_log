@@ -24,7 +24,7 @@ const LatestMatcha = () => {
     const getLatestMatcha = async () => {
       const { data, error } = await supabase
         .from("matchas")
-        .select(`id, name, date, shops (prefecture_id (name))`)
+        .select(`id, name, date, shops (prefectures (name))`)
         .order("date", { ascending: false })
         .limit(5)
         .returns<LatestMatcha[]>();
@@ -57,7 +57,7 @@ const LatestMatcha = () => {
             {latestMatcha.map((matcha) => (
               <TableRow key={matcha.id}>
                 <TableCell className="truncate">{matcha.name}</TableCell>
-                <TableCell>{matcha.shops.prefecture_id.name}</TableCell>
+                <TableCell>{matcha.shops.prefectures.name}</TableCell>
                 <TableCell className="text-right">
                   {matcha.date
                     ? new Date(matcha.date).toLocaleDateString()
