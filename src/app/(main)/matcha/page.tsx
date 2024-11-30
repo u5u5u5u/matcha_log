@@ -1,6 +1,9 @@
-import Image from "next/image";
-import Link from "next/link";
+"use client";
 
+import Link from "next/link";
+import { useEffect, useState } from "react";
+
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
   Table,
@@ -10,19 +13,34 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 
-import { dummyMatcha } from "@/utils/dummy/matcha";
-
+import type { MatchaList } from "@/types/matcha";
 import { createClient } from "@/utils/supabase/client";
 
-const Matcha = async () => {
+const Matcha = () => {
   const supabase = createClient();
-  const { data, error } = await supabase.from("matchas").select();
+  const [data, setData] = useState<MatchaList[] | null>(null);
 
-  console.log("Data: ", data);
-  console.log("Error: ", error);
+  useEffect(() => {
+    const getMatcha = async () => {
+      const { data, error } = await supabase
+        .from("matchas")
+        .select("id, name, date, shops (prefectures(name))")
+        .order("date", { ascending: false })
+        .returns<MatchaList[]>();
+
+      if (error) {
+        console.error("Error: ", error);
+      }
+      if (data) {
+        setData(data);
+        console.log(data);
+      }
+    };
+
+    getMatcha();
+  }, []);
 
   return (
     <div>
@@ -39,31 +57,23 @@ const Matcha = async () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-1/2">抹茶</TableHead>
-                <TableHead className="">追加日</TableHead>
+                <TableHead className="w-[140px]">抹茶</TableHead>
+                <TableHead className="w-[100px]">都道府県</TableHead>
+                <TableHead>追加日</TableHead>
                 <TableHead />
               </TableRow>
             </TableHeader>
             <TableBody>
-              {dummyMatcha.map((matcha) => (
+              {data?.map((matcha) => (
                 <TableRow key={matcha.id}>
                   <TableCell>
-                    <Link
-                      href={`/matcha/${matcha.id}`}
-                      className="flex items-center"
-                    >
-                      <Image
-                        src={matcha.imageUrl}
-                        alt={matcha.name}
-                        width={30}
-                        height={30}
-                        className="rounded mr-4"
-                      />
-                      <p>{matcha.name}</p>
-                    </Link>
+                    <Link href={`/matcha/${matcha.id}`}>{matcha.name}</Link>
                   </TableCell>
+                  <TableCell>{matcha.shops.prefectures.name}</TableCell>
                   <TableCell className="text-xs">
-                    {matcha.date.toLocaleDateString()}
+                    {matcha.date
+                      ? new Date(matcha.date).toLocaleDateString()
+                      : "日付不明"}
                   </TableCell>
                   <TableCell>
                     <Link href={`/matcha/${matcha.id}/edit`}>

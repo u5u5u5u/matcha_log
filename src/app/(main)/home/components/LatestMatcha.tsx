@@ -14,11 +14,11 @@ import {
 } from "@/components/ui/table";
 
 import { createClient } from "@/utils/supabase/client";
-import type { LatestMatcha } from "@/types/matcha";
+import type { MatchaList } from "@/types/matcha";
 
 const LatestMatcha = () => {
   const supabase = createClient();
-  const [latestMatcha, setLatestMatcha] = useState<LatestMatcha[]>([]);
+  const [latestMatcha, setLatestMatcha] = useState<MatchaList[]>([]);
 
   useEffect(() => {
     const getLatestMatcha = async () => {
@@ -27,7 +27,7 @@ const LatestMatcha = () => {
         .select(`id, name, date, shops (prefectures (name))`)
         .order("date", { ascending: false })
         .limit(5)
-        .returns<LatestMatcha[]>();
+        .returns<MatchaList[]>();
 
       if (error) {
         console.error("Error: ", error);

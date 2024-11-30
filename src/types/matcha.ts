@@ -9,7 +9,7 @@ export interface Matcha {
   price: number;
 }
 
-export interface LatestMatcha {
+export interface MatchaList {
   id: number;
   name: string;
   date: Date;
