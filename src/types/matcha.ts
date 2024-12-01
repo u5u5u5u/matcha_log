@@ -17,6 +17,25 @@ export interface MatchaList {
     prefectures: {
       name: string;
     };
-  }
+  };
 }
 
+export interface MatchaDetail {
+  matchas: {
+    id: number;
+    name: string;
+    date: Date;
+    genres: {
+      name: string;
+    }
+    shops: {
+      name: string;
+      prefectures: {
+        name: string;
+      };
+    };
+    price: number;
+    imageUrl?: string;
+    created_at: Date;
+  }
+}
