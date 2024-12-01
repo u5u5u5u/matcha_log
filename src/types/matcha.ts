@@ -27,7 +27,7 @@ export interface MatchaDetail {
     date: Date;
     genres: {
       name: string;
-    }
+    };
     shops: {
       name: string;
       prefectures: {
@@ -37,5 +37,8 @@ export interface MatchaDetail {
     price: number;
     imageUrl?: string;
     created_at: Date;
-  }
+  };
+  bitterness: number;
+  sweetness: number;
+  richness: number;
 }
