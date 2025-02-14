@@ -21,14 +21,22 @@ import { createClient } from "@/utils/supabase/client";
 const Matcha = () => {
   const supabase = createClient();
   const [data, setData] = useState<MatchaList[] | null>(null);
+  const [sortBy, setSortBy] = useState<"date" | "prefecture">("date");
 
   useEffect(() => {
     const getMatcha = async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from("matchas")
-        .select("id, name, date, shops (prefectures(name))")
-        .order("date", { ascending: false })
-        .returns<MatchaList[]>();
+        .select("id, name, date, shops (id, prefectures(id, name))");
+
+      if (sortBy === "date") {
+        query = query.order("date", { ascending: false });
+      } else if (sortBy === "prefecture") {
+        query = query.order("shops.prefectures.id", { ascending: false });
+        console.log(query); 
+      }
+
+      const { data, error } = await query.returns<MatchaList[]>();
 
       if (error) {
         console.error("Error: ", error);
@@ -40,55 +48,47 @@ const Matcha = () => {
     };
 
     getMatcha();
-  }, []);
+  }, [sortBy, supabase]);
 
   return (
-    <div>
-      <ul>
-        <li>
-          <Link href="/matcha/1">Detail</Link>
-        </li>
-        <li>
-          <Link href="/matcha/1/edit">Edit</Link>
-        </li>
-      </ul>
-      <div>
-        <Card className="flex flex-col items-center p-2">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[140px]">抹茶</TableHead>
-                <TableHead className="w-[100px]">都道府県</TableHead>
-                <TableHead>追加日</TableHead>
-                <TableHead />
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {data?.map((matcha) => (
-                <TableRow key={matcha.id}>
-                  <TableCell>
-                    <Link href={`/matcha/${matcha.id}`}>{matcha.name}</Link>
-                  </TableCell>
-                  <TableCell>{matcha.shops.prefectures.name}</TableCell>
-                  <TableCell className="text-xs">
-                    {matcha.date
-                      ? new Date(matcha.date).toLocaleDateString()
-                      : "日付不明"}
-                  </TableCell>
-                  <TableCell>
-                    <Link href={`/matcha/${matcha.id}/edit`}>
-                      <Button className="w-[40px] h-[40px] border p-1">
-                        <Pencil size={20} />
-                      </Button>
-                    </Link>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Card>
+    <Card className="flex flex-col items-center h-[90%] py-2 px-4 mt-4">
+      <div className="flex justify-end w-full mb-4">
+        <Button onClick={() => setSortBy("date")}>Sort by Date</Button>
+        <Button onClick={() => setSortBy("prefecture")}>
+          Sort by Prefecture
+        </Button>
       </div>
-    </div>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[140px]">抹茶</TableHead>
+            <TableHead>追加日</TableHead>
+            <TableHead />
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {data?.map((matcha) => (
+            <TableRow key={matcha.id}>
+              <TableCell>
+                <Link href={`/matcha/${matcha.id}`}>{matcha.name}</Link>
+              </TableCell>
+              <TableCell className="text-xs">
+                {matcha.date
+                  ? new Date(matcha.date).toLocaleDateString()
+                  : "日付不明"}
+              </TableCell>
+              <TableCell>
+                <Link href={`/matcha/${matcha.id}/edit`}>
+                  <Button className="w-[40px] h-[40px] border p-1">
+                    <Pencil size={20} />
+                  </Button>
+                </Link>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </Card>
   );
 };
 
