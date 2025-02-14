@@ -55,7 +55,7 @@ const TopFive = () => {
 
   return (
     <div>
-      <h2 className="text-lg ml-2">Top 5</h2>
+      <h2 className="text-center text-lg ml-2">Top 5</h2>
       <Card className="flex flex-col items-center p-2">
         <Table>
           <TableHeader>
