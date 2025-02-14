@@ -1,14 +1,17 @@
-import Link from "next/link";
-
 import LatestMatcha from "./components/LatestMatcha";
-import TopFive from "./components/TopFive";
+import LatestShops from "./components/LatestShops";
 
 const Home = () => {
   return (
-    <div className="flex flex-col items-center space-y-4 mt-4">
-      <LatestMatcha />
-      <TopFive />
-      <Link href="/profile">プロフィールへ</Link>
+    <div className="flex flex-col items-center space-y-8 mt-6">
+      <div className="w-full">
+        <h2 className="text-center text-lg">最新の抹茶</h2>
+        <LatestMatcha />
+      </div>
+      <div className="w-full">
+        <h2 className="text-center text-lg">最近のお店</h2>
+        <LatestShops />
+      </div>
     </div>
   );
 };

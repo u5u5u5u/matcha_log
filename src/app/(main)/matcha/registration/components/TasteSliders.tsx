@@ -18,7 +18,7 @@ interface TasteSlidersProps {
 const Tastes: { name: "bitterness" | "sweetness" | "richness"; label: string }[] = [
   { name: "bitterness", label: "苦さ" },
   { name: "sweetness", label: "甘さ" },
-  { name: "richness", label: "コク" },
+  { name: "richness", label: "濃さ" },
 ];
 
 const TasteSliders = ({ form }: TasteSlidersProps) => {
