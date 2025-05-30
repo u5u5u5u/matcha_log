@@ -12,7 +12,23 @@ export default async function MePage() {
   }
   const user = await prisma.user.findUnique({
     where: { email: session.user.email },
-    select: { name: true, email: true, iconUrl: true },
+    select: {
+      name: true,
+      email: true,
+      iconUrl: true,
+      following: {
+        select: {
+          followingId: true,
+          following: { select: { name: true, iconUrl: true, id: true } },
+        },
+      },
+      followers: {
+        select: {
+          followerId: true,
+          follower: { select: { name: true, iconUrl: true, id: true } },
+        },
+      },
+    },
   });
   const posts = await prisma.post.findMany({
     where: { user: { email: session.user.email } },
@@ -25,6 +41,8 @@ export default async function MePage() {
       userName={user?.name || ""}
       userEmail={user?.email || ""}
       userIconUrl={user?.iconUrl || undefined}
+      followingList={user?.following?.map((f) => f.following) || []}
+      followerList={user?.followers?.map((f) => f.follower) || []}
     />
   );
 }

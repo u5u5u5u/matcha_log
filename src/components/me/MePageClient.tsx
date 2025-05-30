@@ -3,6 +3,7 @@ import React from "react";
 import Image from "next/image";
 import styles from "./MePage.module.scss";
 import LogoutButton from "@/components/ui/LogoutButton";
+import Link from "next/link";
 
 type Post = {
   id: string;
@@ -12,13 +13,26 @@ type Post = {
   shop?: { name?: string | null };
 };
 
+type UserSimple = { id: string; name: string | null; iconUrl: string | null };
+
 type Props = {
   posts: Post[];
   userName: string;
   userIconUrl?: string;
+  followingList: UserSimple[];
+  followerList: UserSimple[];
 };
 
-export default function MePageClient({ posts, userName, userIconUrl }: Props) {
+export default function MePageClient({
+  posts,
+  userName,
+  userIconUrl,
+  followingList,
+  followerList,
+}: Props) {
+  const [showFollowing, setShowFollowing] = React.useState(false);
+  const [showFollowers, setShowFollowers] = React.useState(false);
+
   async function handleDelete(id: string) {
     if (!confirm("本当に削除しますか？")) return;
     const res = await fetch(`/api/post/${id}/delete`, { method: "POST" });
@@ -44,6 +58,70 @@ export default function MePageClient({ posts, userName, userIconUrl }: Props) {
         <span style={{ flex: 1 }} />
         <LogoutButton />
       </div>
+      <div style={{ display: "flex", gap: 24, margin: "12px 0" }}>
+        <button
+          className={styles.countButton}
+          onClick={() => setShowFollowing((v) => !v)}
+        >
+          フォロー <b>{followingList.length}</b>
+        </button>
+        <button
+          className={styles.countButton}
+          onClick={() => setShowFollowers((v) => !v)}
+        >
+          フォロワー <b>{followerList.length}</b>
+        </button>
+      </div>
+      {showFollowing && (
+        <div className={styles.userListModal}>
+          <h4>フォロー中ユーザー</h4>
+          <ul>
+            {followingList.length === 0 ? (
+              <li>なし</li>
+            ) : (
+              followingList.map((u) => (
+                <li key={u.id} className={styles.userListItem}>
+                  <Link href={`/user/${u.id}`} className={styles.userLink}>
+                    <Image
+                      src={u.iconUrl || "/file.svg"}
+                      alt="icon"
+                      width={28}
+                      height={28}
+                      style={{ borderRadius: 14, marginRight: 8 }}
+                    />
+                    {u.name}
+                  </Link>
+                </li>
+              ))
+            )}
+          </ul>
+        </div>
+      )}
+      {showFollowers && (
+        <div className={styles.userListModal}>
+          <h4>フォロワー</h4>
+          <ul>
+            {followerList.length === 0 ? (
+              <li>なし</li>
+            ) : (
+              followerList.map((u) => (
+                <li key={u.id} className={styles.userListItem}>
+                  <Link href={`/user/${u.id}`} className={styles.userLink}>
+                    <Image
+                      src={u.iconUrl || "/file.svg"}
+                      alt="icon"
+                      width={28}
+                      height={28}
+                      style={{ borderRadius: 14, marginRight: 8 }}
+                    />
+                    {u.name}
+                  </Link>
+                </li>
+              ))
+            )}
+          </ul>
+        </div>
+      )}
       <div>
         {posts.length === 0 ? (
           <div>まだ投稿がありません。</div>

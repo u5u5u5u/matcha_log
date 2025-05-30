@@ -64,3 +64,31 @@
   border-radius: 50%;
   object-fit: cover;
 }
+.countButton {
+  background: none;
+  border: none;
+  color: #1976d2;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0 8px;
+  transition: color 0.2s;
+  &:hover {
+    color: #0d47a1;
+    text-decoration: underline;
+  }
+}
+.userListModal {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+.userListItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 1rem;
+}
