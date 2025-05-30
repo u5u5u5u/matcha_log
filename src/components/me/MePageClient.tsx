@@ -2,7 +2,6 @@
 import React from "react";
 import Image from "next/image";
 import styles from "./MePage.module.scss";
-import LogoutButton from "@/components/ui/LogoutButton";
 import Link from "next/link";
 
 type Post = {
@@ -59,7 +58,6 @@ export default function MePageClient({
         />
         ようこそ、{userName} さん
         <span style={{ flex: 1 }} />
-        <LogoutButton />
       </div>
       <div style={{ display: "flex", gap: 24, margin: "12px 0" }}>
         <button

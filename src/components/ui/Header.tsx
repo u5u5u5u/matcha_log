@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import styles from "@/app/page.module.scss";
+import LogoutButton from "@/components/ui/LogoutButton";
 
 export default function Header() {
   const pathname = usePathname();
@@ -43,6 +44,9 @@ export default function Header() {
           <Link href="/" className={styles.headerLogo} style={{ margin: 0 }}>
             MatchaLog
           </Link>
+        </div>
+        <div style={{ position: "absolute", right: 0, padding: "0 16px" }}>
+          <LogoutButton />
         </div>
       </div>
     </header>
