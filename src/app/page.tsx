@@ -55,20 +55,12 @@ export default async function Home() {
           </a>
         </div>
 
-        <div style={{ maxWidth: 700, margin: "40px auto" }}>
-          <h2
-            style={{
-              fontSize: "1.5rem",
-              fontWeight: "bold",
-              marginBottom: 24,
-            }}
-          >
-            新着投稿
-          </h2>
-          <div style={{ marginBottom: 24 }}>
+        <div className={styles.postListWrapper}>
+          <h2 className={styles.postListTitle}>新着投稿</h2>
+          <div className={styles.postListFilter}>
             {/* フィルターUI（カテゴリ・店舗名・評価）: 今後拡張 */}
-            <span style={{ marginRight: 16 }}>カテゴリ:</span>
-            <Link href="/?cat=SWEET" style={{ marginRight: 8 }}>
+            <span className={styles.postListFilterCategory}>カテゴリ:</span>
+            <Link href="/?cat=SWEET" className={styles.postListFilterLink}>
               スイーツ
             </Link>
             <Link href="/?cat=DRINK">ドリンク</Link>
@@ -81,74 +73,29 @@ export default async function Home() {
                 <a
                   key={post.id}
                   href={`/post/${post.id}`}
-                  style={{
-                    display: "block",
-                    border: "1px solid #eee",
-                    borderRadius: 12,
-                    marginBottom: 16,
-                    padding: 16,
-                    textDecoration: "none",
-                    color: "#222",
-                  }}
+                  className={styles.postCard}
                 >
-                  <div style={{ display: "flex", alignItems: "center" }}>
+                  <div className={styles.postCardRow}>
                     {post.images.length > 0 ? (
                       <Image
                         src={post.images[0].url}
                         alt="thumb"
                         width={80}
                         height={80}
-                        style={{
-                          objectFit: "cover",
-                          borderRadius: 8,
-                          marginRight: 16,
-                        }}
+                        className={styles.postCardImage}
                       />
                     ) : (
-                      <div
-                        style={{
-                          width: 80,
-                          height: 80,
-                          background: "#eee",
-                          borderRadius: 8,
-                          marginRight: 16,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        No Image
-                      </div>
+                      <div className={styles.postCardNoImage}>No Image</div>
                     )}
                     <div>
-                      <div
-                        style={{
-                          fontWeight: "bold",
-                          fontSize: "1.1rem",
-                          marginBottom: 4,
-                        }}
-                      >
-                        {post.title}
-                      </div>
-                      <div
-                        style={{
-                          fontSize: "0.95rem",
-                          color: "#666",
-                          marginBottom: 4,
-                        }}
-                      >
+                      <div className={styles.postCardTitle}>{post.title}</div>
+                      <div className={styles.postCardCategory}>
                         {post.category === "SWEET" ? "スイーツ" : "ドリンク"}
                       </div>
-                      <div
-                        style={{
-                          fontSize: "0.95rem",
-                          color: "#888",
-                          marginBottom: 4,
-                        }}
-                      >
+                      <div className={styles.postCardShop}>
                         店舗: {post.shop?.name || "未登録"}
                       </div>
-                      <div style={{ fontSize: "0.95rem", color: "#888" }}>
+                      <div className={styles.postCardScore}>
                         濃さ: {post.richness} 苦さ: {post.bitterness} 甘さ:{" "}
                         {post.sweetness}
                       </div>

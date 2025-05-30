@@ -1,0 +1,47 @@
+.container {
+  max-width: 600px;
+  margin: 40px auto;
+}
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 24px;
+}
+.welcome {
+  margin-bottom: 24px;
+}
+.card {
+  border: 1px solid #eee;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  padding: 16px;
+}
+.cardTitle {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+.cardCategory {
+  font-size: 0.95rem;
+  color: #666;
+}
+.cardImage {
+  margin: 8px 0;
+}
+.cardShop {
+}
+.cardActions {
+  margin-top: 8px;
+}
+.editLink {
+  color: #1e8e3e;
+  margin-right: 16px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.deleteButton {
+  color: #c00;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+}

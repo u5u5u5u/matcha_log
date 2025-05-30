@@ -68,10 +68,7 @@
   padding: 0 20px;
   border: none;
   border: 1px solid transparent;
-  transition:
-    background 0.2s,
-    color 0.2s,
-    border-color 0.2s;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -165,4 +162,70 @@ a.secondary {
   .logo {
     filter: invert();
   }
+}
+
+.postListWrapper {
+  max-width: 700px;
+  margin: 40px auto;
+}
+.postListTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 24px;
+}
+.postListFilter {
+  margin-bottom: 24px;
+}
+.postListFilterCategory {
+  margin-right: 16px;
+}
+.postListFilterLink {
+  margin-right: 8px;
+}
+.postCard {
+  display: block;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  padding: 16px;
+  text-decoration: none;
+  color: #222;
+}
+.postCardRow {
+  display: flex;
+  align-items: center;
+}
+.postCardImage {
+  object-fit: cover;
+  border-radius: 8px;
+  margin-right: 16px;
+}
+.postCardNoImage {
+  width: 80px;
+  height: 80px;
+  background: #eee;
+  border-radius: 8px;
+  margin-right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.postCardTitle {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 4px;
+}
+.postCardCategory {
+  font-size: 0.95rem;
+  color: #666;
+  margin-bottom: 4px;
+}
+.postCardShop {
+  font-size: 0.95rem;
+  color: #888;
+  margin-bottom: 4px;
+}
+.postCardScore {
+  font-size: 0.95rem;
+  color: #888;
 }

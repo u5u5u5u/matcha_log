@@ -1,0 +1,49 @@
+.container {
+  max-width: 600px;
+  margin: 40px auto;
+}
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 24px;
+}
+.category {
+  margin-bottom: 8px;
+  color: #666;
+}
+.images {
+  margin-bottom: 16px;
+  display: flex;
+  gap: 8px;
+}
+.image {
+  object-fit: cover;
+  border-radius: 12px;
+}
+.noImage {
+  width: 120px;
+  height: 120px;
+  background: #eee;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.score {
+}
+.comment {
+  margin: 12px 0;
+}
+.shop {
+}
+.user {
+  margin: 12px 0;
+  color: #888;
+}
+.edit {
+  margin-top: 24px;
+}
+.editLink {
+  color: #1e8e3e;
+  margin-right: 16px;
+}

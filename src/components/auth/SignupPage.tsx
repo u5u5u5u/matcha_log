@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -68,7 +66,6 @@ export default function SignupPage() {
           value={form.name}
           onChange={handleChange}
           autoComplete="name"
-          className={styles.input}
         />
         <Input
           name="email"
@@ -77,7 +74,6 @@ export default function SignupPage() {
           value={form.email}
           onChange={handleChange}
           autoComplete="email"
-          className={styles.input}
         />
         <Input
           name="password"
@@ -86,7 +82,6 @@ export default function SignupPage() {
           value={form.password}
           onChange={handleChange}
           autoComplete="new-password"
-          className={styles.input}
         />
         <Button type="submit" disabled={loading}>
           {loading ? "登録中..." : "新規登録"}

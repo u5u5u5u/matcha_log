@@ -53,12 +53,150 @@ export default function PostFormClient({ initialForm, onSubmit }: Props) {
     setForm({ ...form, [name]: type === "number" ? Number(value) : value });
   };
 
-  // ...（残りのUI・イベント処理はPostFormから移植）
+  const handleImageUpload = (urls: string[]) => {
+    setForm({ ...form, images: urls });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+    try {
+      schema.parse(form);
+      // APIにPOSTリクエスト
+      const fd = new FormData();
+      fd.append("title", form.title);
+      fd.append("category", form.category);
+      fd.append("bitterness", String(form.bitterness));
+      fd.append("richness", String(form.richness));
+      fd.append("sweetness", String(form.sweetness));
+      fd.append("comment", form.comment || "");
+      fd.append("shop", form.shop || "");
+      fd.append("shopLat", form.shopLat || "");
+      fd.append("shopLng", form.shopLng || "");
+      if (Array.isArray(form.images)) {
+        form.images.forEach((url) => {
+          if (url) fd.append("images[]", url);
+        });
+      }
+      const res = await fetch("/api/post/new", {
+        method: "POST",
+        body: fd,
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "投稿に失敗しました");
+      } else {
+        window.location.href = "/";
+      }
+    } catch (err) {
+      if (
+        err &&
+        typeof err === "object" &&
+        "errors" in err &&
+        Array.isArray((err as { errors?: { message?: string }[] }).errors)
+      ) {
+        setError(
+          (err as { errors?: { message?: string }[] }).errors?.[0]?.message ||
+            "入力内容に誤りがあります"
+        );
+      } else {
+        setError("入力内容に誤りがあります");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <form>
-      {/* フォームUIをここに記述 */}
-      {/* ... */}
+    <form className={styles.form} onSubmit={handleSubmit}>
+      <div className={styles.field}>
+        <label htmlFor="title">タイトル</label>
+        <Input
+          id="title"
+          name="title"
+          value={form.title}
+          onChange={handleChange}
+          required
+        />
+      </div>
+      <div className={styles.field}>
+        <label htmlFor="category">カテゴリ</label>
+        <select
+          id="category"
+          name="category"
+          value={form.category}
+          onChange={handleChange}
+        >
+          <option value="SWEET">スイーツ</option>
+          <option value="DRINK">ドリンク</option>
+        </select>
+      </div>
+      <div className={styles.fieldRow}>
+        <div className={styles.field}>
+          <label htmlFor="bitterness">苦さ</label>
+          <Input
+            id="bitterness"
+            name="bitterness"
+            type="number"
+            min={1}
+            max={10}
+            value={form.bitterness}
+            onChange={handleChange}
+          />
+        </div>
+        <div className={styles.field}>
+          <label htmlFor="richness">濃さ</label>
+          <Input
+            id="richness"
+            name="richness"
+            type="number"
+            min={1}
+            max={10}
+            value={form.richness}
+            onChange={handleChange}
+          />
+        </div>
+        <div className={styles.field}>
+          <label htmlFor="sweetness">甘さ</label>
+          <Input
+            id="sweetness"
+            name="sweetness"
+            type="number"
+            min={1}
+            max={10}
+            value={form.sweetness}
+            onChange={handleChange}
+          />
+        </div>
+      </div>
+      <div className={styles.field}>
+        <label htmlFor="shop">店舗名</label>
+        <Input
+          id="shop"
+          name="shop"
+          value={form.shop}
+          onChange={handleChange}
+        />
+      </div>
+      <div className={styles.field}>
+        <label htmlFor="comment">コメント</label>
+        <textarea
+          id="comment"
+          name="comment"
+          value={form.comment}
+          onChange={handleChange}
+          rows={3}
+        />
+      </div>
+      <div className={styles.field}>
+        <label>画像アップロード</label>
+        <UploadImage onUpload={handleImageUpload} />
+      </div>
+      {error && <div className={styles.error}>{error}</div>}
+      <Button type="submit" disabled={loading}>
+        {loading ? "送信中..." : "投稿する"}
+      </Button>
     </form>
   );
 }

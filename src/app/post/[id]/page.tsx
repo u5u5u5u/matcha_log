@@ -1,11 +1,15 @@
-import { PrismaClient } from '@/generated/prisma';
-import { notFound } from 'next/navigation';
-import React from 'react';
-import PostDetailClient from '@/components/post/id/PostDetailClient';
+import { PrismaClient } from "@/generated/prisma";
+import { notFound } from "next/navigation";
+import React from "react";
+import PostDetailClient from "@/components/post/id/PostDetailClient";
 
 const prisma = new PrismaClient();
 
-export default async function PostDetailPage({ params }: { params: { id: string } }) {
+export default async function PostDetailPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   const post = await prisma.post.findUnique({
     where: { id: params.id },
     include: { images: true, shop: true, user: true },
