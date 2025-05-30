@@ -3,6 +3,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { PrismaClient } from "@/generated/prisma";
 import React from "react";
 import MePageClient from "@/components/me/MePageClient";
+import styles from "../page.module.scss";
 
 const prisma = new PrismaClient();
 

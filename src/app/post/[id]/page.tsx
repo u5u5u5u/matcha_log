@@ -2,6 +2,7 @@ import { PrismaClient } from "@/generated/prisma";
 import { notFound } from "next/navigation";
 import React from "react";
 import PostDetailClient from "@/components/post/id/PostDetailClient";
+import styles from "../../page.module.scss";
 
 const prisma = new PrismaClient();
 
