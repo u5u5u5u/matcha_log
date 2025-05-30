@@ -1,6 +1,9 @@
 "use client";
 import React from "react";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
+
+import ProfileEditForm from "@/components/me/ProfileEditForm";
 import styles from "./MePage.module.scss";
 
 type Post = {
@@ -14,9 +17,46 @@ type Post = {
 type Props = {
   posts: Post[];
   userName: string;
+  userEmail?: string;
+  userIconUrl?: string;
 };
 
-export default function MePageClient({ posts, userName }: Props) {
+export default function MePageClient({
+  posts,
+  userName: initialUserName,
+  userEmail: initialUserEmail,
+  userIconUrl: initialUserIconUrl,
+}: Props) {
+  const [editing, setEditing] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+  const [userName, setUserName] = React.useState(initialUserName);
+  const [userEmail, setUserEmail] = React.useState(initialUserEmail || "");
+  const [userIconUrl, setUserIconUrl] = React.useState(initialUserIconUrl);
+
+  async function handleProfileSave(data: {
+    name: string;
+    email: string;
+    iconUrl?: string;
+  }) {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/me/profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) throw new Error();
+      setUserName(data.name);
+      setUserEmail(data.email);
+      setUserIconUrl(data.iconUrl);
+      setEditing(false);
+    } catch {
+      alert("保存に失敗しました");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   async function handleDelete(id: string) {
     if (!confirm("本当に削除しますか？")) return;
     const res = await fetch(`/api/post/${id}/delete`, { method: "POST" });
@@ -30,7 +70,32 @@ export default function MePageClient({ posts, userName }: Props) {
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>マイページ</h2>
-      <div className={styles.welcome}>ようこそ、{userName} さん</div>
+      <div className={styles.welcome}>
+        <Image
+          src={userIconUrl || "/file.svg"}
+          alt="icon"
+          width={40}
+          height={40}
+          className={styles.iconPreview}
+        />
+        ようこそ、{userName} さん
+        <Button
+          type="button"
+          onClick={() => setEditing(true)}
+          style={{ marginLeft: 8 }}
+        >
+          プロフィール編集
+        </Button>
+      </div>
+      {editing && (
+        <ProfileEditForm
+          initialName={userName}
+          initialEmail={userEmail}
+          initialIconUrl={userIconUrl || ""}
+          onSave={handleProfileSave}
+          loading={loading}
+        />
+      )}
       <div>
         {posts.length === 0 ? (
           <div>まだ投稿がありません。</div>

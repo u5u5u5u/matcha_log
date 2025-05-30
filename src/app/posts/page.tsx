@@ -9,6 +9,7 @@ export default async function PostListPage() {
     orderBy: { createdAt: "desc" },
     take: 10,
   });
+  console.log("posts", posts);
   return (
     <div className={styles.page}>
       <main className={styles.main}>
@@ -26,38 +27,51 @@ export default async function PostListPage() {
               <div>投稿がありません。</div>
             ) : (
               posts.map((post) => (
-                <a
-                  key={post.id}
-                  href={`/post/${post.id}`}
-                  className={styles.postCard}
-                >
-                  <div className={styles.postCardRow}>
-                    {post.images.length > 0 ? (
-                      <Image
-                        src={post.images[0].url}
-                        alt="thumb"
-                        width={80}
-                        height={80}
-                        className={styles.postCardImage}
-                      />
-                    ) : (
-                      <div className={styles.postCardNoImage}>No Image</div>
-                    )}
-                    <div>
+                <div key={post.id} className={styles.postCardRow}>
+                  {post.images.length > 0 ? (
+                    <Image
+                      src={post.images[0].url}
+                      alt="thumb"
+                      width={80}
+                      height={80}
+                      className={styles.postCardImage}
+                    />
+                  ) : (
+                    <div className={styles.postCardNoImage}>No Image</div>
+                  )}
+                  <div>
+                    <Link href={`/post/${post.id}`} className={styles.postCard}>
                       <div className={styles.postCardTitle}>{post.title}</div>
-                      <div className={styles.postCardCategory}>
-                        {post.category === "SWEET" ? "スイーツ" : "ドリンク"}
-                      </div>
-                      <div className={styles.postCardShop}>
-                        店舗: {post.shop?.name || "未登録"}
-                      </div>
-                      <div className={styles.postCardScore}>
-                        濃さ: {post.richness} 苦さ: {post.bitterness} 甘さ:{" "}
-                        {post.sweetness}
-                      </div>
+                    </Link>
+                    <div className={styles.postCardCategory}>
+                      {post.category === "SWEET" ? "スイーツ" : "ドリンク"}
                     </div>
+                    <div className={styles.postCardShop}>
+                      店舗: {post.shop?.name || "未登録"}
+                    </div>
+                    <div className={styles.postCardScore}>
+                      濃さ: {post.richness} 苦さ: {post.bitterness} 甘さ:{" "}
+                      {post.sweetness}
+                    </div>
+                    {post.user && (
+                      <div className={styles.postCardUser}>
+                        <Link
+                          href={`/user/${post.user.id}`}
+                          className={styles.userLink}
+                        >
+                          <Image
+                            src={post.user.iconUrl || "/file.svg"}
+                            alt="user icon"
+                            width={24}
+                            height={24}
+                            className={styles.userIcon}
+                          />
+                          {post.user.name}
+                        </Link>
+                      </div>
+                    )}
                   </div>
-                </a>
+                </div>
               ))
             )}
           </div>

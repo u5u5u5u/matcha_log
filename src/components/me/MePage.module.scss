@@ -27,8 +27,6 @@
 .cardImage {
   margin: 8px 0;
 }
-.cardShop {
-}
 .cardActions {
   margin-top: 8px;
 }
@@ -44,4 +42,25 @@
   border: none;
   cursor: pointer;
   text-decoration: underline;
+}
+.iconPreview {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 8px;
+}
+.userLink {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #1e8e3e;
+  text-decoration: underline;
+  font-size: 0.98rem;
+}
+.userIcon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
 }

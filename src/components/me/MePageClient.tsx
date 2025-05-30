@@ -2,6 +2,7 @@
 import React from "react";
 import Image from "next/image";
 import styles from "./MePage.module.scss";
+import LogoutButton from "@/components/ui/LogoutButton";
 
 type Post = {
   id: string;
@@ -14,9 +15,10 @@ type Post = {
 type Props = {
   posts: Post[];
   userName: string;
+  userIconUrl?: string;
 };
 
-export default function MePageClient({ posts, userName }: Props) {
+export default function MePageClient({ posts, userName, userIconUrl }: Props) {
   async function handleDelete(id: string) {
     if (!confirm("本当に削除しますか？")) return;
     const res = await fetch(`/api/post/${id}/delete`, { method: "POST" });
@@ -30,7 +32,18 @@ export default function MePageClient({ posts, userName }: Props) {
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>マイページ</h2>
-      <div className={styles.welcome}>ようこそ、{userName} さん</div>
+      <div className={styles.welcome}>
+        <Image
+          src={userIconUrl || "/file.svg"}
+          alt="icon"
+          width={40}
+          height={40}
+          className={styles.iconPreview}
+        />
+        ようこそ、{userName} さん
+        <span style={{ flex: 1 }} />
+        <LogoutButton />
+      </div>
       <div>
         {posts.length === 0 ? (
           <div>まだ投稿がありません。</div>

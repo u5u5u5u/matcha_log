@@ -19,9 +19,13 @@ model User {
   email     String   @unique
   password  String
   name      String?
+  iconUrl   String?  // プロフィール画像URLを追加
   posts     Post[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  following Follow[] @relation("following")
+  followers Follow[] @relation("followers")
 }
 
 model Post {
@@ -60,4 +64,15 @@ model Shop {
   lat       Float?
   lng       Float?
   posts     Post[]
+}
+
+model Follow {
+  id         String   @id @default(uuid())
+  follower   User     @relation("following", fields: [followerId], references: [id])
+  followerId String
+  following  User     @relation("followers", fields: [followingId], references: [id])
+  followingId String
+  createdAt  DateTime @default(now())
+
+  @@unique([followerId, followingId])
 }

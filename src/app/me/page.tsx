@@ -1,9 +1,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { PrismaClient } from "@/generated/prisma";
-import React from "react";
 import MePageClient from "@/components/me/MePageClient";
-import styles from "../page.module.scss";
 
 const prisma = new PrismaClient();
 
@@ -12,16 +10,21 @@ export default async function MePage() {
   if (!session?.user?.email) {
     return <div>ログインしてください</div>;
   }
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+    select: { name: true, email: true, iconUrl: true },
+  });
   const posts = await prisma.post.findMany({
     where: { user: { email: session.user.email } },
     include: { images: true, shop: true },
     orderBy: { createdAt: "desc" },
   });
-
   return (
     <MePageClient
       posts={JSON.parse(JSON.stringify(posts))}
-      userName={session.user.name || ""}
+      userName={user?.name || ""}
+      userEmail={user?.email || ""}
+      userIconUrl={user?.iconUrl || undefined}
     />
   );
 }
