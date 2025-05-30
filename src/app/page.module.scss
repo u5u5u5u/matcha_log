@@ -206,3 +206,69 @@
     height: 120px;
   }
 }
+
+// ヘッダー用
+.header {
+  width: 100%;
+  background: #fff;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 0 0 0 0;
+  margin-bottom: 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.headerNav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 56px;
+}
+.headerLogo {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #388e3c;
+  text-decoration: none;
+  letter-spacing: 1px;
+}
+
+// ボトムバー用
+.bottomBar {
+  width: 100%;
+  background: #fff;
+  border-top: 1px solid #e0e0e0;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  z-index: 100;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bottomNav {
+  display: flex;
+  gap: 32px;
+  justify-content: center;
+  align-items: center;
+}
+.bottomNavLink {
+  color: #333;
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 500;
+  padding: 0 8px;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.bottomNavLink:hover {
+  color: #1976d2;
+}
+body {
+  padding-bottom: 56px;
+}
