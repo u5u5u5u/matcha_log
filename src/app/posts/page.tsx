@@ -2,10 +2,15 @@ import { prisma } from "@/lib/prisma";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "../page.module.scss";
+import LikeButtonInlineWrapper from "@/components/post/LikeButtonInlineWrapper";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export default async function PostListPage() {
+  const session = await getServerSession(authOptions);
+  const myId = session?.user?.id;
   const posts = await prisma.post.findMany({
-    include: { images: true, shop: true, user: true },
+    include: { images: true, shop: true, user: true, likes: true },
     orderBy: { createdAt: "desc" },
     take: 10,
   });
@@ -52,6 +57,18 @@ export default async function PostListPage() {
                     <div className={styles.postCardScore}>
                       濃さ: {post.richness} 苦さ: {post.bitterness} 甘さ:{" "}
                       {post.sweetness}
+                    </div>
+                    <div style={{ margin: "8px 0" }}>
+                      <LikeButtonInlineWrapper
+                        postId={post.id}
+                        initialLiked={
+                          !!(
+                            myId &&
+                            post.likes.some((like) => like.userId === myId)
+                          )
+                        }
+                        initialLikeCount={post.likes.length}
+                      />
                     </div>
                     {post.user && (
                       <div className={styles.postCardUser}>

@@ -2,6 +2,7 @@
 import React from "react";
 import Image from "next/image";
 import dynamic from "next/dynamic";
+import LikeButton from "./LikeButton";
 
 const MapView = dynamic(() => import("./MapView"), { ssr: false });
 
@@ -18,9 +19,13 @@ type PostDetailClientProps = {
     shop?: { name: string; lat: number | null; lng: number | null } | null;
     user?: { name: string | null; email: string | null } | null;
   };
+  likeCount: number;
 };
 
-export default function PostDetailClient({ post }: PostDetailClientProps) {
+export default function PostDetailClient({
+  post,
+  likeCount,
+}: PostDetailClientProps) {
   return (
     <div style={{ maxWidth: 600, margin: "40px auto" }}>
       <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", marginBottom: 24 }}>
@@ -81,6 +86,9 @@ export default function PostDetailClient({ post }: PostDetailClientProps) {
         >
           編集
         </a>
+      </div>
+      <div style={{ marginTop: 16, marginBottom: 8 }}>
+        <LikeButton postId={post.id} likeCount={likeCount} />
       </div>
     </div>
   );

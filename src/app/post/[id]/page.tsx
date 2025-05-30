@@ -13,8 +13,14 @@ export default async function PostDetailPage({
 }) {
   const post = await prisma.post.findUnique({
     where: { id: params.id },
-    include: { images: true, shop: true, user: true },
+    include: {
+      images: true,
+      shop: true,
+      user: true,
+      likes: true,
+    },
   });
+  const likeCount = post?.likes.length || 0;
   if (!post) return notFound();
-  return <PostDetailClient post={post} />;
+  return <PostDetailClient post={post} likeCount={likeCount} />;
 }

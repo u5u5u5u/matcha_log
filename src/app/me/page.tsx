@@ -35,9 +35,19 @@ export default async function MePage() {
     include: { images: true, shop: true },
     orderBy: { createdAt: "desc" },
   });
+  const likedPosts = await prisma.post.findMany({
+    where: {
+      likes: {
+        some: { user: { email: session.user.email } },
+      },
+    },
+    include: { images: true, shop: true },
+    orderBy: { createdAt: "desc" },
+  });
   return (
     <MePageClient
       posts={JSON.parse(JSON.stringify(posts))}
+      likedPosts={JSON.parse(JSON.stringify(likedPosts))}
       userName={user?.name || ""}
       userEmail={user?.email || ""}
       userIconUrl={user?.iconUrl || undefined}
