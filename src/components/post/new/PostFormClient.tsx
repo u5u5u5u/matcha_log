@@ -179,6 +179,32 @@ export default function PostFormClient({ initialForm, onSubmit }: Props) {
           onChange={handleChange}
         />
       </div>
+      <div className={styles.fieldRow}>
+        <div className={styles.field}>
+          <label htmlFor="shopLat">店舗緯度</label>
+          <Input
+            id="shopLat"
+            name="shopLat"
+            type="number"
+            step="any"
+            value={form.shopLat}
+            onChange={handleChange}
+            placeholder="例: 35.6895"
+          />
+        </div>
+        <div className={styles.field}>
+          <label htmlFor="shopLng">店舗経度</label>
+          <Input
+            id="shopLng"
+            name="shopLng"
+            type="number"
+            step="any"
+            value={form.shopLng}
+            onChange={handleChange}
+            placeholder="例: 139.6917"
+          />
+        </div>
+      </div>
       <div className={styles.field}>
         <label htmlFor="comment">コメント</label>
         <textarea
