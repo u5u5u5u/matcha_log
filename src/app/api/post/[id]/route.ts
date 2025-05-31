@@ -5,10 +5,11 @@ const prisma = new PrismaClient();
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const post = await prisma.post.findUnique({
-    where: { id: params.id },
+    where: { id: id },
     include: { images: true, shop: true },
   });
   if (!post) {

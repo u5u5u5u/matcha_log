@@ -3,7 +3,7 @@ import Image from "next/image";
 import styles from "../../me/MePage.module.scss";
 import { notFound } from "next/navigation";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/authOptions";
 import FollowButtonWrapper from "@/components/user/FollowButtonWrapper";
 
 export default async function UserProfilePage({

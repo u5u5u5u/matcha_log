@@ -1,20 +1,25 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { use, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
-export default function PostEditPage({ params }: { params: { id: string } }) {
+export default function PostEditPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = use(params);
   const [post, setPost] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    fetch(`/api/post/${params.id}`)
+    fetch(`/api/post/${id}`)
       .then((res) => (res.ok ? res.json() : Promise.reject()))
       .then((data) => setPost(data.post))
       .catch(() => setError("投稿が見つかりません"));
-  }, [params.id]);
+  }, [id]);
 
   if (!post)
     return (
@@ -30,7 +35,7 @@ export default function PostEditPage({ params }: { params: { id: string } }) {
     const form = e.currentTarget;
     const fd = new FormData(form);
     try {
-      const res = await fetch(`/api/post/${params.id}/edit`, {
+      const res = await fetch(`/api/post/${id}/edit`, {
         method: "POST",
         body: fd,
       });
@@ -38,7 +43,7 @@ export default function PostEditPage({ params }: { params: { id: string } }) {
       if (!res.ok) {
         setError(data.error || "保存に失敗しました");
       } else {
-        router.push(`/post/${params.id}`);
+        router.push(`/post/${id}`);
       }
     } catch {
       setError("通信エラーが発生しました");

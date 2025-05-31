@@ -4,7 +4,7 @@ import Link from "next/link";
 import styles from "../page.module.scss";
 import LikeButtonInlineWrapper from "@/components/post/LikeButtonInlineWrapper";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/authOptions";
 
 export default async function PostListPage() {
   const session = await getServerSession(authOptions);

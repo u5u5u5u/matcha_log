@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/authOptions";
 import { PrismaClient, Category } from "@/generated/prisma";
 
 const prisma = new PrismaClient();
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) {
     return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
@@ -34,7 +35,7 @@ export async function POST(
 
   // 投稿取得＆認可
   const post = await prisma.post.findUnique({
-    where: { id: params.id },
+    where: { id: id },
     include: { user: true },
   });
   if (!post)
@@ -72,7 +73,7 @@ export async function POST(
   }
 
   const updated = await prisma.post.update({
-    where: { id: params.id },
+    where: { id: id },
     data: {
       title,
       category,

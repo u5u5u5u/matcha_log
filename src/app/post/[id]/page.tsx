@@ -8,10 +8,11 @@ const prisma = new PrismaClient();
 export default async function PostDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  const { id } = await params;
   const post = await prisma.post.findUnique({
-    where: { id: params.id },
+    where: { id: id },
     include: {
       images: true,
       shop: true,
