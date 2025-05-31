@@ -18,6 +18,7 @@ type Props = {
   posts: Post[];
   likedPosts: Post[];
   userName: string;
+  userEmail: string;
   userIconUrl?: string;
   followingList: UserSimple[];
   followerList: UserSimple[];

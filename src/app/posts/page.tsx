@@ -47,29 +47,29 @@ export default async function PostListPage() {
                   <div>
                     <Link href={`/post/${post.id}`} className={styles.postCard}>
                       <div className={styles.postCardTitle}>{post.title}</div>
+                      <div className={styles.postCardCategory}>
+                        {post.category === "SWEET" ? "スイーツ" : "ドリンク"}
+                      </div>
+                      <div className={styles.postCardShop}>
+                        店舗: {post.shop?.name || "未登録"}
+                      </div>
+                      <div className={styles.postCardScore}>
+                        濃さ: {post.richness} 苦さ: {post.bitterness} 甘さ:{" "}
+                        {post.sweetness}
+                      </div>
+                      <div style={{ margin: "8px 0" }}>
+                        <LikeButtonInlineWrapper
+                          postId={post.id}
+                          initialLiked={
+                            !!(
+                              myId &&
+                              post.likes.some((like) => like.userId === myId)
+                            )
+                          }
+                          initialLikeCount={post.likes.length}
+                        />
+                      </div>
                     </Link>
-                    <div className={styles.postCardCategory}>
-                      {post.category === "SWEET" ? "スイーツ" : "ドリンク"}
-                    </div>
-                    <div className={styles.postCardShop}>
-                      店舗: {post.shop?.name || "未登録"}
-                    </div>
-                    <div className={styles.postCardScore}>
-                      濃さ: {post.richness} 苦さ: {post.bitterness} 甘さ:{" "}
-                      {post.sweetness}
-                    </div>
-                    <div style={{ margin: "8px 0" }}>
-                      <LikeButtonInlineWrapper
-                        postId={post.id}
-                        initialLiked={
-                          !!(
-                            myId &&
-                            post.likes.some((like) => like.userId === myId)
-                          )
-                        }
-                        initialLikeCount={post.likes.length}
-                      />
-                    </div>
                     {post.user && (
                       <div className={styles.postCardUser}>
                         <Link
