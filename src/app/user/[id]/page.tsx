@@ -9,12 +9,13 @@ import FollowButtonWrapper from "@/components/user/FollowButtonWrapper";
 export default async function UserProfilePage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  const { id } = await params;
   const session = await getServerSession(authOptions);
   const meId = session?.user?.id;
   const user = await prisma.user.findUnique({
-    where: { id: params.id },
+    where: { id: id },
     select: {
       id: true,
       name: true,

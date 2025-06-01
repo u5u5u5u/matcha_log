@@ -1,0 +1,2 @@
+# ESLint ignore for Prisma auto-generated files
+src/generated/prisma/*

@@ -50,7 +50,7 @@ export default function SignupPage() {
       } else {
         window.location.href = "/login";
       }
-    } catch (e) {
+    } catch {
       setError("通信エラーが発生しました");
     } finally {
       setLoading(false);

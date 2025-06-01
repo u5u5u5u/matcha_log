@@ -7,15 +7,15 @@ const prisma = new PrismaClient();
 export default async function SearchPage({
   searchParams,
 }: {
-  searchParams?: {
+  searchParams?: Promise<{
     q?: string;
     cat?: "SWEET" | "DRINK";
     shop?: string;
     min?: string;
     max?: string;
-  };
+  }>;
 }) {
-  const { q, cat, shop, min, max } = searchParams || {};
+  const { q, cat, shop, min, max } = (await searchParams) || {};
   const where: any = {};
   if (q) where.title = { contains: q };
   if (cat) where.category = cat;
