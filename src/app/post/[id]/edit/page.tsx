@@ -2,6 +2,7 @@
 import React, { use, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import type { Post } from "@/types/post";
 
 export default function PostEditPage({
   params,
@@ -9,7 +10,7 @@ export default function PostEditPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const [post, setPost] = useState<any>(null);
+  const [post, setPost] = useState<Post | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -27,6 +28,8 @@ export default function PostEditPage({
         {error || "読み込み中..."}
       </div>
     );
+
+  console.log("post", post);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();

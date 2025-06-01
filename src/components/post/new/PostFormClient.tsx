@@ -25,10 +25,9 @@ type FormData = z.infer<typeof schema>;
 
 type Props = {
   initialForm?: Partial<FormData>;
-  onSubmit?: (form: FormData) => Promise<void>;
 };
 
-export default function PostFormClient({ initialForm, onSubmit }: Props) {
+export default function PostFormClient({ initialForm }: Props) {
   const [form, setForm] = useState<FormData>({
     title: initialForm?.title || "",
     category: initialForm?.category || "SWEET",

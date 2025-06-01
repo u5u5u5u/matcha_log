@@ -16,7 +16,7 @@ export default async function SearchPage({
   }>;
 }) {
   const { q, cat, shop, min, max } = (await searchParams) || {};
-  const where: any = {};
+  const where: import("@/generated/prisma").Prisma.PostWhereInput = {};
   if (q) where.title = { contains: q };
   if (cat) where.category = cat;
   if (shop) where.shop = { name: { contains: shop } };

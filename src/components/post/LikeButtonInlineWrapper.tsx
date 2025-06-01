@@ -4,6 +4,10 @@ const LikeButtonInline = dynamic(() => import("./LikeButtonInline"), {
   ssr: false,
 });
 
-export default function LikeButtonInlineWrapper(props: any) {
+import React from "react";
+
+export default function LikeButtonInlineWrapper(
+  props: React.ComponentProps<typeof LikeButtonInline>
+) {
   return <LikeButtonInline {...props} />;
 }
