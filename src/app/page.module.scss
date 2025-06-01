@@ -1,6 +1,8 @@
+@use "../../styles/_tokens.scss" as tokens;
+
 .page {
   min-height: 100vh;
-  background: var(--main);
+  background: tokens.$main;
 }
 .logoCenter {
   cursor: pointer;
