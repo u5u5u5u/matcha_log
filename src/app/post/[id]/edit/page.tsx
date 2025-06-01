@@ -29,8 +29,6 @@ export default function PostEditPage({
       </div>
     );
 
-  console.log("post", post);
-
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);

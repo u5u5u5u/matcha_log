@@ -14,7 +14,7 @@ export default async function PostListPage() {
     orderBy: { createdAt: "desc" },
     take: 10,
   });
-  console.log("posts", posts);
+
   return (
     <div className={styles.page}>
       <main className={styles.main}>
