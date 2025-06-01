@@ -1,3 +1,31 @@
-@use "../../../styles/_tokens.scss" as tokens;
+@use "../../../../styles/_tokens.scss" as tokens;
 
-// ...既存のPostForm.module.scssの内容を移動...
+.container {
+  max-width: 480px;
+  margin: 40px auto;
+  padding: 32px 24px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+}
+.title {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+.label {
+  font-weight: bold;
+  margin-bottom: 0.3rem;
+}
+.error {
+  color: #c00;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
