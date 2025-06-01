@@ -29,6 +29,7 @@ export async function POST(
       { status: 403 }
     );
   await prisma.image.deleteMany({ where: { postId: id } });
+  await prisma.like.deleteMany({ where: { postId: id } }); // 追加: 先にLikeを削除
   await prisma.post.delete({ where: { id: id } });
   return NextResponse.json({ ok: true });
 }

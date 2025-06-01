@@ -1,3 +1,5 @@
+@use "../../styles/_tokens.scss" as tokens;
+
 .container {
   max-width: 480px;
   margin: 40px auto;

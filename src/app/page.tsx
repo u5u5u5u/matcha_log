@@ -20,10 +20,10 @@ export default function Home() {
     >
       <Image
         className={styles.logo}
-        src="/next.svg"
-        alt="App logo"
-        width={180}
-        height={38}
+        src="/matcha_log_logo.svg"
+        alt="Matcha Log Logo"
+        width={393}
+        height={288}
         priority
       />
     </div>
