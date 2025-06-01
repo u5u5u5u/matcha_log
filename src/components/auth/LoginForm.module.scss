@@ -1,6 +1,8 @@
+@use "../../../styles/_tokens.scss" as tokens;
+
 .container {
-  max-width: 360px;
-  margin: 60px auto;
+  width: 80%;
+  max-width: 400px;
   background: #fff;
   border-radius: 16px;
   box-shadow: 0 2px 16px #0001;
@@ -39,5 +41,6 @@
   margin-top: 0.5rem;
 }
 .button {
+  background: tokens.$accent;
   margin-top: 0.5rem;
 }

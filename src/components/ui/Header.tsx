@@ -8,8 +8,6 @@ export default function Header() {
   const router = useRouter();
   // 投稿一覧ページでは戻るボタン非表示
   const isPostList = pathname === "/posts";
-  console.log("Header pathname:", pathname);
-  console.log("Header isPostList:", isPostList);
 
   return (
     <header className={styles.header}>

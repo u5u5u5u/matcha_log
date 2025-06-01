@@ -3,11 +3,11 @@
 import React, { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import styles from "./LoginPage.module.scss";
+import styles from "./LoginForm.module.scss";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-export default function LoginPage() {
+export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);

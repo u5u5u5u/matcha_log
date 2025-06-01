@@ -1,5 +1,8 @@
+@use "../../../styles/_tokens.scss" as tokens;
+
 .input {
   width: 100%;
+  color: tokens.$text;
   padding: 0.75rem 1rem;
   border: 1px solid #d1d5db;
   border-radius: 8px;
