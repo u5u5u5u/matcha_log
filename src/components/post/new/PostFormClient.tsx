@@ -216,7 +216,11 @@ export default function PostFormClient({ initialForm }: Props) {
       </div>
       <div className={styles.field}>
         <label>画像アップロード</label>
-        <UploadImage onUpload={handleImageUpload} />
+        <UploadImage
+          onUpload={handleImageUpload}
+          maxCount={3}
+          initialUrls={form.images || []}
+        />
       </div>
       {error && <div className={styles.error}>{error}</div>}
       <Button type="submit" disabled={loading}>

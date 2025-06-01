@@ -78,7 +78,11 @@ export default function ProfileEditForm({
             height={64}
           />
         )}
-        <UploadImage onUpload={handleImageUpload} />
+        <UploadImage
+          onUpload={handleImageUpload}
+          maxCount={1}
+          initialUrls={iconUrl ? [iconUrl] : []}
+        />
       </div>
       <div className={styles.field}>
         <label htmlFor="name">名前</label>
