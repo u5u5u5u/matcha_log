@@ -1,11 +1,13 @@
 "use client";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import styles from "./Header.module.scss";
+
 import LogoutButton from "@/components/util/LogoutButton";
 import { Button } from "@/components/util/button";
+import { LogIn, ArrowLeft } from "lucide-react";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import styles from "./Header.module.scss";
 
 export default function Header() {
   const pathname = usePathname();
@@ -23,7 +25,7 @@ export default function Header() {
             aria-label="戻る"
             className={styles.headerBack}
           >
-            ←
+            <ArrowLeft size={24}/>
           </button>
         )}
         <div className={styles.headerLogo}>
@@ -31,8 +33,8 @@ export default function Header() {
             <Image
               src="/matchalog.svg"
               alt="MatchaLog"
-              width={120}
-              height={32}
+              width={150}
+              height={50}
               priority
             />
           </Link>
@@ -44,7 +46,9 @@ export default function Header() {
         ) : (
           <div className={styles.headerLogout}>
             <Link href="/login">
-              <Button type="button">ログイン</Button>
+              <Button type="button">
+                <LogIn size={24}/>
+              </Button>
             </Link>
           </div>
         )}

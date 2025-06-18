@@ -1,27 +1,30 @@
+@use "../../../styles/_tokens.scss" as tokens;
+
 .header {
+  position: fixed;
+  display: flex;
+  align-items: center;
   width: 100%;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  height: 80px;
+  background: tokens.$main;
   z-index: 10;
 }
 
 .headerNav {
+  width: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: stretch;
   position: relative;
   min-height: 56px;
 }
 
 .headerBack {
   position: absolute;
-  left: 0;
+  left: 24px;
   background: none;
   border: none;
-  font-size: 24px;
   cursor: pointer;
-  padding: 0 16px;
-  color: #000;
 }
 
 .headerLogo {
