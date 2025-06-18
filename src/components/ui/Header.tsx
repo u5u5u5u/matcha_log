@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import styles from "@/app/page.module.scss";
+import styles from "./Header.module.scss";
 import LogoutButton from "@/components/ui/LogoutButton";
+import Image from "next/image";
 
 export default function Header() {
   const pathname = usePathname();
@@ -11,39 +12,28 @@ export default function Header() {
 
   return (
     <header className={styles.header}>
-      <div
-        className={styles.headerNav}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          position: "relative",
-        }}
-      >
+      <div className={styles.headerNav}>
         {!isPostList && (
           <button
             onClick={() => router.back()}
             aria-label="戻る"
-            style={{
-              position: "absolute",
-              left: 0,
-              background: "none",
-              border: "none",
-              fontSize: 24,
-              cursor: "pointer",
-              padding: "0 16px",
-              color: "#000",
-            }}
+            className={styles.headerBack}
           >
             ←
           </button>
         )}
-        <div style={{ flex: 1, textAlign: "center" }}>
-          <Link href="/" className={styles.headerLogo} style={{ margin: 0 }}>
-            MatchaLog
+        <div className={styles.headerLogo}>
+          <Link href="/">
+            <Image
+              src="/matchalog.svg"
+              alt="MatchaLog"
+              width={120}
+              height={32}
+              priority
+            />
           </Link>
         </div>
-        <div style={{ position: "absolute", right: 0, padding: "0 16px" }}>
+        <div className={styles.headerLogout}>
           <LogoutButton />
         </div>
       </div>
