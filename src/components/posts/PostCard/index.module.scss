@@ -1,0 +1,100 @@
+@use "../../../../styles/tokens" as tokens;
+
+.postCard {
+  margin-bottom: 16px;
+}
+
+.cardHeader {
+  display: flex;
+  height: 48px;
+  padding: 4px;
+
+  a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: bold;
+
+    .userIcon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+    }
+  }
+}
+
+.postCardImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.postCardNoImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background-color: #f0f0f0;
+}
+
+.postCardContent {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 16px;
+
+  .postCardTitle {
+    display: flex;
+    align-items: center;
+    position: relative;
+    gap: 16px;
+
+    .postCardName {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    .postCardLikeButton {
+      position: absolute;
+      right: 0;
+      padding: 4px;
+    }
+  }
+
+  .postCardCategory {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 2px;
+  }
+
+  .postCardScores {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 1.2rem;
+    color: tokens.$main-dark;
+
+    p {
+      display: flex;
+
+      span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        font-weight: bold;
+        color: tokens.$accent;
+        text-shadow: 1px 1px 5px #000;
+        border-radius: 50%;
+        background-color: tokens.$main;
+        margin-left: 4px;
+      }
+    }
+  }
+
+  .postCardComment {
+  }
+}
