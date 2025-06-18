@@ -17,7 +17,7 @@ export default async function PostListPage() {
 
   return (
     <div>
-      <main className={styles.main}>
+      <div className={styles.main}>
         <div className={styles.postListWrapper}>
           <h2 className={styles.postListTitle}>新着投稿</h2>
           <div className={styles.postListFilter}>
@@ -93,7 +93,7 @@ export default async function PostListPage() {
             )}
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 }
