@@ -1,7 +1,7 @@
 "use client";
 import { usePathname } from "next/navigation";
-import Header from "@/components/ui/Header";
-import BottomBar from "@/components/ui/BottomBar";
+import Header from "@/components/util/Header";
+import BottomBar from "@/components/util/BottomBar";
 
 export default function AppFrame({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();

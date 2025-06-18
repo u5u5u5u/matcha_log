@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Input } from "@/components/util/input";
+import { Button } from "@/components/util/button";
 import styles from "./PostForm.module.scss";
 import dynamic from "next/dynamic";
 import { z } from "zod";

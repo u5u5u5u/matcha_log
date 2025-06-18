@@ -3,8 +3,8 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import styles from "./Header.module.scss";
-import LogoutButton from "@/components/ui/LogoutButton";
-import { Button } from "@/components/ui/button";
+import LogoutButton from "@/components/util/LogoutButton";
+import { Button } from "@/components/util/button";
 import Image from "next/image";
 
 export default function Header() {
