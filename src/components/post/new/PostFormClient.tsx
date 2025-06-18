@@ -17,8 +17,6 @@ const schema = z.object({
   comment: z.string().optional(),
   shop: z.string().optional(),
   images: z.any().optional(),
-  shopLat: z.string().optional(),
-  shopLng: z.string().optional(),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -37,8 +35,6 @@ export default function PostFormClient({ initialForm }: Props) {
     comment: initialForm?.comment || "",
     shop: initialForm?.shop || "",
     images: undefined,
-    shopLat: initialForm?.shopLat || "",
-    shopLng: initialForm?.shopLng || "",
   });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -71,8 +67,6 @@ export default function PostFormClient({ initialForm }: Props) {
       fd.append("sweetness", String(form.sweetness));
       fd.append("comment", form.comment || "");
       fd.append("shop", form.shop || "");
-      fd.append("shopLat", form.shopLat || "");
-      fd.append("shopLng", form.shopLng || "");
       if (Array.isArray(form.images)) {
         form.images.forEach((url) => {
           if (url) fd.append("images[]", url);
@@ -177,32 +171,6 @@ export default function PostFormClient({ initialForm }: Props) {
           value={form.shop}
           onChange={handleChange}
         />
-      </div>
-      <div className={styles.fieldRow}>
-        <div className={styles.field}>
-          <label htmlFor="shopLat">店舗緯度</label>
-          <Input
-            id="shopLat"
-            name="shopLat"
-            type="number"
-            step="any"
-            value={form.shopLat}
-            onChange={handleChange}
-            placeholder="例: 35.6895"
-          />
-        </div>
-        <div className={styles.field}>
-          <label htmlFor="shopLng">店舗経度</label>
-          <Input
-            id="shopLng"
-            name="shopLng"
-            type="number"
-            step="any"
-            value={form.shopLng}
-            onChange={handleChange}
-            placeholder="例: 139.6917"
-          />
-        </div>
       </div>
       <div className={styles.field}>
         <label htmlFor="comment">コメント</label>

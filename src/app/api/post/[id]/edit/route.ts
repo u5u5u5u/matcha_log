@@ -62,6 +62,7 @@ export async function POST(
         },
       });
     } else {
+      // 既存の店舗がある場合、緯度・経度を更新
       shop = await prisma.shop.update({
         where: { id: shop.id },
         data: {

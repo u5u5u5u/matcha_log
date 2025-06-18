@@ -19,8 +19,6 @@ export async function POST(req: NextRequest) {
   const comment = formData.get("comment") as string;
   const shopName = formData.get("shop") as string;
   const images = formData.getAll("images[]") as string[];
-  const shopLat = formData.get("shopLat");
-  const shopLng = formData.get("shopLng");
 
   if (!title || !category) {
     return NextResponse.json(
@@ -37,16 +35,6 @@ export async function POST(req: NextRequest) {
       shop = await prisma.shop.create({
         data: {
           name: shopName,
-          lat: shopLat ? Number(shopLat) : undefined,
-          lng: shopLng ? Number(shopLng) : undefined,
-        },
-      });
-    } else {
-      shop = await prisma.shop.update({
-        where: { id: shop.id },
-        data: {
-          lat: shopLat ? Number(shopLat) : undefined,
-          lng: shopLng ? Number(shopLng) : undefined,
         },
       });
     }
