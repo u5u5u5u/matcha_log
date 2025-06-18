@@ -1,12 +1,16 @@
+"use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import styles from "./Header.module.scss";
 import LogoutButton from "@/components/ui/LogoutButton";
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
 export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
+  const { data: session } = useSession();
   // 投稿一覧ページでは戻るボタン非表示
   const isPostList = pathname === "/posts";
 
@@ -33,9 +37,17 @@ export default function Header() {
             />
           </Link>
         </div>
-        <div className={styles.headerLogout}>
-          <LogoutButton />
-        </div>
+        {session ? (
+          <div className={styles.headerLogout}>
+            <LogoutButton />
+          </div>
+        ) : (
+          <div className={styles.headerLogout}>
+            <Link href="/login">
+              <Button type="button">ログイン</Button>
+            </Link>
+          </div>
+        )}
       </div>
     </header>
   );
