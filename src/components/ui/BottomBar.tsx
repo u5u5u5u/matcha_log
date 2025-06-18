@@ -1,7 +1,21 @@
+"use client";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import styles from "@/app/page.module.scss";
 
 export default function BottomBar() {
+  const { data: session } = useSession();
+  const router = useRouter();
+
+  const handleProtectedNavigation = (path: string) => {
+    if (!session) {
+      router.push("/login");
+    } else {
+      router.push(path);
+    }
+  };
+
   return (
     <footer className={styles.bottomBar}>
       <nav className={styles.bottomNav}>
@@ -11,12 +25,20 @@ export default function BottomBar() {
         <Link href="/search" className={styles.bottomNavLink}>
           🔍 検索
         </Link>
-        <Link href="/post/new" className={styles.bottomNavLink}>
+        <button
+          onClick={() => handleProtectedNavigation("/post/new")}
+          className={styles.bottomNavLink}
+          style={{ background: "none", border: "none", cursor: "pointer" }}
+        >
           ＋新規登録
-        </Link>
-        <Link href="/me" className={styles.bottomNavLink}>
+        </button>
+        <button
+          onClick={() => handleProtectedNavigation("/me")}
+          className={styles.bottomNavLink}
+          style={{ background: "none", border: "none", cursor: "pointer" }}
+        >
           👤 マイページ
-        </Link>
+        </button>
       </nav>
     </footer>
   );
