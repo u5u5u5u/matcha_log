@@ -1,10 +1,10 @@
+import LikeButtonInlineWrapper from "@/components/post/LikeButtonInlineWrapper";
+import { authOptions } from "@/lib/authOptions";
 import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
-import styles from "../page.module.scss";
-import LikeButtonInlineWrapper from "@/components/post/LikeButtonInlineWrapper";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/authOptions";
+import styles from "./page.module.scss";
 
 export default async function PostListPage() {
   const session = await getServerSession(authOptions);
