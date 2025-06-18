@@ -2,12 +2,12 @@
 
 import LogoutButton from "@/components/util/LogoutButton";
 import { Button } from "@/components/util/button";
-import { LogIn, ArrowLeft } from "lucide-react";
+import { ArrowLeft, LogIn } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import styles from "./Header.module.scss";
+import styles from "./index.module.scss";
 
 export default function Header() {
   const pathname = usePathname();
@@ -25,7 +25,7 @@ export default function Header() {
             aria-label="戻る"
             className={styles.headerBack}
           >
-            <ArrowLeft size={24}/>
+            <ArrowLeft size={24} />
           </button>
         )}
         <div className={styles.headerLogo}>
@@ -47,7 +47,7 @@ export default function Header() {
           <div className={styles.headerLogout}>
             <Link href="/login">
               <Button type="button">
-                <LogIn size={24}/>
+                <LogIn size={24} />
               </Button>
             </Link>
           </div>
