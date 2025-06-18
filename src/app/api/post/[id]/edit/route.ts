@@ -24,7 +24,7 @@ export async function POST(
   const shopName = formData.get("shop") as string;
   const shopLat = formData.get("shopLat");
   const shopLng = formData.get("shopLng");
-  
+
   // 画像URLを取得
   const imageUrls = formData.getAll("images[]") as string[];
 

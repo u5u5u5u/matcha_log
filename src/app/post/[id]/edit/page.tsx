@@ -4,7 +4,10 @@ import { useRouter } from "next/navigation";
 import type { Post } from "@/types/post";
 import dynamic from "next/dynamic";
 
-const UploadImage = dynamic(() => import("@/components/post/edit/PostUploadImage"), { ssr: false });
+const UploadImage = dynamic(
+  () => import("@/components/post/edit/PostUploadImage"),
+  { ssr: false }
+);
 
 export default function PostEditPage({
   params,
@@ -23,7 +26,9 @@ export default function PostEditPage({
       .then((res) => (res.ok ? res.json() : Promise.reject()))
       .then((data) => {
         setPost(data.post);
-        setImageUrls(data.post.images?.map((img: { url: string }) => img.url) || []);
+        setImageUrls(
+          data.post.images?.map((img: { url: string }) => img.url) || []
+        );
       })
       .catch(() => setError("投稿が見つかりません"));
   }, [id]);
@@ -41,12 +46,12 @@ export default function PostEditPage({
     setLoading(true);
     const form = e.currentTarget;
     const fd = new FormData(form);
-    
+
     // 画像URLを追加
     imageUrls.forEach((url) => {
       if (url) fd.append("images[]", url);
     });
-    
+
     try {
       const res = await fetch(`/api/post/${id}/edit`, {
         method: "POST",
@@ -77,7 +82,11 @@ export default function PostEditPage({
       {error && <div style={{ color: "red", marginBottom: 16 }}>{error}</div>}
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: 16 }}>
-          <label style={{ display: "block", marginBottom: 8, fontWeight: "bold" }}>タイトル</label>
+          <label
+            style={{ display: "block", marginBottom: 8, fontWeight: "bold" }}
+          >
+            タイトル
+          </label>
           <input
             name="title"
             defaultValue={post.title}
@@ -90,9 +99,13 @@ export default function PostEditPage({
           />
         </div>
         <div style={{ marginBottom: 16 }}>
-          <label style={{ display: "block", marginBottom: 8, fontWeight: "bold" }}>カテゴリ</label>
-          <select 
-            name="category" 
+          <label
+            style={{ display: "block", marginBottom: 8, fontWeight: "bold" }}
+          >
+            カテゴリ
+          </label>
+          <select
+            name="category"
             defaultValue={post.category}
             style={{
               width: "100%",
@@ -107,7 +120,11 @@ export default function PostEditPage({
         </div>
         <div style={{ display: "flex", gap: 16, marginBottom: 16 }}>
           <div style={{ flex: 1 }}>
-            <label style={{ display: "block", marginBottom: 8, fontWeight: "bold" }}>濃さ</label>
+            <label
+              style={{ display: "block", marginBottom: 8, fontWeight: "bold" }}
+            >
+              濃さ
+            </label>
             <input
               name="richness"
               type="number"
@@ -123,7 +140,11 @@ export default function PostEditPage({
             />
           </div>
           <div style={{ flex: 1 }}>
-            <label style={{ display: "block", marginBottom: 8, fontWeight: "bold" }}>苦さ</label>
+            <label
+              style={{ display: "block", marginBottom: 8, fontWeight: "bold" }}
+            >
+              苦さ
+            </label>
             <input
               name="bitterness"
               type="number"
@@ -139,7 +160,11 @@ export default function PostEditPage({
             />
           </div>
           <div style={{ flex: 1 }}>
-            <label style={{ display: "block", marginBottom: 8, fontWeight: "bold" }}>甘さ</label>
+            <label
+              style={{ display: "block", marginBottom: 8, fontWeight: "bold" }}
+            >
+              甘さ
+            </label>
             <input
               name="sweetness"
               type="number"
@@ -156,7 +181,11 @@ export default function PostEditPage({
           </div>
         </div>
         <div style={{ marginBottom: 16 }}>
-          <label style={{ display: "block", marginBottom: 8, fontWeight: "bold" }}>コメント</label>
+          <label
+            style={{ display: "block", marginBottom: 8, fontWeight: "bold" }}
+          >
+            コメント
+          </label>
           <textarea
             name="comment"
             defaultValue={post.comment || ""}
@@ -171,9 +200,13 @@ export default function PostEditPage({
           />
         </div>
         <div style={{ marginBottom: 16 }}>
-          <label style={{ display: "block", marginBottom: 8, fontWeight: "bold" }}>店舗名</label>
-          <input 
-            name="shop" 
+          <label
+            style={{ display: "block", marginBottom: 8, fontWeight: "bold" }}
+          >
+            店舗名
+          </label>
+          <input
+            name="shop"
             defaultValue={post.shop?.name || ""}
             style={{
               width: "100%",
@@ -185,7 +218,11 @@ export default function PostEditPage({
         </div>
         <div style={{ display: "flex", gap: 16, marginBottom: 16 }}>
           <div style={{ flex: 1 }}>
-            <label style={{ display: "block", marginBottom: 8, fontWeight: "bold" }}>店舗緯度</label>
+            <label
+              style={{ display: "block", marginBottom: 8, fontWeight: "bold" }}
+            >
+              店舗緯度
+            </label>
             <input
               name="shopLat"
               type="text"
@@ -200,7 +237,11 @@ export default function PostEditPage({
             />
           </div>
           <div style={{ flex: 1 }}>
-            <label style={{ display: "block", marginBottom: 8, fontWeight: "bold" }}>店舗経度</label>
+            <label
+              style={{ display: "block", marginBottom: 8, fontWeight: "bold" }}
+            >
+              店舗経度
+            </label>
             <input
               name="shopLng"
               type="text"
@@ -216,7 +257,11 @@ export default function PostEditPage({
           </div>
         </div>
         <div style={{ marginBottom: 16 }}>
-          <label style={{ display: "block", marginBottom: 8, fontWeight: "bold" }}>写真</label>
+          <label
+            style={{ display: "block", marginBottom: 8, fontWeight: "bold" }}
+          >
+            写真
+          </label>
           <UploadImage
             onUpload={handleImageUpload}
             maxCount={3}

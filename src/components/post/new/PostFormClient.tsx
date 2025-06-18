@@ -6,7 +6,10 @@ import styles from "./PostForm.module.scss";
 import dynamic from "next/dynamic";
 import { z } from "zod";
 
-const UploadImage = dynamic(() => import("@/components/post/edit/PostUploadImage"), { ssr: false });
+const UploadImage = dynamic(
+  () => import("@/components/post/edit/PostUploadImage"),
+  { ssr: false }
+);
 
 const schema = z.object({
   title: z.string().min(1, "タイトルは必須です"),
