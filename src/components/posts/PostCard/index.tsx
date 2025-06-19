@@ -7,6 +7,7 @@ import type { Post } from "@/types/post";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./index.module.scss";
+import CategoryTag from "../CategoryTag";
 
 interface PostCardProps {
   post: Post;
@@ -44,10 +45,7 @@ const PostCard = ({ post, myId }: PostCardProps) => {
         <div className={styles.postCardContent}>
           <div className={styles.postCardTitle}>
             <div className={styles.postCardName}>{post.title}</div>
-            {/* TODO: カテゴリタグ作成 */}
-            <div className={styles.postCardCategory}>
-              {post.category === "SWEET" ? "スイーツ" : "ドリンク"}
-            </div>
+            <CategoryTag category={post.category} />
             <div className={styles.postCardLikeButton}>
               <LikeButtonInlineWrapper
                 postId={post.id}
