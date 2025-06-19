@@ -2,6 +2,7 @@
 
 import LikeButtonInlineWrapper from "@/components/post/LikeButtonInlineWrapper";
 import MeetBallsMenu from "@/components/posts/MeetBallsMenu";
+import ImageGallery from "@/components/posts/ImageGallery";
 import type { Post } from "@/types/post";
 import Image from "next/image";
 import Link from "next/link";
@@ -33,27 +34,13 @@ const PostCard = ({ post, myId }: PostCardProps) => {
             </>
           )}
         </div>
-        {/* TODO: Link削除 */}
-        <Link href={`/post/${post.id}`}>
-          {post.images.length > 0 ? (
-            // TODO: 画像複数表示対応
-            <Image
-              src={post.images[0].url}
-              alt="thumb"
-              width={80}
-              height={80}
-              className={styles.postCardImage}
-            />
-          ) : (
-            <Image
-              src="/no-image.svg"
-              alt="no image"
-              width={80}
-              height={80}
-              className={styles.postCardNoImage}
-            ></Image>
-          )}
-        </Link>
+        <ImageGallery
+          images={post.images}
+          alt="post image"
+          width={80}
+          height={80}
+          className={styles.postCardImage}
+        />
         <div className={styles.postCardContent}>
           <div className={styles.postCardTitle}>
             <div className={styles.postCardName}>{post.title}</div>
