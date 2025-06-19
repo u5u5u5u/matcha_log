@@ -1,4 +1,7 @@
+"use client";
+
 import LikeButtonInlineWrapper from "@/components/post/LikeButtonInlineWrapper";
+import MeetBallsMenu from "@/components/posts/MeetBallsMenu";
 import type { Post } from "@/types/post";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,16 +18,19 @@ const PostCard = ({ post, myId }: PostCardProps) => {
       <div className={styles.postCard}>
         <div className={styles.cardHeader}>
           {post.user && (
-            <Link href={`/user/${post.user.id}`}>
-              <Image
-                src={post.user.iconUrl || "/file.svg"}
-                alt="user icon"
-                width={24}
-                height={24}
-                className={styles.userIcon}
-              />
-              {post.user.name}
-            </Link>
+            <>
+              <Link href={`/user/${post.user.id}`}>
+                <Image
+                  src={post.user.iconUrl || "/file.svg"}
+                  alt="user icon"
+                  width={24}
+                  height={24}
+                  className={styles.userIcon}
+                />
+                {post.user.name}
+              </Link>
+              {post.user.id === myId && <MeetBallsMenu postId={post.id} />}
+            </>
           )}
         </div>
         {/* TODO: Link削除 */}
