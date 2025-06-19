@@ -2,7 +2,6 @@ import PostCard from "@/components/posts/PostCard";
 import { authOptions } from "@/lib/authOptions";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
-import styles from "./page.module.scss";
 
 export default async function PostListPage() {
   const session = await getServerSession(authOptions);
@@ -16,19 +15,11 @@ export default async function PostListPage() {
 
   return (
     <div>
-      <div className={styles.postListWrapper}>
-        {posts.length === 0 ? (
-          <div>投稿がありません。</div>
-        ) : (
-          posts.map((post) => (
-            <PostCard
-              key={post.id}
-              post={post}
-              myId={myId}
-            />
-          ))
-        )}
-      </div>
+      {posts.length === 0 ? (
+        <div>投稿がありません。</div>
+      ) : (
+        posts.map((post) => <PostCard key={post.id} post={post} myId={myId} />)
+      )}
     </div>
   );
 }

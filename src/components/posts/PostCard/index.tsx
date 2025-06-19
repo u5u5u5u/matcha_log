@@ -27,8 +27,10 @@ const PostCard = ({ post, myId }: PostCardProps) => {
             </Link>
           )}
         </div>
+        {/* TODO: Link削除 */}
         <Link href={`/post/${post.id}`}>
           {post.images.length > 0 ? (
+            // TODO: 画像複数表示対応
             <Image
               src={post.images[0].url}
               alt="thumb"
@@ -49,10 +51,12 @@ const PostCard = ({ post, myId }: PostCardProps) => {
         <div className={styles.postCardContent}>
           <div className={styles.postCardTitle}>
             <div className={styles.postCardName}>{post.title}</div>
+            {/* TODO: カテゴリタグ作成 */}
             <div className={styles.postCardCategory}>
               {post.category === "SWEET" ? "スイーツ" : "ドリンク"}
             </div>
             <div className={styles.postCardLikeButton}>
+              {/* TODO: いいねボタン見た目変更 */}
               <LikeButtonInlineWrapper
                 postId={post.id}
                 initialLiked={
@@ -76,6 +80,7 @@ const PostCard = ({ post, myId }: PostCardProps) => {
               甘さ <span>{post.sweetness}</span>
             </p>
           </div>
+          {/* TODO: コメント長い場合隠す */}
           <div className={styles.postCardComment}>
             {post.comment || "コメントなし"}
           </div>
