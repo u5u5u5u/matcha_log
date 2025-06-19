@@ -1,5 +1,8 @@
 "use client";
+
+import { Heart } from "lucide-react";
 import { useState } from "react";
+import styles from "./index.module.scss";
 
 export default function LikeButtonInline({
   postId,
@@ -31,19 +34,12 @@ export default function LikeButtonInline({
     <button
       onClick={handleLike}
       disabled={loading}
-      style={{
-        color: liked ? "#e53935" : "#888",
-        fontWeight: "bold",
-        fontSize: "1.1rem",
-        background: "none",
-        border: "none",
-        cursor: "pointer",
-        display: "flex",
-        alignItems: "center",
-        gap: 4,
-      }}
+      className={liked ? styles.likeButton : styles.unlikeButton}
     >
-      <span style={{ fontSize: "1.2em" }}>{liked ? "♥" : "♡"}</span> {likeCount}
+      <span>
+        <Heart size={20} />
+      </span>
+      {likeCount}
     </button>
   );
 }

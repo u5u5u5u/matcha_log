@@ -49,7 +49,6 @@ const PostCard = ({ post, myId }: PostCardProps) => {
               {post.category === "SWEET" ? "スイーツ" : "ドリンク"}
             </div>
             <div className={styles.postCardLikeButton}>
-              {/* TODO: いいねボタン見た目変更 */}
               <LikeButtonInlineWrapper
                 postId={post.id}
                 initialLiked={
