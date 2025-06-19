@@ -1,13 +1,12 @@
-"use client";
-
 import LikeButtonInlineWrapper from "@/components/post/LikeButtonInlineWrapper";
-import MeetBallsMenu from "@/components/posts/MeetBallsMenu";
+import CategoryTag from "@/components/posts/CategoryTag";
+import Comment from "@/components/posts/Comment";
 import ImageGallery from "@/components/posts/ImageGallery";
+import MeetBallsMenu from "@/components/posts/MeetBallsMenu";
 import type { Post } from "@/types/post";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./index.module.scss";
-import CategoryTag from "../CategoryTag";
 
 interface PostCardProps {
   post: Post;
@@ -70,10 +69,7 @@ const PostCard = ({ post, myId }: PostCardProps) => {
               甘さ <span>{post.sweetness}</span>
             </p>
           </div>
-          {/* TODO: コメント長い場合隠す */}
-          <div className={styles.postCardComment}>
-            {post.comment || "コメントなし"}
-          </div>
+          {post.comment && <Comment comment={post.comment} />}
         </div>
       </div>
     </>
