@@ -8,24 +8,30 @@
   border-radius: 16px;
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
 }
+
 .title {
   font-size: 1.3rem;
   font-weight: bold;
   margin-bottom: 1.5rem;
   text-align: center;
 }
+
 .form {
+  width: 90%;
   display: flex;
+  margin: 0 auto;
   flex-direction: column;
   gap: 1.2rem;
+  margin-bottom: 20px;
 }
-.label {
-  font-weight: bold;
-  margin-bottom: 0.3rem;
-}
+
 .error {
-  color: #c00;
+  color: #dc3545;
   font-size: 0.95rem;
   margin-bottom: 0.5rem;
   text-align: center;
+  padding: 0.75rem;
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 8px;
 }

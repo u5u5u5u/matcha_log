@@ -4,8 +4,8 @@ import React, { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import styles from "./LoginForm.module.scss";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/components/util/button";
+import { Input } from "@/components/util/input";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");

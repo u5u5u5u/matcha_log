@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+import { Input } from "../util/input";
+import { Button } from "../util/button";
 import styles from "./SignupPage.module.scss";
 import { z } from "zod";
 

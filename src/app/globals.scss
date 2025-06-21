@@ -25,6 +25,23 @@ a {
   text-decoration: none;
 }
 
+// ダイアログ表示時のスクロール制御
+body.dialog-open {
+  overflow: hidden;
+  padding-right: var(--scrollbar-width, 0px);
+}
+
+// スクロールバー幅を計算するCSS変数
+:root {
+  --scrollbar-width: 0px;
+}
+
+@supports (scrollbar-gutter: stable) {
+  html {
+    scrollbar-gutter: stable;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;

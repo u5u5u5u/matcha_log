@@ -1,0 +1,12 @@
+@use "../../../../styles/tokens" as tokens;
+
+.categoryTag {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 0.8rem;
+  color: tokens.$accent;
+  background: tokens.$main-dark;
+  border-radius: 20px;
+  padding: 2px 8px;
+}

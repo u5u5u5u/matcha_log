@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Input } from "@/components/util/input";
+import { Button } from "@/components/util/button";
 import styles from "./ProfileEditForm.module.scss";
 import UploadImage from "@/components/post/new/UploadImage";
 import Image from "next/image";

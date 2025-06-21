@@ -1,0 +1,42 @@
+@use "../../../../styles/tokens" as tokens;
+
+.header {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 80px;
+  background: tokens.$main;
+  z-index: 10;
+}
+
+.headerNav {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: stretch;
+  position: relative;
+}
+
+.headerBack {
+  position: absolute;
+  left: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.headerLogo {
+  flex: 1;
+  text-align: center;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.headerLogout {
+  position: absolute;
+  right: 0;
+  padding: 0 16px;
+}
