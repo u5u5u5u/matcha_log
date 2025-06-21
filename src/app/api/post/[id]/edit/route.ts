@@ -24,7 +24,9 @@ export async function POST(
   const shopName = formData.get("shop") as string;
   const shopLat = formData.get("shopLat");
   const shopLng = formData.get("shopLng");
-  // 画像は未実装
+
+  // 画像URLを取得
+  const imageUrls = formData.getAll("images[]") as string[];
 
   if (!title || !category) {
     return NextResponse.json(
@@ -62,6 +64,7 @@ export async function POST(
         },
       });
     } else {
+      // 既存の店舗がある場合、緯度・経度を更新
       shop = await prisma.shop.update({
         where: { id: shop.id },
         data: {
@@ -84,6 +87,21 @@ export async function POST(
       shopId: shop?.id,
     },
   });
+
+  // 既存の画像を削除
+  await prisma.image.deleteMany({
+    where: { postId: id },
+  });
+
+  // 新しい画像を追加
+  if (imageUrls.length > 0) {
+    await prisma.image.createMany({
+      data: imageUrls.map((url) => ({
+        postId: id,
+        url: url,
+      })),
+    });
+  }
 
   return NextResponse.json({ ok: true, post: updated });
 }

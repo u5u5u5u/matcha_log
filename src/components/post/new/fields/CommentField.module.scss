@@ -1,0 +1,36 @@
+@use "../../../../../styles/tokens" as tokens;
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  label {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #495057;
+  }
+}
+
+.textarea {
+  padding: 0.75rem;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 80px;
+  transition: border-color 0.2s ease;
+  background: #fff;
+  color: tokens.$text;
+
+  &:focus {
+    outline: none;
+    border-color: #28a745;
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+  }
+
+  &::placeholder {
+    color: #adb5bd;
+  }
+}

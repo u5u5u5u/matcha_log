@@ -1,0 +1,31 @@
+.menuContainer {
+  position: relative;
+  display: inline-block;
+}
+
+.meetBallsMenu {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #f3f4f6;
+    color: #374151;
+  }
+
+  &:focus {
+    outline: none;
+    background-color: #e5e7eb;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
