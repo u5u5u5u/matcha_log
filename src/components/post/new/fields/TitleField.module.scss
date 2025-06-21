@@ -1,0 +1,25 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  label {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #495057;
+  }
+}
+
+.error {
+  border-color: #dc3545 !important;
+
+  &:focus {
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1) !important;
+  }
+}
+
+.errorText {
+  color: #dc3545;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}

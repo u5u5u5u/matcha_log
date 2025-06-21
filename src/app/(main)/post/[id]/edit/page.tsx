@@ -61,7 +61,7 @@ export default function PostEditPage({
       if (!res.ok) {
         setError(data.error || "保存に失敗しました");
       } else {
-        router.push(`/post/${id}`);
+        router.push("/posts");
       }
     } catch {
       setError("通信エラーが発生しました");

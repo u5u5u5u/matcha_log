@@ -34,17 +34,29 @@ export default function PostDetailClient({
       <div style={{ marginBottom: 8, color: "#666" }}>
         {post.category === "SWEET" ? "スイーツ" : "ドリンク"}
       </div>
-      <div style={{ marginBottom: 16, display: "flex", gap: 8 }}>
+      <div
+        style={{ marginBottom: 16, display: "flex", gap: 8, flexWrap: "wrap" }}
+      >
         {post.images.length > 0 ? (
           post.images.map((img) => (
-            <Image
+            <div
               key={img.id}
-              src={img.url}
-              alt="thumb"
-              width={120}
-              height={120}
-              style={{ objectFit: "cover", borderRadius: 12 }}
-            />
+              style={{
+                width: "120px",
+                height: "120px",
+                aspectRatio: "1 / 1",
+                overflow: "hidden",
+                borderRadius: "12px",
+              }}
+            >
+              <Image
+                src={img.url}
+                alt="thumb"
+                width={120}
+                height={120}
+                style={{ objectFit: "cover", width: "100%", height: "100%" }}
+              />
+            </div>
           ))
         ) : (
           <div

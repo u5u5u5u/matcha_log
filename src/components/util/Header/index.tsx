@@ -46,7 +46,7 @@ export default function Header() {
         ) : (
           <div className={styles.headerLogout}>
             <Link href="/login">
-              <Button type="button">
+              <Button type="button" variant="ghost">
                 <LogIn size={24} />
               </Button>
             </Link>

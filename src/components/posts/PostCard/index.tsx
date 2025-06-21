@@ -34,13 +34,15 @@ const PostCard = ({ post, myId }: PostCardProps) => {
             </>
           )}
         </div>
-        <ImageGallery
-          images={post.images}
-          alt="post image"
-          width={80}
-          height={80}
-          className={styles.postCardImage}
-        />
+        <div className={styles.imageWrapper}>
+          <ImageGallery
+            images={post.images}
+            alt="post image"
+            width={300}
+            height={300}
+            className={styles.postCardImage}
+          />
+        </div>
         <div className={styles.postCardContent}>
           <div className={styles.postCardTitle}>
             <div className={styles.postCardName}>{post.title}</div>
