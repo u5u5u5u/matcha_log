@@ -36,6 +36,8 @@ export default function MePageClient({
   const [followingModalOpen, setFollowingModalOpen] = React.useState(false);
   const [followersModalOpen, setFollowersModalOpen] = React.useState(false);
   const [activeTab, setActiveTab] = React.useState<"posts" | "liked">("posts");
+  const [actionModalOpen, setActionModalOpen] = React.useState(false);
+  const [selectedPost, setSelectedPost] = React.useState<Post | null>(null);
 
   async function handleDelete(id: string) {
     if (!confirm("本当に削除しますか？")) return;
@@ -44,6 +46,18 @@ export default function MePageClient({
       window.location.reload();
     } else {
       alert("削除に失敗しました");
+    }
+    setActionModalOpen(false);
+    setSelectedPost(null);
+  }
+
+  function handlePostClick(post: Post) {
+    if (activeTab === "posts") {
+      setSelectedPost(post);
+      setActionModalOpen(true);
+    } else {
+      // いいねした投稿の場合は詳細ページに遷移
+      window.location.href = `/post/${post.id}`;
     }
   }
 
@@ -116,76 +130,150 @@ export default function MePageClient({
       >
         <UserList users={followerList} emptyMessage="フォロワーはいません" />
       </Modal>
+
+      {/* 投稿アクションモーダル */}
+      <Modal
+        isOpen={actionModalOpen}
+        onClose={() => {
+          setActionModalOpen(false);
+          setSelectedPost(null);
+        }}
+        title={selectedPost?.title || ""}
+      >
+        {selectedPost && (
+          <div className={styles.actionModal}>
+            <div className={styles.postPreview}>
+              {selectedPost.images.length > 0 && (
+                <Image
+                  src={`/api/image-proxy?url=${encodeURIComponent(
+                    selectedPost.images[0].url
+                  )}`}
+                  alt={selectedPost.title}
+                  width={200}
+                  height={200}
+                  className={styles.previewImage}
+                  onError={(e) => {
+                    console.error(
+                      "Modal image failed to load:",
+                      selectedPost.images[0].url
+                    );
+                    e.currentTarget.style.display = "none";
+                  }}
+                />
+              )}
+              <div className={styles.postInfo}>
+                <p>
+                  <strong>タイトル:</strong> {selectedPost.title}
+                </p>
+                <p>
+                  <strong>カテゴリ:</strong>{" "}
+                  {selectedPost.category === "SWEET" ? "スイーツ" : "ドリンク"}
+                </p>
+                <p>
+                  <strong>店舗:</strong> {selectedPost.shop?.name || "未登録"}
+                </p>
+              </div>
+            </div>
+            <div className={styles.actionButtons}>
+              <button
+                className={styles.editButton}
+                onClick={() => {
+                  window.location.href = `/post/${selectedPost.id}/edit`;
+                }}
+              >
+                編集
+              </button>
+              <button
+                className={styles.deleteButton}
+                onClick={() => handleDelete(selectedPost.id)}
+              >
+                削除
+              </button>
+            </div>
+          </div>
+        )}
+      </Modal>
       <div>
         {activeTab === "posts" ? (
           posts.length === 0 ? (
             <div>まだ投稿がありません。</div>
           ) : (
-            posts.map((post) => (
-              <div key={post.id} className={styles.card}>
-                <div className={styles.cardTitle}>{post.title}</div>
-                <div className={styles.cardCategory}>
-                  {post.category === "SWEET" ? "スイーツ" : "ドリンク"}
-                </div>
-                <div className={styles.cardImage}>
-                  {post.images.length > 0 && (
+            <div className={styles.gridContainer}>
+              {posts.map((post) => (
+                <div
+                  key={post.id}
+                  className={styles.gridItem}
+                  onClick={() => handlePostClick(post)}
+                >
+                  {post.images.length > 0 ? (
                     <Image
-                      src={post.images[0].url}
-                      alt="thumb"
-                      width={80}
-                      height={80}
-                      style={{ objectFit: "cover", borderRadius: 8 }}
+                      src={`/api/image-proxy?url=${encodeURIComponent(
+                        post.images[0].url
+                      )}`}
+                      alt={post.title}
+                      width={200}
+                      height={200}
+                      className={styles.gridImage}
+                      onError={(e) => {
+                        console.error(
+                          "Image failed to load:",
+                          post.images[0].url
+                        );
+                        e.currentTarget.style.display = "none";
+                        e.currentTarget.nextElementSibling?.classList.remove(
+                          "hidden"
+                        );
+                      }}
                     />
+                  ) : (
+                    <div className={styles.noImagePlaceholder}>画像なし</div>
                   )}
+                  <div className={`${styles.noImagePlaceholder} hidden`}>
+                    画像読み込みエラー
+                  </div>
                 </div>
-                <div className={styles.cardShop}>
-                  店舗: {post.shop?.name || "未登録"}
-                </div>
-                <div className={styles.cardActions}>
-                  <a href={`/post/${post.id}/edit`} className={styles.editLink}>
-                    編集
-                  </a>
-                  <button
-                    type="button"
-                    className={styles.deleteButton}
-                    onClick={() => handleDelete(post.id)}
-                  >
-                    削除
-                  </button>
-                </div>
-              </div>
-            ))
+              ))}
+            </div>
           )
         ) : likedPosts.length === 0 ? (
           <div>まだいいねした投稿がありません。</div>
         ) : (
-          likedPosts.map((post) => (
-            <div key={post.id} className={styles.card}>
-              <div className={styles.cardTitle}>{post.title}</div>
-              <div className={styles.cardCategory}>
-                {post.category === "SWEET" ? "スイーツ" : "ドリンク"}
-              </div>
-              <div className={styles.cardImage}>
-                {post.images.length > 0 && (
+          <div className={styles.gridContainer}>
+            {likedPosts.map((post) => (
+              <div
+                key={post.id}
+                className={styles.gridItem}
+                onClick={() => handlePostClick(post)}
+              >
+                {post.images.length > 0 ? (
                   <Image
-                    src={post.images[0].url}
-                    alt="thumb"
-                    width={80}
-                    height={80}
-                    style={{ objectFit: "cover", borderRadius: 8 }}
+                    src={`/api/image-proxy?url=${encodeURIComponent(
+                      post.images[0].url
+                    )}`}
+                    alt={post.title}
+                    width={200}
+                    height={200}
+                    className={styles.gridImage}
+                    onError={(e) => {
+                      console.error(
+                        "Image failed to load:",
+                        post.images[0].url
+                      );
+                      e.currentTarget.style.display = "none";
+                      e.currentTarget.nextElementSibling?.classList.remove(
+                        "hidden"
+                      );
+                    }}
                   />
+                ) : (
+                  <div className={styles.noImagePlaceholder}>画像なし</div>
                 )}
+                <div className={`${styles.noImagePlaceholder} hidden`}>
+                  画像読み込みエラー
+                </div>
               </div>
-              <div className={styles.cardShop}>
-                店舗: {post.shop?.name || "未登録"}
-              </div>
-              <div className={styles.cardActions}>
-                <a href={`/post/${post.id}`} className={styles.viewLink}>
-                  詳細
-                </a>
-              </div>
-            </div>
-          ))
+            ))}
+          </div>
         )}
       </div>
     </div>
