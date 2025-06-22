@@ -1,17 +1,19 @@
 "use client";
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
-import { z } from "zod";
-import { Button } from "@/components/util/button";
 import {
-  TitleField,
   CategoryField,
-  ShopField,
-  RatingSliders,
   CommentField,
+  CoordinatesField,
   ImageUploadField,
-} from "./fields";
-import styles from "./PostForm.module.scss";
+  RatingSliders,
+  ShopField,
+  TitleField,
+} from "@/components/post/new/fields";
+import { Button } from "@/components/util/button";
+import type { Post } from "@/types/post";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+import { z } from "zod";
+import styles from "./PostEditForm.module.scss";
 
 const schema = z.object({
   title: z.string().min(1, "タイトルは必須です"),
@@ -21,28 +23,36 @@ const schema = z.object({
   sweetness: z.coerce.number().min(1).max(10),
   comment: z.string().optional(),
   shop: z.string().optional(),
+  shopLat: z.string().optional(),
+  shopLng: z.string().optional(),
   images: z.any().optional(),
 });
 
 type FormData = z.infer<typeof schema>;
 
-type Props = {
-  initialForm?: Partial<FormData>;
-};
+interface Props {
+  postId: string;
+  initialPost: Post;
+}
 
-export default function PostForm({ initialForm }: Props) {
+export default function PostEditForm({ postId, initialPost }: Props) {
   const router = useRouter();
   const [form, setForm] = useState<FormData>({
-    title: initialForm?.title || "",
-    category: initialForm?.category || "SWEET",
-    bitterness: initialForm?.bitterness || 5,
-    richness: initialForm?.richness || 5,
-    sweetness: initialForm?.sweetness || 5,
-    comment: initialForm?.comment || "",
-    shop: initialForm?.shop || "",
-    images: undefined,
+    title: initialPost.title || "",
+    category: initialPost.category || "SWEET",
+    bitterness: initialPost.bitterness || 5,
+    richness: initialPost.richness || 5,
+    sweetness: initialPost.sweetness || 5,
+    comment: initialPost.comment || "",
+    shop: initialPost.shop?.name || "",
+    shopLat: initialPost.shop?.lat?.toString() || "",
+    shopLng: initialPost.shop?.lng?.toString() || "",
+    images: initialPost.images?.map((img: { url: string }) => img.url) || [],
   });
   const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [imageUrls, setImageUrls] = useState<string[]>(
+    initialPost.images?.map((img: { url: string }) => img.url) || []
+  );
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -57,6 +67,7 @@ export default function PostForm({ initialForm }: Props) {
 
   const handleImageUpload = (files: File[], urls: string[]) => {
     setImageFiles(files);
+    setImageUrls(urls);
     setForm({ ...form, images: urls });
   };
 
@@ -68,8 +79,15 @@ export default function PostForm({ initialForm }: Props) {
     try {
       schema.parse(form);
 
-      // 画像ファイルがある場合は先にアップロード
-      let uploadedImageUrls: string[] = [];
+      // 新しい画像ファイルがある場合は先にアップロード
+      let finalImageUrls: string[] = [];
+
+      // 既存の画像URLs（blob:で始まらないもの）
+      const existingImageUrls = imageUrls.filter(
+        (url) => !url.startsWith("blob:")
+      );
+
+      // 新しい画像ファイルをアップロード
       if (imageFiles.length > 0) {
         const uploadPromises = imageFiles.map(async (file) => {
           const formData = new FormData();
@@ -88,7 +106,10 @@ export default function PostForm({ initialForm }: Props) {
           return data.url;
         });
 
-        uploadedImageUrls = await Promise.all(uploadPromises);
+        const uploadedUrls = await Promise.all(uploadPromises);
+        finalImageUrls = [...existingImageUrls, ...uploadedUrls];
+      } else {
+        finalImageUrls = existingImageUrls;
       }
 
       // APIにPOSTリクエスト
@@ -100,19 +121,23 @@ export default function PostForm({ initialForm }: Props) {
       fd.append("sweetness", String(form.sweetness));
       fd.append("comment", form.comment || "");
       fd.append("shop", form.shop || "");
+      fd.append("shopLat", form.shopLat || "");
+      fd.append("shopLng", form.shopLng || "");
 
-      // アップロードされた画像URLを使用
-      uploadedImageUrls.forEach((url) => {
-        if (url) fd.append("images[]", url);
+      // 最終的な画像URLを追加
+      finalImageUrls.forEach((url) => {
+        if (url) {
+          fd.append("images[]", url);
+        }
       });
 
-      const res = await fetch("/api/post/new", {
+      const res = await fetch(`/api/post/${postId}/edit`, {
         method: "POST",
         body: fd,
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || "投稿に失敗しました");
+        setError(data.error || "保存に失敗しました");
       } else {
         router.push("/posts");
       }
@@ -148,9 +173,15 @@ export default function PostForm({ initialForm }: Props) {
 
       <ShopField value={form.shop || ""} onChange={handleChange} />
 
+      <CoordinatesField
+        latValue={form.shopLat || ""}
+        lngValue={form.shopLng || ""}
+        onChange={handleChange}
+      />
+
       <ImageUploadField
         onUpload={handleImageUpload}
-        initialUrls={form.images || []}
+        initialUrls={imageUrls}
         maxCount={3}
       />
 
@@ -165,7 +196,7 @@ export default function PostForm({ initialForm }: Props) {
 
       {error && <div className={styles.error}>{error}</div>}
       <Button type="submit" disabled={loading}>
-        {loading ? "送信中..." : "投稿する"}
+        {loading ? "保存中..." : "保存"}
       </Button>
     </form>
   );

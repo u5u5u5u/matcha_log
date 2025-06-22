@@ -4,100 +4,171 @@
   max-width: 600px;
   margin: 40px auto;
 }
-.title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 24px;
-}
-.welcome {
-  margin-bottom: 24px;
-}
-.card {
-  border: 1px solid #eee;
-  border-radius: 12px;
-  margin-bottom: 16px;
-  padding: 16px;
-}
-.cardTitle {
-  font-weight: bold;
-  font-size: 1.1rem;
-}
-.cardCategory {
-  font-size: 0.95rem;
-  color: #666;
-}
-.cardImage {
-  margin: 8px 0;
-}
-.cardActions {
-  margin-top: 8px;
-}
-.editLink {
-  color: #1e8e3e;
-  margin-right: 16px;
-  text-decoration: underline;
-  cursor: pointer;
-}
-.deleteButton {
-  color: #c00;
-  background: none;
-  border: none;
-  cursor: pointer;
-  text-decoration: underline;
-}
-.iconPreview {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-right: 8px;
-}
-.userLink {
+
+.userInfo {
   display: flex;
-  align-items: center;
-  gap: 6px;
-  color: #1e8e3e;
-  text-decoration: underline;
-  font-size: 0.98rem;
-}
-.userIcon {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-.countButton {
-  background: none;
-  border: none;
-  color: #1976d2;
-  font-size: 1rem;
-  cursor: pointer;
-  padding: 0 8px;
-  transition: color 0.2s;
-  &:hover {
-    color: #0d47a1;
-    text-decoration: underline;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+
+  .userDetails {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    .iconPreview {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .userName {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+  }
+
+  .userStats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1rem;
+    padding: 0 20px;
+
+    .countButton {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      background: none;
+      border: none;
+      color: tokens.$text;
+      font-size: 1.15rem;
+    }
   }
 }
-.userListModal {
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+
+.deleteButton {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #c82333;
+  }
+}
+
+.tabNavigation {
+  display: flex;
+  justify-content: center;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 20px;
+}
+
+.tabButton {
+  width: 50%;
+  background: none;
+  border: none;
+  padding: 12px 20px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  color: tokens.$text;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+
+  &:hover {
+    color: tokens.$main-dark;
+  }
+}
+
+.activeTab {
+  color: tokens.$main-dark;
+  border-bottom-color: tokens.$main-dark;
+}
+
+.gridContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  margin-top: 20px;
+}
+
+.gridItem {
+  aspect-ratio: 1;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.2s;
+}
+
+.gridImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.noImagePlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f3f4f6;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.actionModal {
   padding: 16px;
-  margin-bottom: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
-.userListItem {
+
+.postPreview {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-  font-size: 1rem;
+  margin-bottom: 20px;
 }
-.likedPostItem {
+
+.previewImage {
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.postInfo {
+  text-align: left;
+  width: 100%;
+
+  p {
+    margin: 8px 0;
+    font-size: 0.9rem;
+  }
+}
+
+.actionButtons {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
+  gap: 12px;
+  justify-content: center;
+}
+
+.editButton {
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
   font-size: 1rem;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #1565c0;
+  }
+}
+
+.hidden {
+  display: none;
 }
