@@ -2,7 +2,8 @@
 import React from "react";
 import Image from "next/image";
 import styles from "./MePage.module.scss";
-import Link from "next/link";
+import Modal from "../util/Modal";
+import UserList from "./UserList";
 
 type Post = {
   id: string;
@@ -32,9 +33,11 @@ export default function MePageClient({
   followingList,
   followerList,
 }: Props) {
-  const [showFollowing, setShowFollowing] = React.useState(false);
-  const [showFollowers, setShowFollowers] = React.useState(false);
-  const [showLiked, setShowLiked] = React.useState(false);
+  const [followingModalOpen, setFollowingModalOpen] = React.useState(false);
+  const [followersModalOpen, setFollowersModalOpen] = React.useState(false);
+  const [activeTab, setActiveTab] = React.useState<"posts" | "liked">("posts");
+  const [actionModalOpen, setActionModalOpen] = React.useState(false);
+  const [selectedPost, setSelectedPost] = React.useState<Post | null>(null);
 
   async function handleDelete(id: string) {
     if (!confirm("本当に削除しますか？")) return;
@@ -44,157 +47,239 @@ export default function MePageClient({
     } else {
       alert("削除に失敗しました");
     }
+    setActionModalOpen(false);
+    setSelectedPost(null);
+  }
+
+  function handlePostClick(post: Post) {
+    if (activeTab === "posts") {
+      setSelectedPost(post);
+      setActionModalOpen(true);
+    } else {
+      // いいねした投稿の場合は詳細ページに遷移
+      window.location.href = `/post/${post.id}`;
+    }
   }
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>マイページ</h2>
-      <div className={styles.welcome}>
-        <Image
-          src={userIconUrl || "/file.svg"}
-          alt="icon"
-          width={40}
-          height={40}
-          className={styles.iconPreview}
+      <div className={styles.userInfo}>
+        <div className={styles.userDetails}>
+          <Image
+            src={userIconUrl || "/file.svg"}
+            alt="icon"
+            width={60}
+            height={60}
+            className={styles.iconPreview}
+          />
+          <p className={styles.userName}>{userName}</p>
+        </div>
+        <div className={styles.userStats}>
+          <div className={styles.countButton}>
+            <p>投稿</p>
+            <p>{posts.length}</p>
+          </div>
+          <button
+            className={styles.countButton}
+            onClick={() => setFollowingModalOpen(true)}
+          >
+            <p>フォロー</p>
+            <p>{followingList.length}</p>
+          </button>
+          <button
+            className={styles.countButton}
+            onClick={() => setFollowersModalOpen(true)}
+          >
+            <p>フォロワー</p>
+            <p>{followerList.length}</p>
+          </button>
+        </div>
+      </div>
+
+      {/* タブナビゲーション */}
+      <div className={styles.tabNavigation}>
+        <button
+          className={`${styles.tabButton} ${
+            activeTab === "posts" ? styles.activeTab : ""
+          }`}
+          onClick={() => setActiveTab("posts")}
+        >
+          投稿 ({posts.length})
+        </button>
+        <button
+          className={`${styles.tabButton} ${
+            activeTab === "liked" ? styles.activeTab : ""
+          }`}
+          onClick={() => setActiveTab("liked")}
+        >
+          いいね ({likedPosts.length})
+        </button>
+      </div>
+
+      {/* フォロー中のユーザーモーダル */}
+      <Modal
+        isOpen={followingModalOpen}
+        onClose={() => setFollowingModalOpen(false)}
+        title={`フォロー中 (${followingList.length})`}
+      >
+        <UserList
+          users={followingList}
+          emptyMessage="フォローしているユーザーはいません"
         />
-        ようこそ、{userName} さん
-        <span style={{ flex: 1 }} />
-      </div>
-      <div style={{ display: "flex", gap: 24, margin: "12px 0" }}>
-        <button
-          className={styles.countButton}
-          onClick={() => setShowFollowing((v) => !v)}
-        >
-          フォロー <b>{followingList.length}</b>
-        </button>
-        <button
-          className={styles.countButton}
-          onClick={() => setShowFollowers((v) => !v)}
-        >
-          フォロワー <b>{followerList.length}</b>
-        </button>
-        <button
-          className={styles.countButton}
-          onClick={() => setShowLiked((v) => !v)}
-        >
-          いいねした投稿 <b>{likedPosts.length}</b>
-        </button>
-      </div>
-      {showLiked && (
-        <div className={styles.userListModal}>
-          <h4>いいねした投稿</h4>
-          <ul>
-            {likedPosts.length === 0 ? (
-              <li>なし</li>
-            ) : (
-              likedPosts.map((post) => (
-                <li key={post.id} className={styles.likedPostItem}>
-                  <Link href={`/post/${post.id}`} className={styles.userLink}>
-                    {post.images[0] && (
-                      <Image
-                        src={post.images[0].url}
-                        alt="thumb"
-                        width={40}
-                        height={40}
-                        style={{ borderRadius: 8, marginRight: 8 }}
-                      />
-                    )}
-                    {post.title}
-                  </Link>
-                </li>
-              ))
-            )}
-          </ul>
-        </div>
-      )}
-      {showFollowing && (
-        <div className={styles.userListModal}>
-          <h4>フォロー中ユーザー</h4>
-          <ul>
-            {followingList.length === 0 ? (
-              <li>なし</li>
-            ) : (
-              followingList.map((u) => (
-                <li key={u.id} className={styles.userListItem}>
-                  <Link href={`/user/${u.id}`} className={styles.userLink}>
-                    <Image
-                      src={u.iconUrl || "/file.svg"}
-                      alt="icon"
-                      width={28}
-                      height={28}
-                      style={{ borderRadius: 14, marginRight: 8 }}
-                    />
-                    {u.name}
-                  </Link>
-                </li>
-              ))
-            )}
-          </ul>
-        </div>
-      )}
-      {showFollowers && (
-        <div className={styles.userListModal}>
-          <h4>フォロワー</h4>
-          <ul>
-            {followerList.length === 0 ? (
-              <li>なし</li>
-            ) : (
-              followerList.map((u) => (
-                <li key={u.id} className={styles.userListItem}>
-                  <Link href={`/user/${u.id}`} className={styles.userLink}>
-                    <Image
-                      src={u.iconUrl || "/file.svg"}
-                      alt="icon"
-                      width={28}
-                      height={28}
-                      style={{ borderRadius: 14, marginRight: 8 }}
-                    />
-                    {u.name}
-                  </Link>
-                </li>
-              ))
-            )}
-          </ul>
-        </div>
-      )}
-      <div>
-        {posts.length === 0 ? (
-          <div>まだ投稿がありません。</div>
-        ) : (
-          posts.map((post) => (
-            <div key={post.id} className={styles.card}>
-              <div className={styles.cardTitle}>{post.title}</div>
-              <div className={styles.cardCategory}>
-                {post.category === "SWEET" ? "スイーツ" : "ドリンク"}
-              </div>
-              <div className={styles.cardImage}>
-                {post.images.length > 0 && (
-                  <Image
-                    src={post.images[0].url}
-                    alt="thumb"
-                    width={80}
-                    height={80}
-                    style={{ objectFit: "cover", borderRadius: 8 }}
-                  />
-                )}
-              </div>
-              <div className={styles.cardShop}>
-                店舗: {post.shop?.name || "未登録"}
-              </div>
-              <div className={styles.cardActions}>
-                <a href={`/post/${post.id}/edit`} className={styles.editLink}>
-                  編集
-                </a>
-                <button
-                  type="button"
-                  className={styles.deleteButton}
-                  onClick={() => handleDelete(post.id)}
-                >
-                  削除
-                </button>
+      </Modal>
+
+      {/* フォロワーモーダル */}
+      <Modal
+        isOpen={followersModalOpen}
+        onClose={() => setFollowersModalOpen(false)}
+        title={`フォロワー (${followerList.length})`}
+      >
+        <UserList users={followerList} emptyMessage="フォロワーはいません" />
+      </Modal>
+
+      {/* 投稿アクションモーダル */}
+      <Modal
+        isOpen={actionModalOpen}
+        onClose={() => {
+          setActionModalOpen(false);
+          setSelectedPost(null);
+        }}
+        title={selectedPost?.title || ""}
+      >
+        {selectedPost && (
+          <div className={styles.actionModal}>
+            <div className={styles.postPreview}>
+              {selectedPost.images.length > 0 && (
+                <Image
+                  src={`/api/image-proxy?url=${encodeURIComponent(
+                    selectedPost.images[0].url
+                  )}`}
+                  alt={selectedPost.title}
+                  width={200}
+                  height={200}
+                  className={styles.previewImage}
+                  onError={(e) => {
+                    console.error(
+                      "Modal image failed to load:",
+                      selectedPost.images[0].url
+                    );
+                    e.currentTarget.style.display = "none";
+                  }}
+                />
+              )}
+              <div className={styles.postInfo}>
+                <p>
+                  <strong>タイトル:</strong> {selectedPost.title}
+                </p>
+                <p>
+                  <strong>カテゴリ:</strong>{" "}
+                  {selectedPost.category === "SWEET" ? "スイーツ" : "ドリンク"}
+                </p>
+                <p>
+                  <strong>店舗:</strong> {selectedPost.shop?.name || "未登録"}
+                </p>
               </div>
             </div>
-          ))
+            <div className={styles.actionButtons}>
+              <button
+                className={styles.editButton}
+                onClick={() => {
+                  window.location.href = `/post/${selectedPost.id}/edit`;
+                }}
+              >
+                編集
+              </button>
+              <button
+                className={styles.deleteButton}
+                onClick={() => handleDelete(selectedPost.id)}
+              >
+                削除
+              </button>
+            </div>
+          </div>
+        )}
+      </Modal>
+      <div>
+        {activeTab === "posts" ? (
+          posts.length === 0 ? (
+            <div>まだ投稿がありません。</div>
+          ) : (
+            <div className={styles.gridContainer}>
+              {posts.map((post) => (
+                <div
+                  key={post.id}
+                  className={styles.gridItem}
+                  onClick={() => handlePostClick(post)}
+                >
+                  {post.images.length > 0 ? (
+                    <Image
+                      src={`/api/image-proxy?url=${encodeURIComponent(
+                        post.images[0].url
+                      )}`}
+                      alt={post.title}
+                      width={200}
+                      height={200}
+                      className={styles.gridImage}
+                      onError={(e) => {
+                        console.error(
+                          "Image failed to load:",
+                          post.images[0].url
+                        );
+                        e.currentTarget.style.display = "none";
+                        e.currentTarget.nextElementSibling?.classList.remove(
+                          "hidden"
+                        );
+                      }}
+                    />
+                  ) : (
+                    <div className={styles.noImagePlaceholder}>画像なし</div>
+                  )}
+                  <div className={`${styles.noImagePlaceholder} hidden`}>
+                    画像読み込みエラー
+                  </div>
+                </div>
+              ))}
+            </div>
+          )
+        ) : likedPosts.length === 0 ? (
+          <div>まだいいねした投稿がありません。</div>
+        ) : (
+          <div className={styles.gridContainer}>
+            {likedPosts.map((post) => (
+              <div
+                key={post.id}
+                className={styles.gridItem}
+                onClick={() => handlePostClick(post)}
+              >
+                {post.images.length > 0 ? (
+                  <Image
+                    src={`/api/image-proxy?url=${encodeURIComponent(
+                      post.images[0].url
+                    )}`}
+                    alt={post.title}
+                    width={200}
+                    height={200}
+                    className={styles.gridImage}
+                    onError={(e) => {
+                      console.error(
+                        "Image failed to load:",
+                        post.images[0].url
+                      );
+                      e.currentTarget.style.display = "none";
+                      e.currentTarget.nextElementSibling?.classList.remove(
+                        "hidden"
+                      );
+                    }}
+                  />
+                ) : (
+                  <div className={styles.noImagePlaceholder}>画像なし</div>
+                )}
+                <div className={`${styles.noImagePlaceholder} hidden`}>
+                  画像読み込みエラー
+                </div>
+              </div>
+            ))}
+          </div>
         )}
       </div>
     </div>

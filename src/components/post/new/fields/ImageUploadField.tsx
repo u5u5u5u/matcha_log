@@ -8,7 +8,7 @@ const UploadImage = dynamic(
 );
 
 type Props = {
-  onUpload: (urls: string[]) => void;
+  onUpload: (files: File[], urls: string[]) => void;
   initialUrls?: string[];
   maxCount?: number;
 };

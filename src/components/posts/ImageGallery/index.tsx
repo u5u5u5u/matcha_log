@@ -20,6 +20,9 @@ const ImageGallery = ({
   className,
 }: ImageGalleryProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [imageErrors, setImageErrors] = useState<{ [key: number]: boolean }>(
+    {}
+  );
   const touchStartX = useRef<number>(0);
   const touchEndX = useRef<number>(0);
   const isDragging = useRef<boolean>(false);
@@ -36,14 +39,47 @@ const ImageGallery = ({
     );
   }
 
+  const handleImageError = (index: number) => {
+    console.error(
+      `Image loading failed for index ${index}: ${images[index].url}`
+    );
+    setImageErrors((prev) => ({ ...prev, [index]: true }));
+  };
+
+  // 画像URLを安全にするヘルパー関数
+  const getSafeImageUrl = (url: string, index: number) => {
+    if (imageErrors[index]) {
+      return "/no-image.svg";
+    }
+
+    // Vercel Blob Storage の URL の場合、プロキシ経由で取得
+    if (url.includes("blob.vercel-storage.com")) {
+      return `/api/image-proxy?url=${encodeURIComponent(url)}`;
+    }
+
+    return url;
+  };
+
   if (images.length === 1) {
+    if (imageErrors[0]) {
+      return (
+        <Image
+          src="/no-image.svg"
+          alt="image load failed"
+          width={width}
+          height={height}
+          className={className}
+        />
+      );
+    }
     return (
       <Image
-        src={images[0].url}
+        src={getSafeImageUrl(images[0].url, 0)}
         alt={alt}
         width={width}
         height={height}
         className={className}
+        onError={() => handleImageError(0)}
       />
     );
   }
@@ -129,11 +165,16 @@ const ImageGallery = ({
         onMouseUp={handleMouseUp}
       >
         <Image
-          src={images[currentIndex].url}
-          alt={`${alt} ${currentIndex + 1}`}
+          src={getSafeImageUrl(images[currentIndex].url, currentIndex)}
+          alt={
+            imageErrors[currentIndex]
+              ? "image load failed"
+              : `${alt} ${currentIndex + 1}`
+          }
           width={width}
           height={height}
           className={className}
+          onError={() => handleImageError(currentIndex)}
         />
       </div>
 

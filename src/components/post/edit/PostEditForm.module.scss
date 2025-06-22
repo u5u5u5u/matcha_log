@@ -1,0 +1,21 @@
+@use "../../../../styles/_tokens.scss" as tokens;
+
+.form {
+  width: 90%;
+  display: flex;
+  margin: 0 auto;
+  flex-direction: column;
+  gap: 1.2rem;
+  padding-bottom: 40px;
+}
+
+.error {
+  color: #dc3545;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+  padding: 0.75rem;
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 8px;
+}
