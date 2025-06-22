@@ -72,11 +72,13 @@
   color: #1976d2;
   font-size: 1rem;
   cursor: pointer;
-  padding: 0 8px;
-  transition: color 0.2s;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: all 0.2s;
+
   &:hover {
+    background-color: #f3f4f6;
     color: #0d47a1;
-    text-decoration: underline;
   }
 }
 .userListModal {
@@ -86,18 +88,38 @@
   padding: 16px;
   margin-bottom: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+  h4 {
+    margin: 0 0 12px 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #111827;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    margin-bottom: 8px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
 }
-.userListItem {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-  font-size: 1rem;
-}
+
 .likedPostItem {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 8px;
-  font-size: 1rem;
+  padding: 8px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #f9fafb;
+  }
 }

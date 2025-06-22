@@ -3,6 +3,8 @@ import React from "react";
 import Image from "next/image";
 import styles from "./MePage.module.scss";
 import Link from "next/link";
+import Modal from "../util/Modal";
+import UserList from "./UserList";
 
 type Post = {
   id: string;
@@ -32,8 +34,8 @@ export default function MePageClient({
   followingList,
   followerList,
 }: Props) {
-  const [showFollowing, setShowFollowing] = React.useState(false);
-  const [showFollowers, setShowFollowers] = React.useState(false);
+  const [followingModalOpen, setFollowingModalOpen] = React.useState(false);
+  const [followersModalOpen, setFollowersModalOpen] = React.useState(false);
   const [showLiked, setShowLiked] = React.useState(false);
 
   async function handleDelete(id: string) {
@@ -63,13 +65,13 @@ export default function MePageClient({
       <div style={{ display: "flex", gap: 24, margin: "12px 0" }}>
         <button
           className={styles.countButton}
-          onClick={() => setShowFollowing((v) => !v)}
+          onClick={() => setFollowingModalOpen(true)}
         >
           フォロー <b>{followingList.length}</b>
         </button>
         <button
           className={styles.countButton}
-          onClick={() => setShowFollowers((v) => !v)}
+          onClick={() => setFollowersModalOpen(true)}
         >
           フォロワー <b>{followerList.length}</b>
         </button>
@@ -107,56 +109,27 @@ export default function MePageClient({
           </ul>
         </div>
       )}
-      {showFollowing && (
-        <div className={styles.userListModal}>
-          <h4>フォロー中ユーザー</h4>
-          <ul>
-            {followingList.length === 0 ? (
-              <li>なし</li>
-            ) : (
-              followingList.map((u) => (
-                <li key={u.id} className={styles.userListItem}>
-                  <Link href={`/user/${u.id}`} className={styles.userLink}>
-                    <Image
-                      src={u.iconUrl || "/file.svg"}
-                      alt="icon"
-                      width={28}
-                      height={28}
-                      style={{ borderRadius: 14, marginRight: 8 }}
-                    />
-                    {u.name}
-                  </Link>
-                </li>
-              ))
-            )}
-          </ul>
-        </div>
-      )}
-      {showFollowers && (
-        <div className={styles.userListModal}>
-          <h4>フォロワー</h4>
-          <ul>
-            {followerList.length === 0 ? (
-              <li>なし</li>
-            ) : (
-              followerList.map((u) => (
-                <li key={u.id} className={styles.userListItem}>
-                  <Link href={`/user/${u.id}`} className={styles.userLink}>
-                    <Image
-                      src={u.iconUrl || "/file.svg"}
-                      alt="icon"
-                      width={28}
-                      height={28}
-                      style={{ borderRadius: 14, marginRight: 8 }}
-                    />
-                    {u.name}
-                  </Link>
-                </li>
-              ))
-            )}
-          </ul>
-        </div>
-      )}
+
+      {/* フォロー中のユーザーモーダル */}
+      <Modal
+        isOpen={followingModalOpen}
+        onClose={() => setFollowingModalOpen(false)}
+        title={`フォロー中 (${followingList.length})`}
+      >
+        <UserList
+          users={followingList}
+          emptyMessage="フォローしているユーザーはいません"
+        />
+      </Modal>
+
+      {/* フォロワーモーダル */}
+      <Modal
+        isOpen={followersModalOpen}
+        onClose={() => setFollowersModalOpen(false)}
+        title={`フォロワー (${followerList.length})`}
+      >
+        <UserList users={followerList} emptyMessage="フォロワーはいません" />
+      </Modal>
       <div>
         {posts.length === 0 ? (
           <div>まだ投稿がありません。</div>
