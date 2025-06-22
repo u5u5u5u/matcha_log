@@ -42,6 +42,7 @@ export default function PostForm({ initialForm }: Props) {
     shop: initialForm?.shop || "",
     images: undefined,
   });
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -54,7 +55,8 @@ export default function PostForm({ initialForm }: Props) {
     setForm({ ...form, [name]: type === "number" ? Number(value) : value });
   };
 
-  const handleImageUpload = (urls: string[]) => {
+  const handleImageUpload = (files: File[], urls: string[]) => {
+    setImageFiles(files);
     setForm({ ...form, images: urls });
   };
 
@@ -62,8 +64,33 @@ export default function PostForm({ initialForm }: Props) {
     e.preventDefault();
     setError(null);
     setLoading(true);
+
     try {
       schema.parse(form);
+
+      // 画像ファイルがある場合は先にアップロード
+      let uploadedImageUrls: string[] = [];
+      if (imageFiles.length > 0) {
+        const uploadPromises = imageFiles.map(async (file) => {
+          const formData = new FormData();
+          formData.append("file", file);
+
+          const response = await fetch("/api/blob/post-upload", {
+            method: "POST",
+            body: formData,
+          });
+
+          if (!response.ok) {
+            throw new Error("画像のアップロードに失敗しました");
+          }
+
+          const data = await response.json();
+          return data.url;
+        });
+
+        uploadedImageUrls = await Promise.all(uploadPromises);
+      }
+
       // APIにPOSTリクエスト
       const fd = new FormData();
       fd.append("title", form.title);
@@ -73,11 +100,12 @@ export default function PostForm({ initialForm }: Props) {
       fd.append("sweetness", String(form.sweetness));
       fd.append("comment", form.comment || "");
       fd.append("shop", form.shop || "");
-      if (Array.isArray(form.images)) {
-        form.images.forEach((url) => {
-          if (url) fd.append("images[]", url);
-        });
-      }
+
+      // アップロードされた画像URLを使用
+      uploadedImageUrls.forEach((url) => {
+        if (url) fd.append("images[]", url);
+      });
+
       const res = await fetch("/api/post/new", {
         method: "POST",
         body: fd,
@@ -99,6 +127,8 @@ export default function PostForm({ initialForm }: Props) {
           (err as { errors?: { message?: string }[] }).errors?.[0]?.message ||
             "入力内容に誤りがあります"
         );
+      } else if (err instanceof Error) {
+        setError(err.message);
       } else {
         setError("入力内容に誤りがあります");
       }

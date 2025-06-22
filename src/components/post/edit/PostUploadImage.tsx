@@ -9,19 +9,37 @@ export default function PostUploadImage({
   maxCount = 3,
   initialUrls = [],
 }: {
-  onUpload: (urls: string[]) => void;
+  onUpload: (files: File[], urls: string[]) => void;
   maxCount?: number;
   initialUrls?: string[];
 }) {
   const [urls, setUrls] = React.useState<string[]>(initialUrls);
+  const [files, setFiles] = React.useState<File[]>([]);
   const [isDragOver, setIsDragOver] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
   const inputRef = useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
     setUrls(initialUrls);
+    setFiles([]); // 初期状態では編集でない限りファイルは空
+    // 初期URLsがある場合は、それらを読み込み済みとして設定
+    if (initialUrls.length > 0) {
+      setLoadedImages(new Set(initialUrls));
+    }
   }, [initialUrls]);
+
+  // クリーンアップ: コンポーネントのアンマウント時にObject URLを解放
+  React.useEffect(() => {
+    return () => {
+      urls.forEach((url) => {
+        if (url.startsWith("blob:")) {
+          URL.revokeObjectURL(url);
+        }
+      });
+    };
+  }, [urls]);
 
   React.useEffect(() => {
     // モバイルデバイスの判定をより詳細に行う
@@ -48,47 +66,47 @@ export default function PostUploadImage({
     return () => window.removeEventListener("resize", checkIsMobile);
   }, []);
 
-  const uploadFiles = async (files: FileList | File[]) => {
+  const handleImageLoad = (url: string) => {
+    setLoadedImages((prev) => new Set([...prev, url]));
+  };
+
+  const handleImageError = (url: string) => {
+    console.error("Image failed to load:", url);
+    // エラーの場合も読み込み完了として扱う（表示はされないが、レイアウトは保持）
+    setLoadedImages((prev) => new Set([...prev, url]));
+  };
+
+  const uploadFiles = async (selectedFiles: FileList | File[]) => {
     if (isUploading) return;
 
     setIsUploading(true);
-    const uploadPromises = [];
-    const fileArray = Array.from(files);
+    const fileArray = Array.from(selectedFiles);
+    const imageFiles = fileArray.filter((file) =>
+      file.type.startsWith("image/")
+    );
 
-    for (let i = 0; i < fileArray.length && urls.length + i < maxCount; i++) {
-      const file = fileArray[i];
+    // 最大数を超えないようにファイルを制限
+    const validFiles = imageFiles.slice(0, maxCount - files.length);
 
-      // 画像ファイルかチェック
-      if (!file.type.startsWith("image/")) {
-        console.log("画像ファイルではありません:", file.name, file.type);
-        continue;
-      }
-
-      const formData = new FormData();
-      formData.append("file", file);
-      uploadPromises.push(
-        fetch("/api/blob/post-upload", {
-          method: "POST",
-          body: formData,
-        })
-          .then((res) => {
-            if (!res.ok) throw new Error();
-            return res.json();
-          })
-          .then((data) => data.url)
-      );
-    }
-
-    try {
-      const newUrls = await Promise.all(uploadPromises);
-      const allUrls = [...urls, ...newUrls].slice(0, maxCount);
-      setUrls(allUrls);
-      onUpload(allUrls);
-    } catch {
-      alert("アップロード失敗");
-    } finally {
+    if (validFiles.length === 0) {
       setIsUploading(false);
+      return;
     }
+
+    // ファイルからプレビューURLを生成
+    const newPreviewUrls = validFiles.map((file) => URL.createObjectURL(file));
+
+    // ステートを更新
+    const newFiles = [...files, ...validFiles];
+    const newUrls = [...urls, ...newPreviewUrls];
+
+    setFiles(newFiles);
+    setUrls(newUrls);
+
+    // 親コンポーネントに通知（ファイルとプレビューURLの両方を渡す）
+    onUpload(newFiles, newUrls);
+
+    setIsUploading(false);
   };
 
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -144,19 +162,28 @@ export default function PostUploadImage({
 
   const handleRemove = (idx: number) => {
     const newUrls = urls.filter((_, i) => i !== idx);
+    const newFiles = files.filter((_, i) => i !== idx);
+
+    // 削除されるURLがObject URLの場合はメモリリークを防ぐためにrevokeする
+    const removedUrl = urls[idx];
+    if (removedUrl && removedUrl.startsWith("blob:")) {
+      URL.revokeObjectURL(removedUrl);
+    }
+
     setUrls(newUrls);
-    onUpload(newUrls);
+    setFiles(newFiles);
+    onUpload(newFiles, newUrls);
   };
 
   const handleClick = () => {
-    if (urls.length < maxCount && !isUploading) {
+    if (files.length < maxCount && !isUploading) {
       inputRef.current?.click();
     }
   };
 
   // スマホでのタッチ体験向上
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (isMobile && urls.length < maxCount && !isUploading) {
+    if (isMobile && files.length < maxCount && !isUploading) {
       // タッチフィードバックのためのクラス追加などの処理
       e.currentTarget.style.transform = "scale(0.98)";
     }
@@ -167,6 +194,9 @@ export default function PostUploadImage({
       e.currentTarget.style.transform = "";
     }
   };
+
+  console.log("urls:", urls);
+  console.log("files:", files);
 
   return (
     <div className={styles.container}>
@@ -182,7 +212,7 @@ export default function PostUploadImage({
       <div
         className={`${styles.dropzone} ${
           !isMobile && isDragOver ? styles.dragOver : ""
-        } ${urls.length >= maxCount ? styles.disabled : ""} ${
+        } ${files.length >= maxCount ? styles.disabled : ""} ${
           isMobile ? styles.mobileOnly : ""
         }`}
         onDragOver={!isMobile ? handleDragOver : preventDragEvents}
@@ -198,7 +228,7 @@ export default function PostUploadImage({
             <div className={styles.spinner}></div>
             <p>アップロード中...</p>
           </div>
-        ) : urls.length >= maxCount ? (
+        ) : files.length >= maxCount ? (
           <div className={styles.message}>
             <p>最大{maxCount}枚までアップロードできます</p>
           </div>
@@ -225,28 +255,46 @@ export default function PostUploadImage({
 
       {urls.length > 0 && (
         <div className={styles.previewContainer}>
-          {urls.map((url, idx) => (
-            <div key={url} className={styles.previewItem}>
-              <Image
-                src={url}
-                alt="preview"
-                width={80}
-                height={80}
-                className={styles.previewImage}
-              />
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleRemove(idx);
-                }}
-                className={styles.removeButton}
-                aria-label="画像を削除"
+          {urls.map((url, idx) => {
+            const isLoaded = loadedImages.has(url);
+
+            return (
+              <div
+                key={url}
+                className={`${styles.previewItem} ${
+                  !isLoaded ? styles.loading : ""
+                }`}
               >
-                ×
-              </button>
-            </div>
-          ))}
+                <Image
+                  src={url}
+                  alt="preview"
+                  width={80}
+                  height={80}
+                  className={styles.previewImage}
+                  unoptimized
+                  onLoad={() => handleImageLoad(url)}
+                  onError={() => handleImageError(url)}
+                />
+                {!isLoaded && (
+                  <div className={styles.imageLoading}>
+                    <div className={styles.imageSpinner}></div>
+                  </div>
+                )}
+
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRemove(idx);
+                  }}
+                  className={styles.removeButton}
+                  aria-label="画像を削除"
+                >
+                  ×
+                </button>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
