@@ -1,3 +1,5 @@
+@use "../../../../../styles/tokens" as tokens;
+
 .field {
   display: flex;
   flex-direction: column;
@@ -35,16 +37,16 @@
   justify-content: center;
 
   &:hover {
-    border-color: #28a745;
-    background: #f8f9fa;
+    border-color: tokens.$main;
+    background: #fff;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(40, 167, 69, 0.15);
   }
 
   &.active {
-    border-color: #28a745;
+    border-color: tokens.$main;
     background: linear-gradient(135deg, #e8f5e8 0%, #f1f8f4 100%);
-    color: #28a745;
+    color: tokens.$main;
     box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
     transform: translateY(-1px);
 

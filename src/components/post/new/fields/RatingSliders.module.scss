@@ -1,11 +1,12 @@
+@use "../../../../../styles/tokens" as tokens;
+
 .sliderSection {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
   padding: 1rem;
-  background: #f8f9fa;
+  background: #fff;
   border-radius: 12px;
-  border: 1px solid #e9ecef;
 }
 
 .sliderField {
@@ -41,14 +42,14 @@
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: #28a745;
+    background: tokens.$main;
     cursor: pointer;
     border: 2px solid #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     transition: all 0.2s ease;
 
     &:hover {
-      background: #218838;
+      background: tokens.$main;
       transform: scale(1.1);
     }
   }
@@ -57,27 +58,27 @@
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: #28a745;
+    background: tokens.$main;
     cursor: pointer;
     border: 2px solid #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     transition: all 0.2s ease;
 
     &:hover {
-      background: #218838;
+      background: tokens.$main;
       transform: scale(1.1);
     }
   }
 
   &::-webkit-slider-track {
     height: 6px;
-    background: linear-gradient(to right, #e9ecef 0%, #28a745 100%);
+    background: linear-gradient(to right, #e9ecef 0%, tokens.$main 100%);
     border-radius: 3px;
   }
 
   &::-moz-range-track {
     height: 6px;
-    background: linear-gradient(to right, #e9ecef 0%, #28a745 100%);
+    background: linear-gradient(to right, #e9ecef 0%, tokens.$main 100%);
     border-radius: 3px;
     border: none;
   }
@@ -88,9 +89,8 @@
   text-align: center;
   font-weight: 600;
   font-size: 1.1rem;
-  color: #28a745;
+  color: tokens.$main;
   background: #fff;
-  border: 1px solid #e9ecef;
   border-radius: 6px;
   padding: 0.25rem 0.5rem;
 }

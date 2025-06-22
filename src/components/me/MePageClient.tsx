@@ -63,31 +63,37 @@ export default function MePageClient({
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>マイページ</h2>
-      <div className={styles.welcome}>
-        <Image
-          src={userIconUrl || "/file.svg"}
-          alt="icon"
-          width={40}
-          height={40}
-          className={styles.iconPreview}
-        />
-        ようこそ、{userName} さん
-        <span style={{ flex: 1 }} />
-      </div>
-      <div style={{ display: "flex", gap: 24, margin: "12px 0" }}>
-        <button
-          className={styles.countButton}
-          onClick={() => setFollowingModalOpen(true)}
-        >
-          フォロー <b>{followingList.length}</b>
-        </button>
-        <button
-          className={styles.countButton}
-          onClick={() => setFollowersModalOpen(true)}
-        >
-          フォロワー <b>{followerList.length}</b>
-        </button>
+      <div className={styles.userInfo}>
+        <div className={styles.userDetails}>
+          <Image
+            src={userIconUrl || "/file.svg"}
+            alt="icon"
+            width={60}
+            height={60}
+            className={styles.iconPreview}
+          />
+          <p className={styles.userName}>{userName}</p>
+        </div>
+        <div className={styles.userStats}>
+          <div className={styles.countButton}>
+            <p>投稿</p>
+            <p>{posts.length}</p>
+          </div>
+          <button
+            className={styles.countButton}
+            onClick={() => setFollowingModalOpen(true)}
+          >
+            <p>フォロー</p>
+            <p>{followingList.length}</p>
+          </button>
+          <button
+            className={styles.countButton}
+            onClick={() => setFollowersModalOpen(true)}
+          >
+            <p>フォロワー</p>
+            <p>{followerList.length}</p>
+          </button>
+        </div>
       </div>
 
       {/* タブナビゲーション */}
