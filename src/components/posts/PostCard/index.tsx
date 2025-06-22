@@ -14,6 +14,9 @@ interface PostCardProps {
 }
 
 const PostCard = ({ post, myId }: PostCardProps) => {
+  // デバッグ用：画像URLをログ出力
+  console.log("PostCard images:", post.images);
+
   return (
     <>
       <div className={styles.postCard}>
