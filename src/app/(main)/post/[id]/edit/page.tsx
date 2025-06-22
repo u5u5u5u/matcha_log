@@ -19,6 +19,7 @@ export default function PostEditPage({
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -47,12 +48,47 @@ export default function PostEditPage({
     const form = e.currentTarget;
     const fd = new FormData(form);
 
-    // 画像URLを追加
-    imageUrls.forEach((url) => {
-      if (url) fd.append("images[]", url);
-    });
-
     try {
+      // 新しい画像ファイルがある場合は先にアップロード
+      let finalImageUrls: string[] = [];
+
+      // 既存の画像URLs（blob:で始まらないもの）
+      const existingImageUrls = imageUrls.filter(
+        (url) => !url.startsWith("blob:")
+      );
+
+      // 新しい画像ファイルをアップロード
+      if (imageFiles.length > 0) {
+        const uploadPromises = imageFiles.map(async (file) => {
+          const formData = new FormData();
+          formData.append("file", file);
+
+          const response = await fetch("/api/blob/post-upload", {
+            method: "POST",
+            body: formData,
+          });
+
+          if (!response.ok) {
+            throw new Error("画像のアップロードに失敗しました");
+          }
+
+          const data = await response.json();
+          return data.url;
+        });
+
+        const uploadedUrls = await Promise.all(uploadPromises);
+        finalImageUrls = [...existingImageUrls, ...uploadedUrls];
+      } else {
+        finalImageUrls = existingImageUrls;
+      }
+
+      // 最終的な画像URLを追加
+      finalImageUrls.forEach((url) => {
+        if (url) {
+          fd.append("images[]", url);
+        }
+      });
+
       const res = await fetch(`/api/post/${id}/edit`, {
         method: "POST",
         body: fd,
@@ -63,14 +99,19 @@ export default function PostEditPage({
       } else {
         router.push("/posts");
       }
-    } catch {
-      setError("通信エラーが発生しました");
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("通信エラーが発生しました");
+      }
     } finally {
       setLoading(false);
     }
   }
 
-  const handleImageUpload = (urls: string[]) => {
+  const handleImageUpload = (files: File[], urls: string[]) => {
+    setImageFiles(files);
     setImageUrls(urls);
   };
 

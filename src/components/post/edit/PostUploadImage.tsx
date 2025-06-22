@@ -23,12 +23,21 @@ export default function PostUploadImage({
 
   React.useEffect(() => {
     setUrls(initialUrls);
-    setFiles([]); // 初期状態では編集でない限りファイルは空
+    // 編集時: 初期URLsがある場合はfilesは空のまま（既存の画像）
+    // 新規時: 初期URLsが空なのでfilesも空
+    setFiles([]);
     // 初期URLsがある場合は、それらを読み込み済みとして設定
     if (initialUrls.length > 0) {
       setLoadedImages(new Set(initialUrls));
     }
   }, [initialUrls]);
+
+  // 初期値が設定された後に一度だけ親に通知
+  React.useEffect(() => {
+    if (initialUrls.length > 0) {
+      onUpload([], initialUrls);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // クリーンアップ: コンポーネントのアンマウント時にObject URLを解放
   React.useEffect(() => {
