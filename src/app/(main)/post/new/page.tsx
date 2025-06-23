@@ -5,7 +5,7 @@ import styles from "./page.module.scss";
 export default function PostNewPage() {
   return (
     <div className={styles.container}>
-      <PostForm />;
+      <PostForm />
     </div>
   );
 }
