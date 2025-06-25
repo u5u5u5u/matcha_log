@@ -116,9 +116,7 @@ export default function PageClient({
             <p className={styles.userName}>{userName}</p>
             <div className={styles.titleContainer}>
               {activeTitle ? (
-                <p className={styles.activeTitle}>
-                  {activeTitle.name}
-                </p>
+                <p className={styles.activeTitle}>{activeTitle.name}</p>
               ) : (
                 <p className={styles.noTitle}>称号なし</p>
               )}

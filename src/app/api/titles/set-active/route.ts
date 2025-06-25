@@ -42,7 +42,10 @@ export async function POST(request: NextRequest) {
     });
 
     if (!userTitle) {
-      return NextResponse.json({ error: "Title not unlocked" }, { status: 403 });
+      return NextResponse.json(
+        { error: "Title not unlocked" },
+        { status: 403 }
+      );
     }
 
     // アクティブな称号を更新

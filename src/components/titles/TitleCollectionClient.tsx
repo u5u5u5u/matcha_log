@@ -94,7 +94,9 @@ export default function TitleCollectionClient() {
             <div
               className={styles.progressFill}
               style={{
-                width: `${(titleData.totalUnlocked / titleData.totalTitles) * 100}%`,
+                width: `${
+                  (titleData.totalUnlocked / titleData.totalTitles) * 100
+                }%`,
               }}
             ></div>
           </div>
@@ -105,9 +107,13 @@ export default function TitleCollectionClient() {
         <h2>現在の称号</h2>
         <div className={styles.activeTitleDisplay}>
           {titleData.activeTitle ? (
-            <span className={styles.activeTitleName}>{titleData.activeTitle.name}</span>
+            <span className={styles.activeTitleName}>
+              {titleData.activeTitle.name}
+            </span>
           ) : (
-            <span className={styles.noActiveTitle}>称号が設定されていません</span>
+            <span className={styles.noActiveTitle}>
+              称号が設定されていません
+            </span>
           )}
         </div>
       </div>
@@ -131,12 +137,18 @@ export default function TitleCollectionClient() {
                   <span className={styles.titleName}>
                     {title.isUnlocked ? title.name : "???"}
                   </span>
-                  <span className={`${styles.rarity} ${styles[`rarity${title.rarity}`]}`}>
+                  <span
+                    className={`${styles.rarity} ${
+                      styles[`rarity${title.rarity}`]
+                    }`}
+                  >
                     {rarityNames[title.rarity as keyof typeof rarityNames]}
                   </span>
                 </div>
                 <p className={styles.titleDescription}>
-                  {title.isUnlocked ? title.description : "称号を獲得すると詳細が表示されます"}
+                  {title.isUnlocked
+                    ? title.description
+                    : "称号を獲得すると詳細が表示されます"}
                 </p>
                 {title.isUnlocked && (
                   <div className={styles.titleActions}>

@@ -34,7 +34,7 @@ export async function GET() {
     });
 
     // ユーザーが獲得した称号のIDセット
-    const unlockedTitleIds = new Set(user.userTitles.map(ut => ut.titleId));
+    const unlockedTitleIds = new Set(user.userTitles.map((ut) => ut.titleId));
 
     // 称号をカテゴリ別に整理
     const titlesByCategory = allTitles.reduce((acc, title) => {

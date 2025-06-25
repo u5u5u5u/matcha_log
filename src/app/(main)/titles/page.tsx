@@ -4,7 +4,7 @@ import TitleCollectionClient from "@/components/titles/TitleCollectionClient";
 
 export default async function TitleCollectionPage() {
   const session = await getServerSession(authOptions);
-  
+
   if (!session?.user?.email) {
     return <div>ログインしてください</div>;
   }
