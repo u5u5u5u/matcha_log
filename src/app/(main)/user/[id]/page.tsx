@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma";
 import Image from "next/image";
-import styles from "../../me/MePage.module.scss";
 import { notFound } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
@@ -35,15 +34,14 @@ export default async function UserProfilePage({
     initialIsFollowing = !!follow;
   }
   return (
-    <div className={styles.container}>
-      <h2 className={styles.title}>ユーザープロフィール</h2>
-      <div className={styles.welcome}>
+    <div>
+      <h2>ユーザープロフィール</h2>
+      <div>
         <Image
           src={user.iconUrl || "/file.svg"}
           alt="icon"
           width={40}
           height={40}
-          className={styles.iconPreview}
         />
         {user.name}
         {meId && meId !== user.id && (
@@ -61,12 +59,10 @@ export default async function UserProfilePage({
         <div>まだ投稿がありません。</div>
       ) : (
         user.posts.map((post) => (
-          <div key={post.id} className={styles.card}>
-            <div className={styles.cardTitle}>{post.title}</div>
-            <div className={styles.cardCategory}>
-              {post.category === "SWEET" ? "スイーツ" : "ドリンク"}
-            </div>
-            <div className={styles.cardImage}>
+          <div key={post.id}>
+            <div>{post.title}</div>
+            <div>{post.category === "SWEET" ? "スイーツ" : "ドリンク"}</div>
+            <div>
               {post.images.length > 0 && (
                 <Image
                   src={post.images[0].url}
@@ -77,9 +73,7 @@ export default async function UserProfilePage({
                 />
               )}
             </div>
-            <div className={styles.cardShop}>
-              店舗: {post.shop?.name || "未登録"}
-            </div>
+            <div>店舗: {post.shop?.name || "未登録"}</div>
           </div>
         ))
       )}

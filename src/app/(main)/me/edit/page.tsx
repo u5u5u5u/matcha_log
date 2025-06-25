@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import { prisma } from "@/lib/prisma";
 import ProfileEditForm from "@/components/me/ProfileEditForm";
-import styles from "../MePage.module.scss";
+import styles from "./page.module.css";
 
 export default async function ProfileEditPage() {
   const session = await getServerSession(authOptions);
