@@ -19,7 +19,7 @@ export default function TitleCollectionButton({ activeTitle }: Props) {
           router.push("/titles");
         }}
       >
-        称号コレクション
+        コレクション
       </button>
     </div>
   );

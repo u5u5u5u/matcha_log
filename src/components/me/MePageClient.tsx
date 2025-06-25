@@ -98,11 +98,11 @@ export default function PageClient({
             className={styles.iconPreview}
           />
           <div className={styles.userNameContainer}>
-            <div className={styles.nameAndTitleRow}>
-              <p className={styles.userName}>{userName}</p>
+            <div className={styles.userTitle}>
               <TitleDisplay activeTitle={activeTitle} />
+              <TitleCollectionButton activeTitle={activeTitle} />
             </div>
-            <TitleCollectionButton activeTitle={activeTitle} />
+            <p className={styles.userName}>{userName}</p>
           </div>
         </div>
         <div className={styles.userStats}>
