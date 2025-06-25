@@ -42,52 +42,6 @@
       margin: 0;
     }
 
-    .titleContainer {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      align-items: flex-start;
-    }
-
-    .activeTitle {
-      font-size: 0.8rem;
-      color: #8b5a3c;
-      background: linear-gradient(135deg, #fef3c7, #fcd34d);
-      border: 1px solid #f59e0b;
-      padding: 3px 8px;
-      border-radius: 12px;
-      margin: 0;
-      text-align: center;
-      font-weight: 500;
-      box-shadow: 0 2px 4px rgba(245, 158, 11, 0.2);
-      white-space: nowrap;
-    }
-
-    .noTitle {
-      font-size: 0.8rem;
-      color: #9ca3af;
-      margin: 0;
-      font-style: italic;
-    }
-
-    .titleCollectionButton {
-      background: linear-gradient(135deg, #6366f1, #4f46e5);
-      color: white;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 12px;
-      font-size: 0.8rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      align-self: flex-start;
-
-      &:hover {
-        background: linear-gradient(135deg, #4f46e5, #4338ca);
-        transform: translateY(-1px);
-      }
-    }
-
     .userName {
       font-size: 1.5rem;
       font-weight: 600;
