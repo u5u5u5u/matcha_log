@@ -1,3 +1,5 @@
+@use "../../../../styles/tokens" as tokens;
+
 .container {
   width: 100%;
 }
@@ -16,13 +18,13 @@
   justify-content: center;
 
   &:hover:not(.disabled) {
-    border-color: #007bff;
-    background: #f0f8ff;
+    border-color: tokens.$main;
+    background: #fff;
   }
 
   &.dragOver {
-    border-color: #007bff;
-    background: #e3f2fd;
+    border-color: tokens.$main;
+    background: #fff;
     transform: scale(1.02);
   }
 
@@ -34,18 +36,18 @@
 
   &.mobileOnly {
     background: #fff;
-    border: 2px solid #007bff;
+    border: 2px solid tokens.$main;
     border-radius: 12px;
 
     &:active {
-      background: #f0f8ff;
+      background: #fff;
       transform: scale(0.98);
-      border-color: #0056b3;
+      border-color: tokens.$main;
     }
 
     &:hover {
-      border-color: #0056b3;
-      background: #f8f9ff;
+      border-color: tokens.$main;
+      background: #fff;
     }
   }
 }
@@ -76,13 +78,13 @@
 }
 
 .uploading {
-  color: #28a745;
+  color: tokens.$main;
 
   .spinner {
     width: 24px;
     height: 24px;
-    border: 2px solid #e9ecef;
-    border-top: 2px solid #28a745;
+    border: 2px solid #fff;
+    border-top: 2px solid tokens.$main;
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin: 0 auto 0.5rem;
@@ -109,7 +111,7 @@
   flex-wrap: wrap;
   margin-top: 1rem;
   padding-top: 1rem;
-  border-top: 1px solid #e9ecef;
+  border-top: 1px solid #fff;
 }
 
 .previewItem {

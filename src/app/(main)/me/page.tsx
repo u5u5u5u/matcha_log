@@ -16,6 +16,7 @@ export default async function MePage() {
       name: true,
       email: true,
       iconUrl: true,
+      activeTitle: true,
       following: {
         select: {
           followingId: true,
@@ -51,6 +52,7 @@ export default async function MePage() {
       userName={user?.name || ""}
       userEmail={user?.email || ""}
       userIconUrl={user?.iconUrl || undefined}
+      activeTitle={user?.activeTitle || null}
       followingList={user?.following?.map((f) => f.following) || []}
       followerList={user?.followers?.map((f) => f.follower) || []}
     />

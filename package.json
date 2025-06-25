@@ -7,7 +7,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "seed": "tsx scripts/seed-titles.ts",
+    "sync-titles": "tsx scripts/sync-user-titles.ts"
+  },
+  "prisma": {
+    "seed": "tsx scripts/seed-titles.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.8.2",
@@ -34,6 +39,7 @@
     "eslint-config-next": "15.3.3",
     "prisma": "^6.8.2",
     "sass": "^1.89.0",
+    "tsx": "^4.20.3",
     "typescript": "^5"
   }
 }
