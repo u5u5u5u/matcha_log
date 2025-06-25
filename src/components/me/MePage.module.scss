@@ -8,7 +8,7 @@
 .userInfo {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 24px;
   padding: 20px;
 
   .userDetails {
@@ -75,7 +75,7 @@
 .tabNavigation {
   display: flex;
   justify-content: center;
-  border-bottom: 1px solid #bbf7d0;
+  border-bottom: 1px solid tokens.$background;
   margin-bottom: 20px;
 }
 
@@ -87,13 +87,9 @@
   cursor: pointer;
   font-size: 1rem;
   font-weight: 500;
-  color: tokens.$text;
-  border-bottom: 2px solid transparent;
+  color: #fff;
+  border-bottom: 2px solid tokens.$background;
   transition: all 0.2s;
-
-  &:hover {
-    color: tokens.$main-dark;
-  }
 }
 
 .activeTab {
