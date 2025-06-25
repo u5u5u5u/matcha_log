@@ -26,6 +26,7 @@ export default function Home() {
         height={288}
         priority
       />
+      <p>タップ</p>
     </div>
   );
 }

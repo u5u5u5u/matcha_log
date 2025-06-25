@@ -1,17 +1,30 @@
 @use "../../styles/_tokens.scss" as tokens;
 
 .page {
-  min-height: 100vh;
-  background: tokens.$main;
-}
-.logoCenter {
-  cursor: pointer;
-  min-height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 0;
+  min-height: 100vh;
+  background: tokens.$main;
+
+  p {
+    color: tokens.$accent;
+    font-size: 1.4rem;
+    font-weight: 500;
+    text-shadow: 2px 2px 2px tokens.$main-dark;
+    animation: scale 0.8s  infinite alternate;
+  }
 }
+@keyframes scale {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(0.75);
+  }
+}
+
 .logo {
   width: 100%;
 }
@@ -150,7 +163,6 @@
   text-decoration: none;
   letter-spacing: 1px;
 }
-
 
 // body {
 //   padding-bottom: 56px;

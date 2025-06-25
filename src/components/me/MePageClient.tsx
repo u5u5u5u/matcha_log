@@ -9,6 +9,9 @@ type Post = {
   id: string;
   title: string;
   category: string;
+  bitterness: number; // 苦さ 1-10
+  richness: number; // 濃さ 1-10
+  sweetness: number; // 甘さ 1-10
   images: { url: string }[];
   shop?: { name?: string | null };
 };
@@ -25,7 +28,7 @@ type Props = {
   followerList: UserSimple[];
 };
 
-export default function MePageClient({
+export default function PageClient({
   posts,
   likedPosts,
   userName,
@@ -38,6 +41,124 @@ export default function MePageClient({
   const [activeTab, setActiveTab] = React.useState<"posts" | "liked">("posts");
   const [actionModalOpen, setActionModalOpen] = React.useState(false);
   const [selectedPost, setSelectedPost] = React.useState<Post | null>(null);
+
+  // 投稿数に応じた称号を取得する関数
+  function getUserTitle(postCount: number): string {
+    if (postCount >= 100) return "抹茶マスター";
+    if (postCount >= 50) return "抹茶エキスパート";
+    if (postCount >= 20) return "抹茶愛好家";
+    if (postCount >= 10) return "抹茶ファン";
+    if (postCount >= 5) return "抹茶初心者";
+    return "抹茶新人";
+  }
+
+  // 次の称号までの投稿数を取得する関数
+  function getNextTitleInfo(
+    postCount: number
+  ): { nextTitle: string; postsNeeded: number } | null {
+    if (postCount < 5)
+      return { nextTitle: "抹茶初心者", postsNeeded: 5 - postCount };
+    if (postCount < 10)
+      return { nextTitle: "抹茶ファン", postsNeeded: 10 - postCount };
+    if (postCount < 20)
+      return { nextTitle: "抹茶愛好家", postsNeeded: 20 - postCount };
+    if (postCount < 50)
+      return { nextTitle: "抹茶エキスパート", postsNeeded: 50 - postCount };
+    if (postCount < 100)
+      return { nextTitle: "抹茶マスター", postsNeeded: 100 - postCount };
+    return null; // 最高称号に到達
+  }
+
+  // 称号に応じたスタイルクラスを取得する関数
+  function getTitleClass(postCount: number): string {
+    if (postCount >= 100) return styles.titleMaster;
+    if (postCount >= 50) return styles.titleExpert;
+    if (postCount >= 20) return styles.titleLover;
+    if (postCount >= 10) return styles.titleFan;
+    if (postCount >= 5) return styles.titleBeginner;
+    return styles.titleNewbie;
+  }
+
+  // 味覚パラメータの平均値から称号を取得する関数
+  function getTasteTitle(posts: Post[]): string {
+    if (posts.length === 0) return "";
+
+    const totalBitterness = posts.reduce(
+      (sum, post) => sum + post.bitterness,
+      0
+    );
+    const totalRichness = posts.reduce((sum, post) => sum + post.richness, 0);
+    const totalSweetness = posts.reduce((sum, post) => sum + post.sweetness, 0);
+
+    const avgBitterness = totalBitterness / posts.length;
+    const avgRichness = totalRichness / posts.length;
+    const avgSweetness = totalSweetness / posts.length;
+
+    // 味覚のバランスをチェック（3つの値が近い場合）
+    const maxDiff =
+      Math.max(avgBitterness, avgRichness, avgSweetness) -
+      Math.min(avgBitterness, avgRichness, avgSweetness);
+
+    if (maxDiff <= 1.5) {
+      // バランス型称号
+      const totalAvg = (avgBitterness + avgRichness + avgSweetness) / 3;
+      if (totalAvg >= 8) return "完璧なバランサー";
+      if (totalAvg >= 6) return "バランスマスター";
+      if (totalAvg >= 4) return "バランス探求者";
+      return "味覚の調和者";
+    }
+
+    // 最も高い平均値に基づいて称号を決定
+    if (avgBitterness >= avgRichness && avgBitterness >= avgSweetness) {
+      if (avgBitterness >= 8) return "苦味の求道者";
+      if (avgBitterness >= 7) return "苦味マスター";
+      if (avgBitterness >= 5) return "苦味愛好家";
+      return "苦味探求者";
+    } else if (avgRichness >= avgSweetness) {
+      if (avgRichness >= 8) return "濃厚の極み";
+      if (avgRichness >= 7) return "濃厚マスター";
+      if (avgRichness >= 5) return "濃厚愛好家";
+      return "濃厚探求者";
+    } else {
+      if (avgSweetness >= 8) return "甘味の天使";
+      if (avgSweetness >= 7) return "甘味マスター";
+      if (avgSweetness >= 5) return "甘味愛好家";
+      return "甘味探求者";
+    }
+  }
+
+  // 味覚称号のスタイルクラスを取得する関数
+  function getTasteTitleClass(posts: Post[]): string {
+    if (posts.length === 0) return "";
+
+    const totalBitterness = posts.reduce(
+      (sum, post) => sum + post.bitterness,
+      0
+    );
+    const totalRichness = posts.reduce((sum, post) => sum + post.richness, 0);
+    const totalSweetness = posts.reduce((sum, post) => sum + post.sweetness, 0);
+
+    const avgBitterness = totalBitterness / posts.length;
+    const avgRichness = totalRichness / posts.length;
+    const avgSweetness = totalSweetness / posts.length;
+
+    // バランス型の判定
+    const maxDiff =
+      Math.max(avgBitterness, avgRichness, avgSweetness) -
+      Math.min(avgBitterness, avgRichness, avgSweetness);
+
+    if (maxDiff <= 1.5) {
+      return styles.tasteTitleBalance;
+    }
+
+    if (avgBitterness >= avgRichness && avgBitterness >= avgSweetness) {
+      return styles.tasteTitleBitter;
+    } else if (avgRichness >= avgSweetness) {
+      return styles.tasteTitleRich;
+    } else {
+      return styles.tasteTitleSweet;
+    }
+  }
 
   async function handleDelete(id: string) {
     if (!confirm("本当に削除しますか？")) return;
@@ -61,6 +182,24 @@ export default function MePageClient({
     }
   }
 
+  // 味覚統計情報を取得する関数
+  function getTasteStats(posts: Post[]) {
+    if (posts.length === 0) return null;
+
+    const totalBitterness = posts.reduce(
+      (sum, post) => sum + post.bitterness,
+      0
+    );
+    const totalRichness = posts.reduce((sum, post) => sum + post.richness, 0);
+    const totalSweetness = posts.reduce((sum, post) => sum + post.sweetness, 0);
+
+    return {
+      avgBitterness: (totalBitterness / posts.length).toFixed(1),
+      avgRichness: (totalRichness / posts.length).toFixed(1),
+      avgSweetness: (totalSweetness / posts.length).toFixed(1),
+    };
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.userInfo}>
@@ -72,7 +211,35 @@ export default function MePageClient({
             height={60}
             className={styles.iconPreview}
           />
-          <p className={styles.userName}>{userName}</p>
+          <div className={styles.userNameContainer}>
+            <p className={styles.userName}>{userName}</p>
+            <div className={styles.titleContainer}>
+              <p
+                className={`${styles.userTitle} ${getTitleClass(posts.length)}`}
+              >
+                {getUserTitle(posts.length)}
+              </p>
+              {posts.length > 0 && getTasteTitle(posts) && (
+                <p
+                  className={`${styles.tasteTitle} ${getTasteTitleClass(
+                    posts
+                  )}`}
+                >
+                  {getTasteTitle(posts)}
+                </p>
+              )}
+            </div>
+            {getNextTitleInfo(posts.length) ? (
+              <p className={styles.nextTitleInfo}>
+                次の称号「{getNextTitleInfo(posts.length)!.nextTitle}」まであと
+                {getNextTitleInfo(posts.length)!.postsNeeded}投稿
+              </p>
+            ) : (
+              <p className={styles.masterTitleInfo}>
+                🎉 最高称号に到達しました！
+              </p>
+            )}
+          </div>
         </div>
         <div className={styles.userStats}>
           <div className={styles.countButton}>
@@ -94,6 +261,57 @@ export default function MePageClient({
             <p>{followerList.length}</p>
           </button>
         </div>
+
+        {/* 味覚統計情報 */}
+        {posts.length > 0 &&
+          (() => {
+            const tasteStats = getTasteStats(posts);
+            if (!tasteStats) return null;
+
+            return (
+              <div className={styles.tasteStats}>
+                <h3 className={styles.tasteStatsTitle}>味覚プロフィール</h3>
+                <div className={styles.tasteStatsGrid}>
+                  <div
+                    className={`${styles.tasteStat} ${
+                      parseFloat(tasteStats.avgBitterness) >= 7
+                        ? styles.highValue
+                        : ""
+                    }`}
+                  >
+                    <span className={styles.tasteStatLabel}>苦味</span>
+                    <span className={styles.tasteStatValue}>
+                      {tasteStats.avgBitterness}
+                    </span>
+                  </div>
+                  <div
+                    className={`${styles.tasteStat} ${
+                      parseFloat(tasteStats.avgRichness) >= 7
+                        ? styles.highValue
+                        : ""
+                    }`}
+                  >
+                    <span className={styles.tasteStatLabel}>濃厚</span>
+                    <span className={styles.tasteStatValue}>
+                      {tasteStats.avgRichness}
+                    </span>
+                  </div>
+                  <div
+                    className={`${styles.tasteStat} ${
+                      parseFloat(tasteStats.avgSweetness) >= 7
+                        ? styles.highValue
+                        : ""
+                    }`}
+                  >
+                    <span className={styles.tasteStatLabel}>甘味</span>
+                    <span className={styles.tasteStatValue}>
+                      {tasteStats.avgSweetness}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
       </div>
 
       {/* タブナビゲーション */}
