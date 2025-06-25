@@ -113,13 +113,14 @@ export default function PageClient({
             className={styles.iconPreview}
           />
           <div className={styles.userNameContainer}>
-            <p className={styles.userName}>{userName}</p>
-            <div className={styles.titleContainer}>
-              {activeTitle ? (
+            <div className={styles.nameAndTitleRow}>
+              <p className={styles.userName}>{userName}</p>
+              {activeTitle && (
                 <p className={styles.activeTitle}>{activeTitle.name}</p>
-              ) : (
-                <p className={styles.noTitle}>称号なし</p>
               )}
+            </div>
+            <div className={styles.titleContainer}>
+              {!activeTitle && <p className={styles.noTitle}>称号なし</p>}
               <button
                 className={styles.titleCollectionButton}
                 onClick={() => {

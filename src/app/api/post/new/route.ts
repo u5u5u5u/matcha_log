@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import { PrismaClient, Category } from "@/generated/prisma";
+import { updateUserTitles } from "@/lib/titleUtils";
 
 const prisma = new PrismaClient();
 
@@ -66,6 +67,9 @@ export async function POST(req: NextRequest) {
     },
     include: { images: true },
   });
+
+  // 称号獲得状況を更新
+  await updateUserTitles(user.id);
 
   return NextResponse.json({ ok: true, post });
 }
