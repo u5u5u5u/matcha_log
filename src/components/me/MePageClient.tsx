@@ -6,6 +6,7 @@ import styles from "./MePage.module.scss";
 import UserList from "./UserList";
 import TitleDisplay from "./TitleDisplay";
 import TitleCollectionButton from "./TitleCollectionButton";
+import TasteProfile from "./TasteProfile";
 
 type Post = {
   id: string;
@@ -68,24 +69,6 @@ export default function PageClient({
     }
   }
 
-  // 味覚統計情報を取得する関数
-  function getTasteStats(posts: Post[]) {
-    if (posts.length === 0) return null;
-
-    const totalBitterness = posts.reduce(
-      (sum, post) => sum + post.bitterness,
-      0
-    );
-    const totalRichness = posts.reduce((sum, post) => sum + post.richness, 0);
-    const totalSweetness = posts.reduce((sum, post) => sum + post.sweetness, 0);
-
-    return {
-      avgBitterness: (totalBitterness / posts.length).toFixed(1),
-      avgRichness: (totalRichness / posts.length).toFixed(1),
-      avgSweetness: (totalSweetness / posts.length).toFixed(1),
-    };
-  }
-
   return (
     <div className={styles.container}>
       <div className={styles.userInfo}>
@@ -126,56 +109,8 @@ export default function PageClient({
           </button>
         </div>
 
-        {/* 味覚統計情報 */}
-        {posts.length > 0 &&
-          (() => {
-            const tasteStats = getTasteStats(posts);
-            if (!tasteStats) return null;
-
-            return (
-              <div className={styles.tasteStats}>
-                <h3 className={styles.tasteStatsTitle}>味覚プロフィール</h3>
-                <div className={styles.tasteStatsGrid}>
-                  <div
-                    className={`${styles.tasteStat} ${
-                      parseFloat(tasteStats.avgBitterness) >= 7
-                        ? styles.highValue
-                        : ""
-                    }`}
-                  >
-                    <span className={styles.tasteStatLabel}>苦味</span>
-                    <span className={styles.tasteStatValue}>
-                      {tasteStats.avgBitterness}
-                    </span>
-                  </div>
-                  <div
-                    className={`${styles.tasteStat} ${
-                      parseFloat(tasteStats.avgRichness) >= 7
-                        ? styles.highValue
-                        : ""
-                    }`}
-                  >
-                    <span className={styles.tasteStatLabel}>濃厚</span>
-                    <span className={styles.tasteStatValue}>
-                      {tasteStats.avgRichness}
-                    </span>
-                  </div>
-                  <div
-                    className={`${styles.tasteStat} ${
-                      parseFloat(tasteStats.avgSweetness) >= 7
-                        ? styles.highValue
-                        : ""
-                    }`}
-                  >
-                    <span className={styles.tasteStatLabel}>甘味</span>
-                    <span className={styles.tasteStatValue}>
-                      {tasteStats.avgSweetness}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            );
-          })()}
+        {/* 味覚プロフィール */}
+        <TasteProfile posts={posts} />
       </div>
 
       {/* タブナビゲーション */}
