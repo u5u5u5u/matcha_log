@@ -1,9 +1,12 @@
 "use client";
-import React from "react";
 import Image from "next/image";
-import styles from "./MePage.module.scss";
+import React from "react";
 import Modal from "../util/Modal";
+import styles from "./MePage.module.scss";
 import UserList from "./UserList";
+import TitleDisplay from "./TitleDisplay";
+import TitleCollectionButton from "./TitleCollectionButton";
+import TasteProfile from "./TasteProfile";
 
 type Post = {
   id: string;
@@ -44,23 +47,6 @@ export default function PageClient({
   const [actionModalOpen, setActionModalOpen] = React.useState(false);
   const [selectedPost, setSelectedPost] = React.useState<Post | null>(null);
 
-  // 次の称号までの投稿数を取得する関数（参考情報として残す）
-  function getNextTitleInfo(
-    postCount: number
-  ): { nextTitle: string; postsNeeded: number } | null {
-    if (postCount < 5)
-      return { nextTitle: "抹茶初心者", postsNeeded: 5 - postCount };
-    if (postCount < 10)
-      return { nextTitle: "抹茶ファン", postsNeeded: 10 - postCount };
-    if (postCount < 20)
-      return { nextTitle: "抹茶愛好家", postsNeeded: 20 - postCount };
-    if (postCount < 50)
-      return { nextTitle: "抹茶エキスパート", postsNeeded: 50 - postCount };
-    if (postCount < 100)
-      return { nextTitle: "抹茶マスター", postsNeeded: 100 - postCount };
-    return null; // 最高称号に到達
-  }
-
   async function handleDelete(id: string) {
     if (!confirm("本当に削除しますか？")) return;
     const res = await fetch(`/api/post/${id}/delete`, { method: "POST" });
@@ -83,24 +69,6 @@ export default function PageClient({
     }
   }
 
-  // 味覚統計情報を取得する関数
-  function getTasteStats(posts: Post[]) {
-    if (posts.length === 0) return null;
-
-    const totalBitterness = posts.reduce(
-      (sum, post) => sum + post.bitterness,
-      0
-    );
-    const totalRichness = posts.reduce((sum, post) => sum + post.richness, 0);
-    const totalSweetness = posts.reduce((sum, post) => sum + post.sweetness, 0);
-
-    return {
-      avgBitterness: (totalBitterness / posts.length).toFixed(1),
-      avgRichness: (totalRichness / posts.length).toFixed(1),
-      avgSweetness: (totalSweetness / posts.length).toFixed(1),
-    };
-  }
-
   return (
     <div className={styles.container}>
       <div className={styles.userInfo}>
@@ -113,33 +81,11 @@ export default function PageClient({
             className={styles.iconPreview}
           />
           <div className={styles.userNameContainer}>
-            <div className={styles.nameAndTitleRow}>
-              <p className={styles.userName}>{userName}</p>
-              {activeTitle && (
-                <p className={styles.activeTitle}>{activeTitle.name}</p>
-              )}
+            <div className={styles.userTitle}>
+              <TitleDisplay activeTitle={activeTitle} />
+              <TitleCollectionButton activeTitle={activeTitle} />
             </div>
-            <div className={styles.titleContainer}>
-              {!activeTitle && <p className={styles.noTitle}>称号なし</p>}
-              <button
-                className={styles.titleCollectionButton}
-                onClick={() => {
-                  window.location.href = "/titles";
-                }}
-              >
-                称号コレクション
-              </button>
-            </div>
-            {getNextTitleInfo(posts.length) ? (
-              <p className={styles.nextTitleInfo}>
-                次の称号「{getNextTitleInfo(posts.length)!.nextTitle}」まであと
-                {getNextTitleInfo(posts.length)!.postsNeeded}投稿
-              </p>
-            ) : (
-              <p className={styles.masterTitleInfo}>
-                🎉 最高称号に到達しました！
-              </p>
-            )}
+            <p className={styles.userName}>{userName}</p>
           </div>
         </div>
         <div className={styles.userStats}>
@@ -163,56 +109,8 @@ export default function PageClient({
           </button>
         </div>
 
-        {/* 味覚統計情報 */}
-        {posts.length > 0 &&
-          (() => {
-            const tasteStats = getTasteStats(posts);
-            if (!tasteStats) return null;
-
-            return (
-              <div className={styles.tasteStats}>
-                <h3 className={styles.tasteStatsTitle}>味覚プロフィール</h3>
-                <div className={styles.tasteStatsGrid}>
-                  <div
-                    className={`${styles.tasteStat} ${
-                      parseFloat(tasteStats.avgBitterness) >= 7
-                        ? styles.highValue
-                        : ""
-                    }`}
-                  >
-                    <span className={styles.tasteStatLabel}>苦味</span>
-                    <span className={styles.tasteStatValue}>
-                      {tasteStats.avgBitterness}
-                    </span>
-                  </div>
-                  <div
-                    className={`${styles.tasteStat} ${
-                      parseFloat(tasteStats.avgRichness) >= 7
-                        ? styles.highValue
-                        : ""
-                    }`}
-                  >
-                    <span className={styles.tasteStatLabel}>濃厚</span>
-                    <span className={styles.tasteStatValue}>
-                      {tasteStats.avgRichness}
-                    </span>
-                  </div>
-                  <div
-                    className={`${styles.tasteStat} ${
-                      parseFloat(tasteStats.avgSweetness) >= 7
-                        ? styles.highValue
-                        : ""
-                    }`}
-                  >
-                    <span className={styles.tasteStatLabel}>甘味</span>
-                    <span className={styles.tasteStatValue}>
-                      {tasteStats.avgSweetness}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            );
-          })()}
+        {/* 味覚プロフィール */}
+        <TasteProfile posts={posts} />
       </div>
 
       {/* タブナビゲーション */}
