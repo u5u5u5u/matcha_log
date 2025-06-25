@@ -1,0 +1,257 @@
+@use "../../../styles/tokens" as tokens;
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+  
+  .title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: tokens.$text;
+  }
+  
+  .stats {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    
+    .progress {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: tokens.$main;
+    }
+    
+    .progressBar {
+      width: 300px;
+      height: 8px;
+      background-color: #e5e7eb;
+      border-radius: 4px;
+      overflow: hidden;
+      
+      .progressFill {
+        height: 100%;
+        background: linear-gradient(90deg, #10b981, #059669);
+        transition: width 0.3s ease;
+      }
+    }
+  }
+}
+
+.activeTitle {
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 30px;
+  text-align: center;
+  
+  h2 {
+    margin: 0 0 15px 0;
+    font-size: 1.2rem;
+    color: #475569;
+  }
+  
+  .activeTitleDisplay {
+    .activeTitleName {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1e293b;
+      padding: 8px 16px;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      border-radius: 8px;
+      display: inline-block;
+    }
+    
+    .noActiveTitle {
+      font-size: 1rem;
+      color: #64748b;
+      font-style: italic;
+    }
+  }
+}
+
+.category {
+  margin-bottom: 40px;
+  
+  .categoryTitle {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: tokens.$text;
+    border-bottom: 2px solid tokens.$main;
+    padding-bottom: 8px;
+  }
+}
+
+.titleGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.titleCard {
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.3s ease;
+  position: relative;
+  cursor: pointer;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  &.locked {
+    background: #f3f4f6;
+    opacity: 0.6;
+    cursor: not-allowed;
+    
+    .titleName {
+      color: #9ca3af;
+    }
+    
+    .lockIcon {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 1.2rem;
+    }
+  }
+  
+  &.active {
+    border-color: #10b981;
+    background: linear-gradient(135deg, #ecfdf5, #f0fdf4);
+    
+    .titleName {
+      color: #065f46;
+    }
+  }
+  
+  // レアリティ別スタイル
+  &.rarityCOMMON {
+    border-color: #9ca3af;
+  }
+  
+  &.rarityRARE {
+    border-color: #3b82f6;
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
+  }
+  
+  &.rarityEPIC {
+    border-color: #8b5cf6;
+    box-shadow: 0 0 10px rgba(139, 92, 246, 0.2);
+  }
+  
+  &.rarityLEGENDARY {
+    border-color: #f59e0b;
+    box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
+  }
+}
+
+.titleHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  
+  .titleName {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: tokens.$text;
+  }
+  
+  .rarity {
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 4px 8px;
+    border-radius: 6px;
+    
+    &.rarityCOMMON {
+      background: #f3f4f6;
+      color: #6b7280;
+    }
+    
+    &.rarityRARE {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+    
+    &.rarityEPIC {
+      background: #ede9fe;
+      color: #6d28d9;
+    }
+    
+    &.rarityLEGENDARY {
+      background: #fef3c7;
+      color: #92400e;
+    }
+  }
+}
+
+.titleDescription {
+  font-size: 0.9rem;
+  color: #64748b;
+  margin-bottom: 15px;
+  line-height: 1.4;
+}
+
+.titleActions {
+  display: flex;
+  gap: 10px;
+  
+  button {
+    flex: 1;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .activateButton {
+    background: #10b981;
+    color: white;
+    
+    &:hover {
+      background: #059669;
+    }
+  }
+  
+  .deactivateButton {
+    background: #ef4444;
+    color: white;
+    
+    &:hover {
+      background: #dc2626;
+    }
+  }
+}
+
+.loading, .error {
+  text-align: center;
+  padding: 40px;
+  font-size: 1.1rem;
+  color: #64748b;
+}
+
+@media (max-width: 768px) {
+  .titleGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .header .stats .progressBar {
+    width: 250px;
+  }
+}
