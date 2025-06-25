@@ -7,8 +7,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: "抹茶の記録",
     start_url: "/",
     display: "standalone",
-    background_color: "#fff",
-    theme_color: "#fff",
+    background_color: "#b2c42d",
+    theme_color: "#b2c42d",
     icons: [
       {
         src: "/favicon.ico",
