@@ -27,6 +27,11 @@ model User {
   following Follow[] @relation("following")
   followers Follow[] @relation("followers")
   likes     Like[]
+  
+  // 称号関連
+  activeTitle     Title?  @relation("ActiveTitle", fields: [activeTitleId], references: [id])
+  activeTitleId   String?
+  userTitles      UserTitle[]
 }
 
 model Post {
@@ -89,4 +94,43 @@ model Like {
   createdAt DateTime @default(now())
 
   @@unique([userId, postId])
+}
+
+model Title {
+  id          String    @id @default(uuid())
+  name        String    @unique
+  description String?
+  type        TitleType
+  condition   Json      // 獲得条件をJSONで保存
+  rarity      TitleRarity @default(COMMON)
+  createdAt   DateTime  @default(now())
+  
+  users       User[]    @relation("ActiveTitle")
+  userTitles  UserTitle[]
+}
+
+model UserTitle {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  title     Title    @relation(fields: [titleId], references: [id], onDelete: Cascade)
+  titleId   String
+  unlockedAt DateTime @default(now())
+  
+  @@unique([userId, titleId])
+}
+
+enum TitleType {
+  POST_COUNT
+  TASTE_BITTER
+  TASTE_RICH
+  TASTE_SWEET
+  TASTE_BALANCE
+}
+
+enum TitleRarity {
+  COMMON
+  RARE
+  EPIC
+  LEGENDARY
 }
