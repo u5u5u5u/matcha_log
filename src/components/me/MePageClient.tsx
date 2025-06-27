@@ -89,22 +89,18 @@ export default function PageClient({
           </div>
         </div>
         <div className={styles.userStats}>
-          <div className={styles.countButton}>
-            <p>投稿</p>
-            <p>{posts.length}</p>
-          </div>
           <button
             className={styles.countButton}
             onClick={() => setFollowingModalOpen(true)}
           >
-            <p>フォロー</p>
+            <p className={styles.statsText}>フォロー</p>
             <p>{followingList.length}</p>
           </button>
           <button
             className={styles.countButton}
             onClick={() => setFollowersModalOpen(true)}
           >
-            <p>フォロワー</p>
+            <p className={styles.statsText}>フォロワー</p>
             <p>{followerList.length}</p>
           </button>
         </div>
