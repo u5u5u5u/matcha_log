@@ -7,6 +7,8 @@ import UserList from "./UserList";
 import TitleDisplay from "./TitleDisplay";
 import TitleCollectionButton from "./TitleCollectionButton";
 import TasteProfile from "./TasteProfile";
+import { SquarePen } from "lucide-react";
+import Link from "next/link";
 
 type Post = {
   id: string;
@@ -85,7 +87,14 @@ export default function PageClient({
               <TitleDisplay activeTitle={activeTitle} />
               <TitleCollectionButton activeTitle={activeTitle} />
             </div>
-            <p className={styles.userName}>{userName}</p>
+            <div className={styles.userName}>
+              <p>{userName}u5u5u5u5u5u5u5u5</p>
+              <div>
+                <Link href="/me/edit">
+                  <SquarePen />
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
         <div className={styles.userStats}>

@@ -27,18 +27,28 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-    }
+      width: 100%;
+      max-width: 210px;
 
-    .userTitle {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+      .userTitle {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
 
-    .userName {
-      font-size: 2rem;
-      font-weight: 600;
-      margin: 8px 0 0 12px;
+      .userName {
+        display: flex;
+        justify-content: space-between;
+        font-weight: 600;
+        margin: 8px 0 0 12px;
+
+        p {
+          width: 100%;
+          font-size: 1.5rem;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
     }
   }
 
