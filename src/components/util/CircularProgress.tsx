@@ -1,5 +1,4 @@
 "use client";
-import React from "react";
 import styles from "./CircularProgress.module.scss";
 
 type Props = {

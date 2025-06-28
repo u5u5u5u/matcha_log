@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "./TasteProfile.module.scss";
+import CircularProgress from "../util/CircularProgress";
 
 type Post = {
   id: string;
@@ -42,17 +43,17 @@ export default function TasteProfile({ posts }: Props) {
 
   const tasteData = [
     {
-      label: "苦味",
+      label: "苦さ",
       value: tasteStats.avgBitterness,
       color: "bitter",
     },
     {
-      label: "濃厚",
+      label: "濃さ",
       value: tasteStats.avgRichness,
       color: "rich",
     },
     {
-      label: "甘味",
+      label: "甘さ",
       value: tasteStats.avgSweetness,
       color: "sweet",
     },
@@ -60,26 +61,17 @@ export default function TasteProfile({ posts }: Props) {
 
   return (
     <div className={styles.tasteProfile}>
-      <div className={styles.statsGrid}>
+      <div className={styles.statsRow}>
         {tasteData.map((taste) => (
-          <div
-            key={taste.label}
-            className={`${styles.tasteStat} ${styles[taste.color]}`}
-          >
-            <div className={styles.content}>
-              <span className={styles.label}>{taste.label}</span>
-              <div className={styles.valueContainer}>
-                <span className={styles.value}>{taste.value}</span>
-                <span className={styles.scale}>/10</span>
-              </div>
-              <div className={styles.progressBar}>
-                <div
-                  className={styles.progress}
-                  style={{ width: `${(parseFloat(taste.value) / 10) * 100}%` }}
-                />
-              </div>
-            </div>
-          </div>
+          <React.Fragment key={taste.label}>
+            <CircularProgress
+              value={parseFloat(taste.value)}
+              max={10}
+              size={80}
+              strokeWidth={8}
+              label={taste.label}
+            />
+          </React.Fragment>
         ))}
       </div>
     </div>

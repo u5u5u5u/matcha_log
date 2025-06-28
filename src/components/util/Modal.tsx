@@ -1,7 +1,7 @@
 "use client";
+import { X } from "lucide-react";
 import React from "react";
 import styles from "./Modal.module.scss";
-import { X } from "lucide-react";
 
 type ModalProps = {
   isOpen: boolean;

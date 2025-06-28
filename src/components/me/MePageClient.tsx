@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import CategoryTag from "../posts/CategoryTag";
+import ImageGallery from "../posts/ImageGallery";
 import CircularProgress from "../util/CircularProgress";
 import Modal from "../util/Modal";
 import styles from "./MePage.module.scss";
@@ -11,7 +12,6 @@ import TasteProfile from "./TasteProfile";
 import TitleCollectionButton from "./TitleCollectionButton";
 import TitleDisplay from "./TitleDisplay";
 import UserList from "./UserList";
-import ImageGallery from "../posts/ImageGallery";
 
 type Post = {
   id: string;
