@@ -1,15 +1,16 @@
 "use client";
+import { SquarePen, Trash2 } from "lucide-react";
 import Image from "next/image";
-import React from "react";
-import Modal from "../util/Modal";
-import CircularProgress from "../util/CircularProgress";
-import styles from "./MePage.module.scss";
-import UserList from "./UserList";
-import TitleDisplay from "./TitleDisplay";
-import TitleCollectionButton from "./TitleCollectionButton";
-import TasteProfile from "./TasteProfile";
-import { SquarePen } from "lucide-react";
 import Link from "next/link";
+import React from "react";
+import CategoryTag from "../posts/CategoryTag";
+import CircularProgress from "../util/CircularProgress";
+import Modal from "../util/Modal";
+import styles from "./MePage.module.scss";
+import TasteProfile from "./TasteProfile";
+import TitleCollectionButton from "./TitleCollectionButton";
+import TitleDisplay from "./TitleDisplay";
+import UserList from "./UserList";
 
 type Post = {
   id: string;
@@ -172,7 +173,7 @@ export default function PageClient({
         {selectedPost && (
           <div className={styles.actionModal}>
             <div className={styles.postPreview}>
-              {selectedPost.images.length > 0 && (
+              {selectedPost.images.length > 0 ? (
                 <Image
                   src={`/api/image-proxy?url=${encodeURIComponent(
                     selectedPost.images[0].url
@@ -189,18 +190,21 @@ export default function PageClient({
                     e.currentTarget.style.display = "none";
                   }}
                 />
+              ) : (
+                <Image
+                  src="/no-image.svg"
+                  alt="image load failed"
+                  width={200}
+                  height={200}
+                  className={styles.noImage}
+                />
               )}
               <div className={styles.postInfo}>
-                <p>
-                  <strong>タイトル:</strong> {selectedPost.title}
-                </p>
-                <p>
-                  <strong>カテゴリ:</strong>{" "}
-                  {selectedPost.category === "SWEET" ? "スイーツ" : "ドリンク"}
-                </p>
-                <p>
-                  <strong>店舗:</strong> {selectedPost.shop?.name || "未登録"}
-                </p>
+                <div className={styles.postCardName}>{selectedPost.title}</div>
+                <CategoryTag category={selectedPost.category} />
+                <div className={styles.postCardShop}>
+                  店舗：{selectedPost.shop?.name || "未登録"}
+                </div>
                 <div className={styles.tasteMetrics}>
                   <CircularProgress
                     value={selectedPost.bitterness}
@@ -227,12 +231,14 @@ export default function PageClient({
                   window.location.href = `/post/${selectedPost.id}/edit`;
                 }}
               >
+                <SquarePen />
                 編集
               </button>
               <button
                 className={styles.deleteButton}
                 onClick={() => handleDelete(selectedPost.id)}
               >
+                <Trash2 />
                 削除
               </button>
             </div>

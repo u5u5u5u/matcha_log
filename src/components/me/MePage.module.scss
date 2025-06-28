@@ -162,17 +162,17 @@
   margin: 0 auto;
 }
 
+.noImage {
+  width: 100%;
+  height: auto;
+}
+
 .postPreview {
   display: flex;
-  gap: 20px;
   margin-bottom: 32px;
-  align-items: flex-start;
-
-  @media (max-width: 480px) {
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-  }
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
 }
 
 .previewImage {
@@ -180,29 +180,20 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   object-fit: cover;
   flex-shrink: 0;
-
-  @media (max-width: 480px) {
-    width: 100%;
-    max-width: 280px;
-    height: auto;
-  }
+  width: 100%;
+  max-width: 280px;
+  height: auto;
 }
 
 .postInfo {
-  flex: 1;
-  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
 
-  p {
-    margin: 12px 0;
-    font-size: 1rem;
-    line-height: 1.5;
-
-    strong {
-      color: tokens.$main;
-      font-weight: 600;
-      display: inline-block;
-      min-width: 70px;
-    }
+  .postCardName {
+    font-size: 1.2rem;
+    font-weight: bold;
   }
 }
 
@@ -210,10 +201,6 @@
   display: flex;
   justify-content: space-between;
   margin: 20px 0;
-  padding: 16px;
-  background-color: #f9fafb;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
 }
 
 .actionButtons {
@@ -221,36 +208,26 @@
   gap: 16px;
   justify-content: center;
   padding-top: 24px;
-  border-top: 1px solid #e5e7eb;
 
-  @media (max-width: 480px) {
-    flex-direction: column;
-    gap: 12px;
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
   }
 }
 
 .editButton {
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: tokens.$main;
   color: white;
   border: none;
-  padding: 12px 24px;
+  padding: 10px 20px;
   border-radius: 8px;
   cursor: pointer;
   font-size: 1rem;
   font-weight: 600;
-  transition: all 0.2s ease;
   box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
   min-width: 120px;
-
-  &:hover {
-    background: linear-gradient(135deg, #059669, #047857);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
 }
 
 .hidden {
