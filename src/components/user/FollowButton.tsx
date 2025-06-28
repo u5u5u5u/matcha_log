@@ -1,6 +1,7 @@
 "use client";
-import { useState } from "react";
 import { Button } from "@/components/util/button";
+import { useState } from "react";
+import styles from "./FollowButton.module.scss";
 
 export default function FollowButton({
   userId,
@@ -31,7 +32,7 @@ export default function FollowButton({
         type="button"
         onClick={handleUnfollow}
         disabled={loading}
-        style={{ marginLeft: 12 }}
+        className={styles.followButton}
       >
         フォロー解除
       </Button>
@@ -42,7 +43,7 @@ export default function FollowButton({
       type="button"
       onClick={handleFollow}
       disabled={loading}
-      style={{ marginLeft: 12 }}
+      className={styles.followButton}
     >
       フォロー
     </Button>

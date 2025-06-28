@@ -11,14 +11,10 @@
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.2s ease;
-
-  &:hover:not(:disabled) {
-    background: tokens.$main-dark;
-  }
 }
 
 .button:disabled {
-  background: #b7e0c2;
+  background: tokens.$main;
   cursor: not-allowed;
 }
 
@@ -27,8 +23,4 @@
   color: #fff;
   padding: 0.5rem;
   width: auto;
-
-  &:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.1);
-  }
 }

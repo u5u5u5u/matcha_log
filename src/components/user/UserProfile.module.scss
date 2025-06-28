@@ -39,8 +39,8 @@
       .userName {
         display: flex;
         justify-content: space-between;
+        align-items: center;
         font-weight: 600;
-        margin: 8px 0 0 12px;
 
         p {
           width: 100%;
@@ -77,20 +77,6 @@
   }
 }
 
-.deleteButton {
-  background: linear-gradient(135deg, #ef4444, #dc2626);
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 600;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
-  min-width: 120px;
-}
-
 .tabNavigation {
   display: flex;
   justify-content: center;
@@ -99,16 +85,17 @@
 }
 
 .tabButton {
-  width: 50%;
+  width: 100%;
   background: none;
   border: none;
   padding: 12px 20px;
   cursor: pointer;
   font-size: 1rem;
   font-weight: 500;
-  color: #fff;
-  border-bottom: 2px solid tokens.$background;
+  color: tokens.$main-dark;
+  border-bottom: 2px solid tokens.$main-dark;
   transition: all 0.2s;
+  text-align: center;
 }
 
 .activeTab {
@@ -141,84 +128,56 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f0fdf4;
-  color: tokens.$main;
-  font-size: 0.875rem;
+  background-color: tokens.$background;
+  color: tokens.$text;
+  font-size: 0.8rem;
+}
+
+.hidden {
+  display: none;
 }
 
 .actionModal {
   max-width: 500px;
   margin: 0 auto;
-}
 
-.noImage {
-  width: 100%;
-  height: auto;
-}
-
-.postPreview {
-  display: flex;
-  margin-bottom: 32px;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-}
-
-.previewImage {
-  width: 100%;
-  height: 100%;
-  aspect-ratio: 1 / 1;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  flex-shrink: 0;
-  object-fit: cover;
-}
-
-.postInfo {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: 100%;
-
-  .postCardName {
-    font-size: 1.2rem;
-    font-weight: bold;
-  }
-}
-
-.tasteMetrics {
-  display: flex;
-  justify-content: space-between;
-  margin: 20px 0;
-}
-
-.actionButtons {
-  display: flex;
-  gap: 16px;
-  justify-content: center;
-  padding-top: 24px;
-
-  button {
+  .postPreview {
     display: flex;
+    margin-bottom: 32px;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
+    gap: 16px;
+
+    .noImage {
+      width: 100%;
+      height: auto;
+    }
+
+    .previewImage {
+      width: 100%;
+      height: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      flex-shrink: 0;
+      object-fit: cover;
+    }
+
+    .postInfo {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+
+      .postCardName {
+        font-size: 1.2rem;
+        font-weight: bold;
+      }
+      .tasteMetrics {
+        display: flex;
+        justify-content: space-between;
+        margin: 20px 0;
+      }
+    }
   }
-}
-
-.editButton {
-  background: tokens.$main;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 600;
-  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
-  min-width: 120px;
-}
-
-.hidden {
-  display: none;
 }
