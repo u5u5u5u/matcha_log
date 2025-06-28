@@ -2,6 +2,7 @@
 import Image from "next/image";
 import React from "react";
 import Modal from "../util/Modal";
+import CircularProgress from "../util/CircularProgress";
 import styles from "./MePage.module.scss";
 import UserList from "./UserList";
 import TitleDisplay from "./TitleDisplay";
@@ -200,6 +201,23 @@ export default function PageClient({
                 <p>
                   <strong>店舗:</strong> {selectedPost.shop?.name || "未登録"}
                 </p>
+                <div className={styles.tasteMetrics}>
+                  <CircularProgress
+                    value={selectedPost.bitterness}
+                    label="苦さ"
+                    size={70}
+                  />
+                  <CircularProgress
+                    value={selectedPost.richness}
+                    label="濃さ"
+                    size={70}
+                  />
+                  <CircularProgress
+                    value={selectedPost.sweetness}
+                    label="甘さ"
+                    size={70}
+                  />
+                </div>
               </div>
             </div>
             <div className={styles.actionButtons}>
