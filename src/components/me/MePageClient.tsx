@@ -11,6 +11,7 @@ import TasteProfile from "./TasteProfile";
 import TitleCollectionButton from "./TitleCollectionButton";
 import TitleDisplay from "./TitleDisplay";
 import UserList from "./UserList";
+import ImageGallery from "../posts/ImageGallery";
 
 type Post = {
   id: string;
@@ -174,21 +175,12 @@ export default function PageClient({
           <div className={styles.actionModal}>
             <div className={styles.postPreview}>
               {selectedPost.images.length > 0 ? (
-                <Image
-                  src={`/api/image-proxy?url=${encodeURIComponent(
-                    selectedPost.images[0].url
-                  )}`}
+                <ImageGallery
+                  images={selectedPost.images}
                   alt={selectedPost.title}
                   width={200}
                   height={200}
                   className={styles.previewImage}
-                  onError={(e) => {
-                    console.error(
-                      "Modal image failed to load:",
-                      selectedPost.images[0].url
-                    );
-                    e.currentTarget.style.display = "none";
-                  }}
                 />
               ) : (
                 <Image

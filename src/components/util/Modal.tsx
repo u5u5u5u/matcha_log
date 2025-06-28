@@ -43,7 +43,7 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <button className={styles.closeButton} onClick={onClose}>
-          <X size={24} />
+          <X size={24} strokeWidth={2} />
         </button>
         <div className={styles.content}>{children}</div>
       </div>
