@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import styles from "./Modal.module.scss";
+import { X } from "lucide-react";
 
 type ModalProps = {
   isOpen: boolean;
@@ -9,12 +10,7 @@ type ModalProps = {
   children: React.ReactNode;
 };
 
-export default function Modal({
-  isOpen,
-  onClose,
-  title,
-  children,
-}: ModalProps) {
+export default function Modal({ isOpen, onClose, children }: ModalProps) {
   // ESCキーでモーダルを閉じる
   React.useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => {
@@ -46,12 +42,9 @@ export default function Modal({
   return (
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <div className={styles.header}>
-          <h3 className={styles.title}>{title}</h3>
-          <button className={styles.closeButton} onClick={onClose}>
-            ×
-          </button>
-        </div>
+        <button className={styles.closeButton} onClick={onClose}>
+          <X size={24} />
+        </button>
         <div className={styles.content}>{children}</div>
       </div>
     </div>
