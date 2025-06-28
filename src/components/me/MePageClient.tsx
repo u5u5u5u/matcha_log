@@ -91,7 +91,7 @@ export default function PageClient({
               <TitleCollectionButton activeTitle={activeTitle} />
             </div>
             <div className={styles.userName}>
-              <p>{userName}u5u5u5u5u5u5u5u5</p>
+              <p>{userName}</p>
               <div>
                 <Link href="/me/edit">
                   <SquarePen />
