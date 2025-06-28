@@ -20,7 +20,7 @@ export default function ImageUploadField({
 }: Props) {
   return (
     <div className={styles.field}>
-      <label>画像アップロード</label>
+      <label>画像アップロード（必須）</label>
       <UploadImage
         onUpload={onUpload}
         maxCount={maxCount}
