@@ -25,7 +25,7 @@ const schema = z.object({
   shop: z.string().optional(),
   shopLat: z.string().optional(),
   shopLng: z.string().optional(),
-  images: z.any().optional(),
+  images: z.array(z.string()).min(1, "画像は最低1枚必要です"),
 });
 
 type FormData = z.infer<typeof schema>;

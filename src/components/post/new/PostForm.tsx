@@ -21,7 +21,7 @@ const schema = z.object({
   sweetness: z.coerce.number().min(1).max(10),
   comment: z.string().optional(),
   shop: z.string().optional(),
-  images: z.any().optional(),
+  images: z.array(z.string()).min(1, "画像は最低1枚必要です"),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -40,7 +40,7 @@ export default function PostForm({ initialForm }: Props) {
     sweetness: initialForm?.sweetness || 5,
     comment: initialForm?.comment || "",
     shop: initialForm?.shop || "",
-    images: undefined,
+    images: initialForm?.images || [],
   });
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [error, setError] = useState<string | null>(null);

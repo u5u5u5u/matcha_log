@@ -35,6 +35,13 @@ export async function POST(
     );
   }
 
+  if (!imageUrls || imageUrls.length === 0) {
+    return NextResponse.json(
+      { error: "画像は最低1枚必要です" },
+      { status: 400 }
+    );
+  }
+
   // 投稿取得＆認可
   const post = await prisma.post.findUnique({
     where: { id: id },

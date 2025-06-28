@@ -1,0 +1,224 @@
+@use "../../../../styles/_tokens" as tokens;
+
+.container {
+  max-width: 600px;
+  margin: 40px auto;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 20px;
+
+  .userDetails {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    .iconPreview {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .userNameContainer {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 210px;
+
+      .userTitle {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .userName {
+        display: flex;
+        justify-content: space-between;
+        font-weight: 600;
+        margin: 8px 0 0 12px;
+
+        p {
+          width: 100%;
+          font-size: 1.5rem;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+    }
+  }
+
+  .userStats {
+    display: flex;
+    justify-content: space-around;
+    padding: 0 40px;
+
+    .countButton {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      background: none;
+      border: none;
+      color: tokens.$text;
+      font-size: 1.5rem;
+      font-weight: bold;
+
+      .statsText {
+        font-size: 0.8rem;
+        margin-bottom: 4px;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+.deleteButton {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+  min-width: 120px;
+}
+
+.tabNavigation {
+  display: flex;
+  justify-content: center;
+  border-bottom: 1px solid tokens.$background;
+  margin-bottom: 20px;
+}
+
+.tabButton {
+  width: 50%;
+  background: none;
+  border: none;
+  padding: 12px 20px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #fff;
+  border-bottom: 2px solid tokens.$background;
+  transition: all 0.2s;
+}
+
+.activeTab {
+  color: tokens.$main-dark;
+  border-bottom-color: tokens.$main-dark;
+}
+
+.gridContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  margin-top: 20px;
+}
+
+.gridItem {
+  aspect-ratio: 1;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.2s;
+}
+
+.gridImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.noImagePlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0fdf4;
+  color: tokens.$main;
+  font-size: 0.875rem;
+}
+
+.actionModal {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.noImage {
+  width: 100%;
+  height: auto;
+}
+
+.postPreview {
+  display: flex;
+  margin-bottom: 32px;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.previewImage {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+  object-fit: cover;
+}
+
+.postInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+
+  .postCardName {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+}
+
+.tasteMetrics {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  padding-top: 24px;
+
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+}
+
+.editButton {
+  background: tokens.$main;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+  min-width: 120px;
+}
+
+.hidden {
+  display: none;
+}

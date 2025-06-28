@@ -18,7 +18,9 @@ const nextConfig: NextConfig = {
     minimumCacheTTL: 60,
     dangerouslyAllowSVG: true,
     contentDispositionType: "attachment",
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    // Blob URLを許可するためにCSPを緩和
+    contentSecurityPolicy:
+      "default-src 'self' blob:; script-src 'none'; sandbox;",
   },
 };
 
