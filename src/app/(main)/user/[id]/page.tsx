@@ -2,7 +2,7 @@ import UserProfileClient from "@/components/user/UserProfileClient";
 import { authOptions } from "@/lib/authOptions";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 export default async function UserProfilePage({
   params,
@@ -12,6 +12,11 @@ export default async function UserProfilePage({
   const { id } = await params;
   const session = await getServerSession(authOptions);
   const meId = session?.user?.id;
+
+  // 自分のプロフィールを見ようとした場合は /me にリダイレクト
+  if (meId && meId === id) {
+    redirect("/me");
+  }
 
   const user = await prisma.user.findUnique({
     where: { id: id },
