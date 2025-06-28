@@ -28,6 +28,13 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  if (!images || images.length === 0) {
+    return NextResponse.json(
+      { error: "画像は最低1枚必要です" },
+      { status: 400 }
+    );
+  }
+
   // 店舗情報の登録・取得
   let shop = null;
   if (shopName) {

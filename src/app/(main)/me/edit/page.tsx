@@ -1,7 +1,7 @@
-import { getServerSession } from "next-auth";
+import ProfileEditForm from "@/components/me/ProfileEditForm";
 import { authOptions } from "@/lib/authOptions";
 import { prisma } from "@/lib/prisma";
-import ProfileEditForm from "@/components/me/ProfileEditForm";
+import { getServerSession } from "next-auth";
 import styles from "./page.module.scss";
 
 export default async function ProfileEditPage() {
@@ -18,7 +18,6 @@ export default async function ProfileEditPage() {
   }
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>プロフィール編集</h2>
       <ProfileEditForm
         initialName={user.name || ""}
         initialEmail={session.user.email}

@@ -1,11 +1,10 @@
 import React from "react";
 import dynamic from "next/dynamic";
-import styles from "./ImageUploadField.module.scss";
+import styles from "./index.module.scss";
 
-const UploadImage = dynamic(
-  () => import("@/components/post/edit/PostUploadImage"),
-  { ssr: false }
-);
+const UploadImage = dynamic(() => import("@/components/me/IconUploadImage"), {
+  ssr: false,
+});
 
 type Props = {
   onUpload: (files: File[], urls: string[]) => void;
@@ -16,15 +15,16 @@ type Props = {
 export default function ImageUploadField({
   onUpload,
   initialUrls = [],
-  maxCount = 3,
+  maxCount = 1,
 }: Props) {
   return (
     <div className={styles.field}>
-      <label>画像アップロード（必須）</label>
+      <label>プロフィール画像</label>
       <UploadImage
         onUpload={onUpload}
         maxCount={maxCount}
         initialUrls={initialUrls}
+        isProfileMode={true}
       />
     </div>
   );

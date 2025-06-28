@@ -1,9 +1,8 @@
-import { prisma } from "@/lib/prisma";
-import Image from "next/image";
-import { notFound } from "next/navigation";
-import { getServerSession } from "next-auth";
+import UserProfileClient from "@/components/user/UserProfileClient";
 import { authOptions } from "@/lib/authOptions";
-import FollowButtonWrapper from "@/components/user/FollowButtonWrapper";
+import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { notFound, redirect } from "next/navigation";
 
 export default async function UserProfilePage({
   params,
@@ -13,6 +12,12 @@ export default async function UserProfilePage({
   const { id } = await params;
   const session = await getServerSession(authOptions);
   const meId = session?.user?.id;
+
+  // 自分のプロフィールを見ようとした場合は /me にリダイレクト
+  if (meId && meId === id) {
+    redirect("/me");
+  }
+
   const user = await prisma.user.findUnique({
     where: { id: id },
     select: {
@@ -20,10 +25,30 @@ export default async function UserProfilePage({
       name: true,
       email: true,
       iconUrl: true,
-      posts: { include: { images: true, shop: true } },
+      activeTitle: true,
+      following: {
+        select: {
+          followingId: true,
+          following: { select: { name: true, iconUrl: true, id: true } },
+        },
+      },
+      followers: {
+        select: {
+          followerId: true,
+          follower: { select: { name: true, iconUrl: true, id: true } },
+        },
+      },
     },
   });
+
   if (!user) return notFound();
+
+  const posts = await prisma.post.findMany({
+    where: { userId: user.id },
+    include: { images: true, shop: true },
+    orderBy: { createdAt: "desc" },
+  });
+
   let initialIsFollowing = false;
   if (meId && meId !== user.id) {
     const follow = await prisma.follow.findUnique({
@@ -33,50 +58,21 @@ export default async function UserProfilePage({
     });
     initialIsFollowing = !!follow;
   }
+
   return (
-    <div>
-      <h2>ユーザープロフィール</h2>
-      <div>
-        <Image
-          src={user.iconUrl || "/file.svg"}
-          alt="icon"
-          width={40}
-          height={40}
-        />
-        {user.name}
-        {meId && meId !== user.id && (
-          <FollowButtonWrapper
-            userId={user.id}
-            initialIsFollowing={initialIsFollowing}
-          />
-        )}
-      </div>
-      <div style={{ marginBottom: 24, color: "#888", fontSize: "0.95rem" }}>
-        {user.email}
-      </div>
-      <h3 style={{ fontWeight: "bold", marginBottom: 12 }}>投稿一覧</h3>
-      {user.posts.length === 0 ? (
-        <div>まだ投稿がありません。</div>
-      ) : (
-        user.posts.map((post) => (
-          <div key={post.id}>
-            <div>{post.title}</div>
-            <div>{post.category === "SWEET" ? "スイーツ" : "ドリンク"}</div>
-            <div>
-              {post.images.length > 0 && (
-                <Image
-                  src={post.images[0].url}
-                  alt="thumb"
-                  width={80}
-                  height={80}
-                  style={{ objectFit: "cover", borderRadius: 8 }}
-                />
-              )}
-            </div>
-            <div>店舗: {post.shop?.name || "未登録"}</div>
-          </div>
-        ))
-      )}
-    </div>
+    <UserProfileClient
+      user={{
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        iconUrl: user.iconUrl,
+        activeTitle: user.activeTitle,
+      }}
+      posts={JSON.parse(JSON.stringify(posts))}
+      followingList={user.following?.map((f) => f.following) || []}
+      followerList={user.followers?.map((f) => f.follower) || []}
+      initialIsFollowing={initialIsFollowing}
+      showFollowButton={meId !== undefined && meId !== user.id}
+    />
   );
 }

@@ -1,9 +1,10 @@
-@use "../../../../styles/tokens" as tokens;
+@use "../../../../styles/_tokens" as tokens;
 
 .categoryTag {
   display: flex;
   align-items: center;
   gap: 2px;
+  width: fit-content;
   font-size: 0.8rem;
   color: tokens.$accent;
   background: tokens.$main-dark;
