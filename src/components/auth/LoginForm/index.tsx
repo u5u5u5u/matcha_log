@@ -66,9 +66,9 @@ export default function LoginForm() {
         </Button>
       </form>
       <div className={styles.links}>
-        <Link href="/reset-password" className={styles.link}>
+        {/* <Link href="/reset-password" className={styles.link}>
           パスワードをお忘れですか？
-        </Link>
+        </Link> */}
         <Link href="/signup" className={styles.link}>
           新規登録はこちら
         </Link>
