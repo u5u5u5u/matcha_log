@@ -35,7 +35,7 @@ export default function TitleCard({ title, onClick }: TitleCardProps) {
         )}
       </div>
       <p className={styles.titleName}>
-        {title.isUnlocked ? title.name : "ゴッド・オブ・スイーツ"}
+        {title.isUnlocked ? title.name : "？？？"}
       </p>
     </div>
   );

@@ -1,89 +1,48 @@
 @use "../../../../styles/_tokens" as tokens;
 
 .container {
-  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 40px 20px;
 }
 
-.header {
-  text-align: center;
-  margin-bottom: 40px;
-
-  .title {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 20px;
-    color: tokens.$text;
-  }
-
-  .stats {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-
-    .progress {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: tokens.$main;
-    }
-
-    .progressBar {
-      width: 300px;
-      height: 8px;
-      background-color: #e5e7eb;
-      border-radius: 4px;
-      overflow: hidden;
-
-      .progressFill {
-        height: 100%;
-        background: linear-gradient(90deg, #10b981, #059669);
-        transition: width 0.3s ease;
-      }
-    }
-  }
-}
-
-.activeTitle {
-  background: #f8fafc;
-  border: 2px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 30px;
-  text-align: center;
+.activeTitleDisplay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
 
   h2 {
-    margin: 0 0 15px 0;
-    font-size: 1.2rem;
+    font-size: 1rem;
     color: #475569;
   }
 
-  .activeTitleDisplay {
-    .activeTitleName {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #1e293b;
-      padding: 8px 16px;
-      background: linear-gradient(135deg, #fbbf24, #f59e0b);
-      border-radius: 8px;
-      display: inline-block;
-    }
+  .activeTitle {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #fff;
+    background: linear-gradient(135deg, tokens.$main, tokens.$main-dark);
+    padding: 16px 32px;
+    border-radius: 50px;
+    margin: 0;
+    text-align: center;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    white-space: nowrap;
+  }
 
-    .noActiveTitle {
-      font-size: 1rem;
-      color: #64748b;
-      font-style: italic;
-    }
+  .noActiveTitle {
+    font-size: 1rem;
+    color: #64748b;
+    font-style: italic;
   }
 }
-
 // 全ての称号を表示するグリッド
 .allTitlesGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 12px;
-  margin-top: 20px;
 }
 
 .loading,
@@ -105,7 +64,7 @@
     .modalTitle {
       font-size: 1.8rem;
       font-weight: 700;
-      color: tokens.$text;
+      color: tokens.$main;
       margin-bottom: 8px;
     }
 

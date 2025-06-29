@@ -95,32 +95,11 @@ export default function TitleCollectionClient() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <h1 className={styles.title}>称号コレクション</h1>
-        <div className={styles.stats}>
-          <span className={styles.progress}>
-            {titleData.totalUnlocked} / {titleData.totalTitles} 獲得
-          </span>
-          <div className={styles.progressBar}>
-            <div
-              className={styles.progressFill}
-              style={{
-                width: `${
-                  (titleData.totalUnlocked / titleData.totalTitles) * 100
-                }%`,
-              }}
-            ></div>
-          </div>
-        </div>
-      </div>
-
-      <div className={styles.activeTitle}>
+      <div className={styles.activeTitleDisplay}>
         <h2>現在の称号</h2>
-        <div className={styles.activeTitleDisplay}>
+        <div className={styles.activeTitle}>
           {titleData.activeTitle ? (
-            <span className={styles.activeTitleName}>
-              {titleData.activeTitle.name}
-            </span>
+            <p>{titleData.activeTitle.name}</p>
           ) : (
             <span className={styles.noActiveTitle}>
               称号が設定されていません
@@ -166,7 +145,7 @@ export default function TitleCollectionClient() {
                     closeModal();
                   }}
                 >
-                  非表示にする
+                  取り外す
                 </button>
               ) : (
                 <button
@@ -177,7 +156,7 @@ export default function TitleCollectionClient() {
                     closeModal();
                   }}
                 >
-                  表示する
+                  身につける
                 </button>
               )}
             </div>
