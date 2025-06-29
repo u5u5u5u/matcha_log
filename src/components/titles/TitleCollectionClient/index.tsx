@@ -1,5 +1,7 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import Modal from "../../util/Modal";
+import TitleCard from "../TitleCard";
 import styles from "./index.module.scss";
 
 type Title = {
@@ -7,7 +9,6 @@ type Title = {
   name: string;
   description: string | null;
   type: string;
-  rarity: string;
   isUnlocked: boolean;
   isActive: boolean;
 };
@@ -21,22 +22,16 @@ type TitleData = {
 
 const categoryNames = {
   POST_COUNT: "投稿数",
-  TASTE_BITTER: "苦味",
-  TASTE_RICH: "濃厚",
-  TASTE_SWEET: "甘味",
-  TASTE_BALANCE: "バランス",
-};
-
-const rarityNames = {
-  COMMON: "コモン",
-  RARE: "レア",
-  EPIC: "エピック",
-  LEGENDARY: "レジェンダリー",
+  TASTE_BITTER: "苦さ",
+  TASTE_RICH: "濃さ",
+  TASTE_SWEET: "甘さ",
 };
 
 export default function TitleCollectionClient() {
   const [titleData, setTitleData] = useState<TitleData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [selectedTitle, setSelectedTitle] = useState<Title | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     fetchTitles();
@@ -74,6 +69,22 @@ export default function TitleCollectionClient() {
     }
   };
 
+  const handleTitleClick = (title: Title) => {
+    if (!title.isUnlocked) return;
+    setSelectedTitle(title);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedTitle(null);
+  };
+
+  // 全ての称号を1つの配列にまとめる
+  const allTitles = titleData
+    ? Object.values(titleData.titlesByCategory).flat()
+    : [];
+
   if (loading) {
     return <div className={styles.loading}>読み込み中...</div>;
   }
@@ -84,32 +95,11 @@ export default function TitleCollectionClient() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <h1 className={styles.title}>称号コレクション</h1>
-        <div className={styles.stats}>
-          <span className={styles.progress}>
-            {titleData.totalUnlocked} / {titleData.totalTitles} 獲得
-          </span>
-          <div className={styles.progressBar}>
-            <div
-              className={styles.progressFill}
-              style={{
-                width: `${
-                  (titleData.totalUnlocked / titleData.totalTitles) * 100
-                }%`,
-              }}
-            ></div>
-          </div>
-        </div>
-      </div>
-
-      <div className={styles.activeTitle}>
+      <div className={styles.activeTitleDisplay}>
         <h2>現在の称号</h2>
-        <div className={styles.activeTitleDisplay}>
+        <div className={styles.activeTitle}>
           {titleData.activeTitle ? (
-            <span className={styles.activeTitleName}>
-              {titleData.activeTitle.name}
-            </span>
+            <p>{titleData.activeTitle.name}</p>
           ) : (
             <span className={styles.noActiveTitle}>
               称号が設定されていません
@@ -118,69 +108,61 @@ export default function TitleCollectionClient() {
         </div>
       </div>
 
-      {Object.entries(titleData.titlesByCategory).map(([category, titles]) => (
-        <div key={category} className={styles.category}>
-          <h2 className={styles.categoryTitle}>
-            {categoryNames[category as keyof typeof categoryNames] || category}
-          </h2>
-          <div className={styles.titleGrid}>
-            {titles.map((title) => (
-              <div
-                key={title.id}
-                className={`${styles.titleCard} ${
-                  !title.isUnlocked ? styles.locked : ""
-                } ${title.isActive ? styles.active : ""} ${
-                  styles[`rarity${title.rarity}`]
-                }`}
-              >
-                <div className={styles.titleHeader}>
-                  <span className={styles.titleName}>
-                    {title.isUnlocked ? title.name : "???"}
-                  </span>
-                  <span
-                    className={`${styles.rarity} ${
-                      styles[`rarity${title.rarity}`]
-                    }`}
-                  >
-                    {rarityNames[title.rarity as keyof typeof rarityNames]}
-                  </span>
-                </div>
-                <p className={styles.titleDescription}>
-                  {title.isUnlocked
-                    ? title.description
-                    : "称号を獲得すると詳細が表示されます"}
-                </p>
-                {title.isUnlocked && (
-                  <div className={styles.titleActions}>
-                    {title.isActive ? (
-                      <button
-                        className={styles.deactivateButton}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setActiveTitle(null);
-                        }}
-                      >
-                        非表示にする
-                      </button>
-                    ) : (
-                      <button
-                        className={styles.activateButton}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setActiveTitle(title.id);
-                        }}
-                      >
-                        表示する
-                      </button>
-                    )}
-                  </div>
-                )}
-                {!title.isUnlocked && <div className={styles.lockIcon}>🔒</div>}
-              </div>
-            ))}
+      <div className={styles.allTitlesGrid}>
+        {allTitles.map((title) => (
+          <TitleCard
+            key={title.id}
+            title={title}
+            categoryNames={categoryNames}
+            onClick={handleTitleClick}
+          />
+        ))}
+      </div>
+
+      <Modal isOpen={isModalOpen} onClose={closeModal} title="">
+        {selectedTitle && (
+          <div className={styles.modalContent}>
+            <div className={styles.modalHeader}>
+              <h2 className={styles.modalTitle}>{selectedTitle.name}</h2>
+              <span className={styles.modalCategory}>
+                {
+                  categoryNames[
+                    selectedTitle.type as keyof typeof categoryNames
+                  ]
+                }
+              </span>
+            </div>
+            <p className={styles.modalDescription}>
+              {selectedTitle.description}
+            </p>
+            <div className={styles.modalActions}>
+              {selectedTitle.isActive ? (
+                <button
+                  className={styles.deactivateButton}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setActiveTitle(null);
+                    closeModal();
+                  }}
+                >
+                  取り外す
+                </button>
+              ) : (
+                <button
+                  className={styles.activateButton}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setActiveTitle(selectedTitle.id);
+                    closeModal();
+                  }}
+                >
+                  身につける
+                </button>
+              )}
+            </div>
           </div>
-        </div>
-      ))}
+        )}
+      </Modal>
     </div>
   );
 }

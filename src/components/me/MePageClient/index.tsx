@@ -50,6 +50,7 @@ export default function PageClient({
   const [followersModalOpen, setFollowersModalOpen] = React.useState(false);
   const [activeTab, setActiveTab] = React.useState<"posts" | "liked">("posts");
   const [actionModalOpen, setActionModalOpen] = React.useState(false);
+  const [likedPostModalOpen, setLikedPostModalOpen] = React.useState(false);
   const [selectedPost, setSelectedPost] = React.useState<Post | null>(null);
 
   async function handleDelete(id: string) {
@@ -65,12 +66,12 @@ export default function PageClient({
   }
 
   function handlePostClick(post: Post) {
+    setSelectedPost(post);
     if (activeTab === "posts") {
-      setSelectedPost(post);
       setActionModalOpen(true);
     } else {
-      // いいねした投稿の場合は詳細ページに遷移
-      window.location.href = `/post/${post.id}`;
+      // いいねした投稿の場合は詳細モーダルを表示
+      setLikedPostModalOpen(true);
     }
   }
 
@@ -234,6 +235,65 @@ export default function PageClient({
                 削除
               </button>
             </div>
+          </div>
+        )}
+      </Modal>
+
+      {/* いいねした投稿詳細モーダル */}
+      <Modal
+        isOpen={likedPostModalOpen}
+        onClose={() => {
+          setLikedPostModalOpen(false);
+          setSelectedPost(null);
+        }}
+        title={selectedPost?.title || ""}
+      >
+        {selectedPost && (
+          <div className={styles.actionModal}>
+            <div className={styles.postPreview}>
+              {selectedPost.images.length > 0 ? (
+                <ImageGallery
+                  images={selectedPost.images}
+                  alt={selectedPost.title}
+                  width={200}
+                  height={200}
+                  className={styles.previewImage}
+                />
+              ) : (
+                <Image
+                  src="/no-image.svg"
+                  alt="image load failed"
+                  width={200}
+                  height={200}
+                  className={styles.noImage}
+                />
+              )}
+              <div className={styles.postInfo}>
+                <div className={styles.postCardName}>{selectedPost.title}</div>
+                <CategoryTag category={selectedPost.category} />
+                <div className={styles.postCardShop}>
+                  店舗：{selectedPost.shop?.name || "未登録"}
+                </div>
+                <div className={styles.tasteMetrics}>
+                  <CircularProgress
+                    value={selectedPost.bitterness}
+                    label="苦さ"
+                    size={70}
+                  />
+                  <CircularProgress
+                    value={selectedPost.richness}
+                    label="濃さ"
+                    size={70}
+                  />
+                  <CircularProgress
+                    value={selectedPost.sweetness}
+                    label="甘さ"
+                    size={70}
+                  />
+                </div>
+              </div>
+            </div>
+            {/* 編集・削除ボタンは表示しない */}
           </div>
         )}
       </Modal>

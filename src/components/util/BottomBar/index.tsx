@@ -40,7 +40,7 @@ export default function BottomBar() {
             isActivePage("/posts") ? styles.active : styles.inactive
           }`}
         >
-          <House size={52} />
+          <House size={52} strokeWidth={3} />
         </Link>
         <button
           onClick={() => handleProtectedNavigation("/post/new")}
@@ -48,7 +48,7 @@ export default function BottomBar() {
             isActivePage("/post/new") ? styles.active : styles.inactive
           }`}
         >
-          <Leaf size={64} />
+          <Leaf size={64} strokeWidth={3} />
         </button>
         <button
           onClick={() => handleProtectedNavigation("/me")}
@@ -56,7 +56,7 @@ export default function BottomBar() {
             isActivePage("/me") ? styles.active : styles.inactive
           }`}
         >
-          <CircleUser size={52} />
+          <CircleUser size={52} strokeWidth={3} />
         </button>
       </nav>
     </footer>

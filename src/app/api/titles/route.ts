@@ -30,7 +30,7 @@ export async function GET() {
 
     // すべての称号を取得
     const allTitles = await prisma.title.findMany({
-      orderBy: [{ rarity: "asc" }, { createdAt: "asc" }],
+      orderBy: [{ createdAt: "asc" }],
     });
 
     // ユーザーが獲得した称号のIDセット
@@ -48,7 +48,7 @@ export async function GET() {
         isActive: user.activeTitleId === title.id,
       });
       return acc;
-    }, {} as Record<string, { id: string; name: string; description: string | null; type: string; rarity: string; isUnlocked: boolean; isActive: boolean }[]>);
+    }, {} as Record<string, { id: string; name: string; description: string | null; type: string; isUnlocked: boolean; isActive: boolean }[]>);
 
     return NextResponse.json({
       titlesByCategory,

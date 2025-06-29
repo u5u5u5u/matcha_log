@@ -2,7 +2,7 @@ import { PrismaClient, TitleType, TitleRarity } from "@/generated/prisma";
 
 const prisma = new PrismaClient();
 
-const titles = [
+const newTitles = [
   // 投稿数系
   {
     name: "抹茶ビギナー",
@@ -159,14 +159,30 @@ const titles = [
   },
 ];
 
-async function seedTitles() {
-  console.log("Seeding titles...");
+async function resetTitles() {
+  console.log("Resetting titles...");
 
-  for (const title of titles) {
-    await prisma.title.upsert({
-      where: { name: title.name },
-      update: {},
-      create: {
+  // 1. まず、すべてのユーザー称号の関連を削除
+  console.log("Deleting all user titles...");
+  await prisma.userTitle.deleteMany({});
+
+  // 2. アクティブ称号をリセット
+  console.log("Resetting active titles...");
+  await prisma.user.updateMany({
+    data: {
+      activeTitleId: null,
+    },
+  });
+
+  // 3. すべての称号を削除
+  console.log("Deleting all titles...");
+  await prisma.title.deleteMany({});
+
+  // 4. 新しい称号を作成
+  console.log("Creating new titles...");
+  for (const title of newTitles) {
+    await prisma.title.create({
+      data: {
         name: title.name,
         description: title.description,
         type: title.type,
@@ -174,12 +190,14 @@ async function seedTitles() {
         rarity: title.rarity,
       },
     });
+    console.log(`Created title: ${title.name}`);
   }
 
-  console.log("Titles seeded successfully!");
+  console.log("Titles reset successfully!");
+  console.log(`Created ${newTitles.length} new titles`);
 }
 
-seedTitles()
+resetTitles()
   .catch((e) => {
     console.error(e);
     process.exit(1);

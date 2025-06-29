@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Input } from "../../util/input";
 import { Button } from "../../util/button";
+import Link from "next/link";
 import styles from "./index.module.scss";
 import { z } from "zod";
 
@@ -60,37 +61,51 @@ export default function SignupPage() {
   return (
     <div className={styles.container}>
       <div className={styles.title}>新規登録</div>
-      {error && <div className={styles.error}>{error}</div>}
       <form className={styles.form} onSubmit={handleSubmit}>
-        <Input
-          name="name"
-          placeholder="お名前"
-          value={form.name}
-          onChange={handleChange}
-          autoComplete="name"
-        />
-        <Input
-          name="email"
-          type="email"
-          placeholder="メールアドレス"
-          value={form.email}
-          onChange={handleChange}
-          autoComplete="email"
-        />
-        <Input
-          name="password"
-          type="password"
-          placeholder="パスワード（6文字以上）"
-          value={form.password}
-          onChange={handleChange}
-          autoComplete="new-password"
-        />
-        <Button type="submit" disabled={loading}>
+        <div className={styles.field}>
+          <label htmlFor="name">お名前</label>
+          <Input
+            id="name"
+            name="name"
+            value={form.name}
+            onChange={handleChange}
+            autoComplete="name"
+            required
+          />
+        </div>
+        <div className={styles.field}>
+          <label htmlFor="email">メールアドレス</label>
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            value={form.email}
+            onChange={handleChange}
+            autoComplete="email"
+            required
+          />
+        </div>
+        <div className={styles.field}>
+          <label htmlFor="password">パスワード</label>
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            value={form.password}
+            onChange={handleChange}
+            autoComplete="new-password"
+            required
+          />
+        </div>
+        {error && <div className={styles.error}>{error}</div>}
+        <Button className={styles.button} type="submit" disabled={loading}>
           {loading ? "登録中..." : "新規登録"}
         </Button>
       </form>
-      <div className={styles.link}>
-        <a href="/login">ログインはこちら</a>
+      <div className={styles.links}>
+        <Link href="/login" className={styles.link}>
+          ログインはこちら
+        </Link>
       </div>
     </div>
   );

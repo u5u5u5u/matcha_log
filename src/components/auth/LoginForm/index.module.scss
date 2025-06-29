@@ -1,7 +1,7 @@
 @use "../../../../styles/_tokens.scss" as tokens;
 
 .container {
-  width: 80%;
+  width: 90%;
   max-width: 400px;
   background: #fff;
   border-radius: 16px;
@@ -9,38 +9,56 @@
   padding: 32px 24px 24px 24px;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 24px;
 }
+
 .title {
   font-size: 1.3rem;
   font-weight: bold;
   text-align: center;
-  margin-bottom: 1.2rem;
 }
+
 .form {
   display: flex;
   flex-direction: column;
   gap: 1.1rem;
 }
+
 .field {
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
+
+  label {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #495057;
+  }
 }
+
 .error {
   color: #c00;
   text-align: center;
   margin-bottom: 0.5rem;
   font-size: 0.97rem;
 }
-.link {
-  color: #1e8e3e;
-  text-decoration: underline;
-  font-size: 0.97rem;
-  text-align: right;
-  margin-top: 0.5rem;
-}
+
 .button {
-  background: tokens.$accent;
-  margin-top: 0.5rem;
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  color: tokens.$main-dark;
+  margin-top: 1rem;
+
+  a {
+    text-decoration: underline;
+    font-size: 0.9rem;
+  }
 }

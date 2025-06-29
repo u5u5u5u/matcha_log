@@ -1,5 +1,10 @@
-// import ResetPasswordPage from "../../components/auth/ResetPasswordPage";
+import ResetPasswordPage from "@/components/auth/ResetPasswordPage";
+import styles from "./page.module.scss";
+
 export default function Page() {
-  return <div>Reset Password Page</div>;
-  // <ResetPasswordPage />;
+  return (
+    <div className={styles.resetPasswordPage}>
+      <ResetPasswordPage />
+    </div>
+  );
 }

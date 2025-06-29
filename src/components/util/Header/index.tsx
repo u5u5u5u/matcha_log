@@ -25,7 +25,7 @@ export default function Header() {
             aria-label="戻る"
             className={styles.headerBack}
           >
-            <ArrowLeft size={24} />
+            <ArrowLeft size={24} strokeWidth={3}/>
           </button>
         )}
         <div className={styles.headerLogo}>
@@ -47,7 +47,7 @@ export default function Header() {
           <div className={styles.headerLogout}>
             <Link href="/login">
               <Button type="button" variant="ghost">
-                <LogIn size={24} />
+                <LogIn size={24} strokeWidth={3}/>
               </Button>
             </Link>
           </div>

@@ -1,7 +1,7 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/authOptions";
-import { PrismaClient } from "@/generated/prisma";
 import MePageClient from "@/components/me/MePageClient";
+import { PrismaClient } from "@/generated/prisma";
+import { authOptions } from "@/lib/authOptions";
+import { getServerSession } from "next-auth";
 
 const prisma = new PrismaClient();
 
