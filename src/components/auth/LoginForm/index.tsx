@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import styles from "./index.module.scss";
 import { Button } from "@/components/util/button";
 import { Input } from "@/components/util/input";
+import { signIn } from "next-auth/react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+import styles from "./index.module.scss";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -64,12 +65,14 @@ export default function LoginForm() {
           {loading ? "ログイン中..." : "ログイン"}
         </Button>
       </form>
-      <a href="/reset-password" className={styles.link}>
-        パスワードをお忘れですか？
-      </a>
-      <a href="/signup" className={styles.link}>
-        新規登録はこちら
-      </a>
+      <div className={styles.links}>
+        <Link href="/reset-password" className={styles.link}>
+          パスワードをお忘れですか？
+        </Link>
+        <Link href="/signup" className={styles.link}>
+          新規登録はこちら
+        </Link>
+      </div>
     </div>
   );
 }
