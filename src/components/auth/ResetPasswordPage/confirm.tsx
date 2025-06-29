@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { Input } from "../../util/input";
 import { Button } from "../../util/button";
 import Link from "next/link";
-import styles from "../index.module.scss";
+import styles from "./index.module.scss";
 import { z } from "zod";
 
 const schema = z
