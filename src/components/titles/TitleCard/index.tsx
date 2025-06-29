@@ -27,15 +27,15 @@ export default function TitleCard({ title, onClick }: TitleCardProps) {
       <div className={styles.titleIcon}>
         {title.isUnlocked ? (
           <>
-            <Badge size={80} className={styles.badge} />
-            <Leaf size={35} strokeWidth={3} className={styles.leaf} />
+            <Badge size={50} className={styles.badge} />
+            <Leaf size={25} strokeWidth={3} className={styles.leaf} />
           </>
         ) : (
-          <BadgeHelp size={80} className={styles.badgeHelp} />
+          <BadgeHelp size={50} className={styles.badgeHelp} />
         )}
       </div>
       <p className={styles.titleName}>
-        {title.isUnlocked ? title.name : "？？？"}
+        {title.isUnlocked ? title.name : "ゴッド・オブ・スイーツ"}
       </p>
     </div>
   );

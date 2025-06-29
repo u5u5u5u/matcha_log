@@ -22,9 +22,9 @@ type TitleData = {
 
 const categoryNames = {
   POST_COUNT: "投稿数",
-  TASTE_BITTER: "苦さ合計",
-  TASTE_RICH: "濃さ合計",
-  TASTE_SWEET: "甘さ合計",
+  TASTE_BITTER: "苦さ",
+  TASTE_RICH: "濃さ",
+  TASTE_SWEET: "甘さ",
 };
 
 export default function TitleCollectionClient() {
