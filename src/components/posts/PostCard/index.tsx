@@ -11,12 +11,10 @@ import styles from "./index.module.scss";
 interface PostCardProps {
   post: Post;
   myId?: string;
+  onUpdate?: () => void;
 }
 
-const PostCard = ({ post, myId }: PostCardProps) => {
-  // デバッグ用：画像URLをログ出力
-  console.log("PostCard images:", post.images);
-
+const PostCard = ({ post, myId, onUpdate }: PostCardProps) => {
   return (
     <>
       <div className={styles.postCard}>
@@ -33,7 +31,9 @@ const PostCard = ({ post, myId }: PostCardProps) => {
                 />
                 {post.user.name}
               </Link>
-              {post.user.id === myId && <MeetBallsMenu postId={post.id} />}
+              {post.user.id === myId && (
+                <MeetBallsMenu postId={post.id} onUpdate={onUpdate} />
+              )}
             </>
           )}
         </div>
@@ -57,6 +57,7 @@ const PostCard = ({ post, myId }: PostCardProps) => {
                   !!(myId && post.likes.some((like) => like.userId === myId))
                 }
                 initialLikeCount={post.likes.length}
+                onUpdate={onUpdate}
               />
             </div>
           </div>

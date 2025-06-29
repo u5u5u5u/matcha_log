@@ -27,13 +27,20 @@
   margin: 2rem 0;
 }
 
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+  padding: 2rem;
+}
+
+
 .loadingMessage {
   text-align: center;
   color: #6b7280;
   font-size: 1rem;
   padding: 2rem;
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
   border-radius: 8px;
   margin: 2rem 0;
 }
