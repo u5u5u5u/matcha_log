@@ -133,8 +133,6 @@ export default function PostUploadImage({
       for (const file of validFiles) {
         try {
           if (isHeicFile(file)) {
-            console.log("HEIC変換開始:", file.name);
-
             try {
               // HEICをPNGに変換（ファイルオブジェクトを直接渡す）
               const convertResult = await convertHeicToPng(file);
@@ -150,7 +148,6 @@ export default function PostUploadImage({
                 }
               );
 
-              console.log("HEIC変換完了:", convertedFileName);
               processedFilesAndUrls.push({
                 file: convertedFile,
                 url: convertResult.url,
@@ -172,7 +169,7 @@ export default function PostUploadImage({
               ? fileError.message
               : `ファイル ${file.name} の処理に失敗しました。`;
 
-          alert(errorMessage);
+          console.error("エラーメッセージ:", errorMessage);
 
           // このファイルをスキップして続行
           continue;
@@ -197,7 +194,6 @@ export default function PostUploadImage({
       }
     } catch (error) {
       console.error("ファイル処理エラー:", error);
-      alert("ファイルの処理中にエラーが発生しました。");
     }
 
     setIsUploading(false);
@@ -289,7 +285,6 @@ export default function PostUploadImage({
     // 削除されるURLがObject URLの場合はメモリリークを防ぐためにrevokeする
     const removedUrl = urls[idx];
     if (removedUrl && removedUrl.startsWith("blob:")) {
-      console.log("Object URL解放:", removedUrl);
       URL.revokeObjectURL(removedUrl);
     }
 
@@ -330,12 +325,8 @@ export default function PostUploadImage({
     }
   };
 
-  console.log("urls:", urls);
-  console.log("files:", files);
-
   // ファイルがheic形式かどうかをチェックする関数
   const isHeicFile = (file: File) => {
-    console.log("Checking file:", file.name, "type:", file.type);
     // MIMEタイプまたはファイル拡張子でHEICファイルを判定
     const isHeicByType =
       file.type === "image/heic" || file.type === "image/heif";
@@ -343,41 +334,23 @@ export default function PostUploadImage({
       /\.heic$/i.test(file.name) || /\.heif$/i.test(file.name);
     const isHeic = isHeicByType || isHeicByName;
 
-    console.log(
-      "HEIC判定結果:",
-      isHeic,
-      "by type:",
-      isHeicByType,
-      "by name:",
-      isHeicByName
-    );
     return isHeic;
   };
 
   // heicファイルをpngに変換する
   const convertHeicToPng = async (file: File) => {
     try {
-      console.log("HEIC→PNG変換開始:", file.name, "サイズ:", file.size);
-
       const pngBlob = await heicTo({
         blob: file,
         type: "image/png",
         quality: 0.9,
       });
 
-      console.log(
-        "変換後ファイルサイズ:",
-        pngBlob.size,
-        "タイプ:",
-        pngBlob.type
-      );
-
       if (pngBlob.size === 0) {
         throw new Error("変換されたファイルのサイズが0です");
       }
 
       const convertedUrl = URL.createObjectURL(pngBlob);
-      console.log("HEIC→PNG変換完了:", convertedUrl);
 
       return { blob: pngBlob, url: convertedUrl };
     } catch (error) {

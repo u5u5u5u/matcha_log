@@ -105,7 +105,6 @@ const DropdownMenu = ({
       });
 
       if (response.ok) {
-        alert("投稿を削除しました");
         // SWRのmutateを呼び出してリスト更新
         if (onUpdate) {
           onUpdate();
