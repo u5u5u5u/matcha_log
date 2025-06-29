@@ -22,7 +22,7 @@ export default function LogoutButton() {
         variant="ghost"
         onClick={() => setIsModalOpen(true)}
       >
-        <LogOut />
+        <LogOut strokeWidth={3}/>
       </Button>
 
       <Modal
