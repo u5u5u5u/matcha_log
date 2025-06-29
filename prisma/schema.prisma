@@ -24,6 +24,10 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // パスワードリセット用
+  resetToken       String?
+  resetTokenExpiry DateTime?
+
   following Follow[] @relation("following")
   followers Follow[] @relation("followers")
   likes     Like[]
