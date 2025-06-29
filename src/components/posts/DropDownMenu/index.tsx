@@ -10,6 +10,7 @@ interface DropdownMenuProps {
   onClose: () => void;
   position?: "left" | "right";
   postId: string;
+  onUpdate?: () => void;
 }
 
 const DropdownMenu = ({
@@ -17,6 +18,7 @@ const DropdownMenu = ({
   onClose,
   position = "right",
   postId,
+  onUpdate,
 }: DropdownMenuProps) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -104,8 +106,13 @@ const DropdownMenu = ({
 
       if (response.ok) {
         alert("投稿を削除しました");
-        // ページをリロードして最新の状態を反映
-        window.location.reload();
+        // SWRのmutateを呼び出してリスト更新
+        if (onUpdate) {
+          onUpdate();
+        } else {
+          // fallback: ページをリロードして最新の状態を反映
+          window.location.reload();
+        }
       } else {
         const errorData = await response.json();
         alert(errorData.error || "削除に失敗しました");

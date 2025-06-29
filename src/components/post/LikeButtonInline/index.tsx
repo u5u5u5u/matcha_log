@@ -8,10 +8,12 @@ export default function LikeButtonInline({
   postId,
   initialLiked,
   initialLikeCount,
+  onUpdate,
 }: {
   postId: string;
   initialLiked: boolean;
   initialLikeCount: number;
+  onUpdate?: () => void;
 }) {
   const [liked, setLiked] = useState(initialLiked);
   const [likeCount, setLikeCount] = useState(initialLikeCount);
@@ -26,6 +28,10 @@ export default function LikeButtonInline({
     if (res.ok) {
       setLiked(!liked);
       setLikeCount((c) => c + (liked ? -1 : 1));
+      // いいね状態が変更されたらリスト更新
+      if (onUpdate) {
+        onUpdate();
+      }
     }
     setLoading(false);
   }

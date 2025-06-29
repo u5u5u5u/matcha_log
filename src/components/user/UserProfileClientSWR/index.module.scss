@@ -1,0 +1,38 @@
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+  padding: 2rem;
+}
+
+.loadingText {
+  font-size: 1.125rem;
+  color: #6b7280;
+}
+
+.errorContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+  padding: 2rem;
+}
+
+.errorText {
+  color: #ef4444;
+  font-size: 1rem;
+}
+
+.noDataContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+  padding: 2rem;
+}
+
+.noDataText {
+  font-size: 1rem;
+  color: #6b7280;
+}
