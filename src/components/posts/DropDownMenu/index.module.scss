@@ -72,49 +72,31 @@
 }
 
 .deleteDialog {
-  background: white;
-  border-radius: 12px;
-  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  padding: 24px;
   width: 100%;
-  max-width: 400px;
-  margin: 20px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  width: 400px;
+  max-width: calc(100vw - 48px);
+  max-height: calc(100vh - 48px);
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
-}
-
-.deleteDialogHeader {
-  padding: 24px 24px 16px 24px;
-  border-bottom: 1px solid #e5e7eb;
-
-  h3 {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 600;
-    color: #111827;
-  }
-}
-
-.deleteDialogContent {
-  padding: 16px 24px 24px 24px;
-
-  p {
-    margin: 0 0 8px 0;
-    color: #374151;
-    line-height: 1.5;
-  }
-}
-
-.deleteDialogWarning {
-  color: #dc2626 !important;
-  font-size: 14px;
+  padding: 32px 50px;
 }
 
 .deleteDialogActions {
   display: flex;
+  flex-direction: column;
   gap: 12px;
-  padding: 16px 24px 24px 24px;
-  justify-content: flex-end;
+  width: 100%;
 }
 
 .deleteDialogCancelButton {
@@ -127,17 +109,6 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
-
-  &:hover:not(:disabled) {
-    background-color: #f9fafb;
-    border-color: #9ca3af;
-  }
-
-  &:focus {
-    outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-  }
 
   &:disabled {
     opacity: 0.5;
@@ -155,16 +126,6 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
-
-  &:hover:not(:disabled) {
-    background-color: #b91c1c;
-  }
-
-  &:focus {
-    outline: none;
-    background-color: #b91c1c;
-    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2);
-  }
 
   &:disabled {
     opacity: 0.5;
