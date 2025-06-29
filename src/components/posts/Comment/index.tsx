@@ -14,8 +14,17 @@ const Comment = ({ comment }: CommentProps) => {
 
   const displayComment = () => {
     if (!comment) return "コメントなし";
-    if (!needsExpansion || isCommentExpanded) return comment;
-    return comment.substring(0, commentLimit) + "...";
+    let displayText = comment;
+    if (needsExpansion && !isCommentExpanded) {
+      displayText = comment.substring(0, commentLimit) + "...";
+    }
+    // 改行文字を<br>タグに変換
+    return displayText.split("\n").map((line, index) => (
+      <span key={index}>
+        {line}
+        {index < displayText.split("\n").length - 1 && <br />}
+      </span>
+    ));
   };
   return (
     <div className={styles.postCardComment}>

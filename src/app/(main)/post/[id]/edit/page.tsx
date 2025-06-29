@@ -1,7 +1,9 @@
 "use client";
 import PostEditForm from "@/components/post/edit/PostEditForm";
 import type { Post } from "@/types/post";
-import { use, useEffect, useState } from "react";
+import { fetcher } from "@/lib/fetcher";
+import { use } from "react";
+import useSWR from "swr";
 import styles from "./page.module.scss";
 
 export default function PostEditPage({
@@ -10,37 +12,45 @@ export default function PostEditPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const [post, setPost] = useState<Post | null>(null);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetch(`/api/post/${id}`)
-      .then((res) => (res.ok ? res.json() : Promise.reject()))
-      .then((data) => {
-        setPost(data.post);
-      })
-      .catch(() => setError("投稿が見つかりません"));
-  }, [id]);
+  interface PostResponse {
+    post: Post;
+  }
 
-  if (error) {
+  const { data, error, isLoading } = useSWR<PostResponse>(
+    `/api/post/${id}`,
+    fetcher
+  );
+
+  if (isLoading) {
     return (
-      <div className={styles.container}>
-        <div className={styles.errorMessage}>{error}</div>
+      <div className={styles.loadingContainer}>
+        <div className={styles.loadingMessage}>読み込み中...</div>
       </div>
     );
   }
 
-  if (!post) {
+  if (error) {
     return (
       <div className={styles.container}>
-        <div className={styles.loadingMessage}>読み込み中...</div>
+        <div className={styles.errorMessage}>
+          {error.message || "投稿が見つかりません"}
+        </div>
+      </div>
+    );
+  }
+
+  if (!data?.post) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.errorMessage}>投稿が見つかりません</div>
       </div>
     );
   }
 
   return (
     <div className={styles.container}>
-      <PostEditForm postId={id} initialPost={post} />
+      <PostEditForm postId={id} initialPost={data.post} />
     </div>
   );
 }

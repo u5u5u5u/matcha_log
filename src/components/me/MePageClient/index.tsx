@@ -52,15 +52,25 @@ export default function PageClient({
   const [actionModalOpen, setActionModalOpen] = React.useState(false);
   const [likedPostModalOpen, setLikedPostModalOpen] = React.useState(false);
   const [selectedPost, setSelectedPost] = React.useState<Post | null>(null);
+  const [deleteConfirmModalOpen, setDeleteConfirmModalOpen] =
+    React.useState(false);
 
-  async function handleDelete(id: string) {
-    if (!confirm("本当に削除しますか？")) return;
-    const res = await fetch(`/api/post/${id}/delete`, { method: "POST" });
+  function showDeleteConfirm() {
+    setDeleteConfirmModalOpen(true);
+  }
+
+  async function handleDelete() {
+    if (!selectedPost) return;
+
+    const res = await fetch(`/api/post/${selectedPost.id}/delete`, {
+      method: "POST",
+    });
     if (res.ok) {
       window.location.reload();
     } else {
       alert("削除に失敗しました");
     }
+    setDeleteConfirmModalOpen(false);
     setActionModalOpen(false);
     setSelectedPost(null);
   }
@@ -229,7 +239,7 @@ export default function PageClient({
               </button>
               <button
                 className={styles.deleteButton}
-                onClick={() => handleDelete(selectedPost.id)}
+                onClick={showDeleteConfirm}
               >
                 <Trash2 />
                 削除
@@ -296,6 +306,31 @@ export default function PageClient({
             {/* 編集・削除ボタンは表示しない */}
           </div>
         )}
+      </Modal>
+
+      {/* 削除確認モーダル */}
+      <Modal
+        isOpen={deleteConfirmModalOpen}
+        onClose={() => setDeleteConfirmModalOpen(false)}
+        title="投稿の削除"
+      >
+        <div className={styles.confirmModal}>
+          <p>本当に削除しますか？</p>
+          <div className={styles.confirmButtons}>
+            <button
+              className={styles.confirmDeleteButton}
+              onClick={handleDelete}
+            >
+              削除
+            </button>
+            <button
+              className={styles.cancelButton}
+              onClick={() => setDeleteConfirmModalOpen(false)}
+            >
+              キャンセル
+            </button>
+          </div>
+        </div>
       </Modal>
       <div>
         {activeTab === "posts" ? (

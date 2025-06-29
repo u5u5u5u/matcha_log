@@ -8,9 +8,14 @@ import styles from "./index.module.scss";
 interface MeetBallsMenuProps {
   postId: string;
   position?: "left" | "right";
+  onUpdate?: () => void;
 }
 
-const MeetBallsMenu = ({ postId, position = "right" }: MeetBallsMenuProps) => {
+const MeetBallsMenu = ({
+  postId,
+  position = "right",
+  onUpdate,
+}: MeetBallsMenuProps) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleToggleDropdown = () => {
@@ -35,6 +40,7 @@ const MeetBallsMenu = ({ postId, position = "right" }: MeetBallsMenuProps) => {
         onClose={handleCloseDropdown}
         position={position}
         postId={postId}
+        onUpdate={onUpdate}
       />
     </div>
   );

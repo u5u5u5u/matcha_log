@@ -78,7 +78,15 @@ export default function PostDetailClient({
         濃さ: {post.richness} / 苦さ: {post.bitterness} / 甘さ: {post.sweetness}
       </div>
       <div style={{ margin: "12px 0" }}>
-        コメント: {post.comment || "（なし）"}
+        コメント:{" "}
+        {post.comment
+          ? post.comment.split("\n").map((line, index) => (
+              <span key={index}>
+                {line}
+                {index < post.comment!.split("\n").length - 1 && <br />}
+              </span>
+            ))
+          : "（なし）"}
       </div>
       <div>店舗: {post.shop?.name || "未登録"}</div>
       <div style={{ margin: "12px 0", color: "#888" }}>

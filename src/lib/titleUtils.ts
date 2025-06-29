@@ -106,7 +106,6 @@ export async function updateUserTitles(userId: string) {
           unlockedAt: new Date(),
         },
       });
-      console.log(`New title unlocked for user ${userId}: ${title.name}`);
     }
 
     return newTitles;
