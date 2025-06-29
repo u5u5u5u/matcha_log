@@ -2,20 +2,13 @@
 
 import PostCard from "@/components/posts/PostCard";
 import type { Post } from "@/types/post";
+import { fetcher } from "@/lib/fetcher";
 import useSWR from "swr";
 
 interface PostsResponse {
   posts: Post[];
   myId: string | null;
 }
-
-const fetcher = async (url: string): Promise<PostsResponse> => {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error("データの取得に失敗しました");
-  }
-  return response.json();
-};
 
 export default function PostListClient() {
   const { data, error, isLoading } = useSWR<PostsResponse>(
