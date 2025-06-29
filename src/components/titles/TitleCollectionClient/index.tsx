@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./index.module.scss";
 
 type Title = {
@@ -7,7 +7,6 @@ type Title = {
   name: string;
   description: string | null;
   type: string;
-  rarity: string;
   isUnlocked: boolean;
   isActive: boolean;
 };
@@ -21,17 +20,9 @@ type TitleData = {
 
 const categoryNames = {
   POST_COUNT: "投稿数",
-  TASTE_BITTER: "苦味",
-  TASTE_RICH: "濃厚",
-  TASTE_SWEET: "甘味",
-  TASTE_BALANCE: "バランス",
-};
-
-const rarityNames = {
-  COMMON: "コモン",
-  RARE: "レア",
-  EPIC: "エピック",
-  LEGENDARY: "レジェンダリー",
+  TASTE_BITTER: "苦さ合計",
+  TASTE_RICH: "濃さ合計",
+  TASTE_SWEET: "甘さ合計",
 };
 
 export default function TitleCollectionClient() {
@@ -129,20 +120,11 @@ export default function TitleCollectionClient() {
                 key={title.id}
                 className={`${styles.titleCard} ${
                   !title.isUnlocked ? styles.locked : ""
-                } ${title.isActive ? styles.active : ""} ${
-                  styles[`rarity${title.rarity}`]
-                }`}
+                } ${title.isActive ? styles.active : ""}`}
               >
                 <div className={styles.titleHeader}>
                   <span className={styles.titleName}>
                     {title.isUnlocked ? title.name : "???"}
-                  </span>
-                  <span
-                    className={`${styles.rarity} ${
-                      styles[`rarity${title.rarity}`]
-                    }`}
-                  >
-                    {rarityNames[title.rarity as keyof typeof rarityNames]}
                   </span>
                 </div>
                 <p className={styles.titleDescription}>
