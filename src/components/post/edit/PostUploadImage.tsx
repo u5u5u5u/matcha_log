@@ -1,9 +1,9 @@
 "use client";
+import { heicTo } from "heic-to";
 import { Upload } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import styles from "./PostUploadImage.module.scss";
-import { heicTo } from "heic-to";
 
 export default function PostUploadImage({
   onUpload,
