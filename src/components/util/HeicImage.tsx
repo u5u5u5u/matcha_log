@@ -1,7 +1,6 @@
 "use client";
 
 import { heicTo } from "heic-to";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 
 interface HeicImageProps {
@@ -13,7 +12,6 @@ interface HeicImageProps {
   style?: React.CSSProperties;
   onLoad?: () => void;
   onError?: () => void;
-  unoptimized?: boolean;
 }
 
 export default function HeicImage({
@@ -25,20 +23,20 @@ export default function HeicImage({
   style,
   onLoad,
   onError,
-  unoptimized = false,
 }: HeicImageProps) {
   const [displaySrc, setDisplaySrc] = useState<string>(src);
-  const [isConverting, setIsConverting] = useState(false);
   const [conversionFailed, setConversionFailed] = useState(false);
+  const [isConverting, setIsConverting] = useState(false);
 
   // HEICファイルかどうかを判定
   const isHeicFile = (url: string) => {
-    return (
+    const result =
       url.toLowerCase().includes(".heic") ||
       url.toLowerCase().includes(".heif") ||
       url.includes("content-type=image/heic") ||
-      url.includes("content-type=image/heif")
-    );
+      url.includes("content-type=image/heif");
+    console.log("HeicImage判定:", { url, isHeicFile: result });
+    return result;
   };
 
   useEffect(() => {
@@ -51,13 +49,26 @@ export default function HeicImage({
       setIsConverting(true);
 
       try {
-        // 元の画像を取得
-        const response = await fetch(src);
+        // Vercel Blob StorageのHEICファイルはプロキシ経由で取得
+        let fetchUrl = src;
+        if (src.includes("blob.vercel-storage.com")) {
+          fetchUrl = `/api/image-proxy?url=${encodeURIComponent(src)}`;
+        }
+
+        console.log("HeicImage: HEICファイル取得開始", {
+          originalUrl: src,
+          fetchUrl,
+        });
+
+        const response = await fetch(fetchUrl);
         if (!response.ok) {
-          throw new Error("Failed to fetch image");
+          throw new Error(
+            `Failed to fetch image: ${response.status} ${response.statusText}`
+          );
         }
 
         const blob = await response.blob();
+        console.log("HeicImage: Blobサイズ", blob.size, "type:", blob.type);
 
         // HEICをJPEGに変換
         const convertedBlob = await heicTo({
@@ -66,9 +77,15 @@ export default function HeicImage({
           quality: 0.9,
         });
 
+        console.log("HeicImage: 変換完了", {
+          originalSize: blob.size,
+          convertedSize: convertedBlob.size,
+        });
+
         // 変換されたBlobからURLを作成
         const convertedUrl = URL.createObjectURL(convertedBlob);
         setDisplaySrc(convertedUrl);
+        setIsConverting(false);
 
         // クリーンアップ用のURLを保存
         return () => {
@@ -77,37 +94,64 @@ export default function HeicImage({
       } catch (error) {
         console.error("HEIC conversion failed:", error);
         setConversionFailed(true);
-        setDisplaySrc(src); // 変換に失敗した場合は元のURLを使用
-      } finally {
         setIsConverting(false);
+
+        // 変換に失敗した場合はno-image.svgを表示
+        setDisplaySrc("/no-image.svg");
+
+        // 親コンポーネントのエラーハンドラーも呼び出す
+        if (onError) {
+          onError();
+        }
       }
     };
 
     convertHeicIfNeeded();
-  }, [src, conversionFailed]);
+  }, [src, conversionFailed, onError]);
 
-  // 変換中の表示
-  if (isConverting) {
+  // 変換中の場合はスピナーを表示
+  if (isHeicFile(src) && isConverting) {
     return (
-      <div
-        className={className}
-        style={{
-          ...style,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "#f0f0f0",
-          width: width,
-          height: height,
-        }}
-      >
-        <div style={{ fontSize: "12px", color: "#666" }}>変換中...</div>
-      </div>
+      <>
+        <style>
+          {`
+            @keyframes heic-spinner-rotation {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+          `}
+        </style>
+        <div
+          className={className}
+          style={{
+            ...style,
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#f5f5f5",
+          }}
+        >
+          <div
+            style={{
+              width: "24px",
+              height: "24px",
+              border: "2px solid #e0e0e0",
+              borderTop: "2px solid #666",
+              borderRadius: "50%",
+              animation: "heic-spinner-rotation 1s linear infinite",
+            }}
+          />
+        </div>
+      </>
     );
   }
 
+  // 通常の画像表示
   return (
-    <Image
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
       src={displaySrc}
       alt={alt}
       width={width}
@@ -116,7 +160,6 @@ export default function HeicImage({
       style={style}
       onLoad={onLoad}
       onError={onError}
-      unoptimized={unoptimized || displaySrc.startsWith("blob:")}
     />
   );
 }

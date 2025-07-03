@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState, useRef } from "react";
+import HeicImage from "../../util/HeicImage";
 import styles from "./index.module.scss";
 
 interface ImageGalleryProps {
@@ -46,6 +47,43 @@ const ImageGallery = ({
     setImageErrors((prev) => ({ ...prev, [index]: true }));
   };
 
+  // HEICファイルかどうかを判定
+  const isHeicFile = (url: string) => {
+    return (
+      url.toLowerCase().includes(".heic") || url.toLowerCase().includes(".heif")
+    );
+  };
+
+  // 適切な画像コンポーネントを返す関数
+  const renderImage = (url: string, index: number, alt: string) => {
+    if (isHeicFile(url)) {
+      // HEICファイルの場合はHeicImageコンポーネントを使用（元のURLを直接渡す）
+      return (
+        <HeicImage
+          src={url}
+          alt={alt}
+          width={width}
+          height={height}
+          className={className}
+          onError={() => handleImageError(index)}
+        />
+      );
+    } else {
+      // 通常のファイルの場合は従来通りプロキシ経由で取得
+      const proxiedUrl = getSafeImageUrl(url, index);
+      return (
+        <Image
+          src={proxiedUrl}
+          alt={alt}
+          width={width}
+          height={height}
+          className={className}
+          onError={() => handleImageError(index)}
+        />
+      );
+    }
+  };
+
   // 画像URLを安全にするヘルパー関数
   const getSafeImageUrl = (url: string, index: number) => {
     if (imageErrors[index]) {
@@ -79,16 +117,7 @@ const ImageGallery = ({
         />
       );
     }
-    return (
-      <Image
-        src={getSafeImageUrl(images[0].url, 0)}
-        alt={alt}
-        width={width}
-        height={height}
-        className={className}
-        onError={() => handleImageError(0)}
-      />
-    );
+    return renderImage(images[0].url, 0, alt);
   }
 
   const handleDotClick = (index: number, e: React.MouseEvent) => {
@@ -171,18 +200,21 @@ const ImageGallery = ({
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
       >
-        <Image
-          src={getSafeImageUrl(images[currentIndex].url, currentIndex)}
-          alt={
-            imageErrors[currentIndex]
-              ? "image load failed"
-              : `${alt} ${currentIndex + 1}`
-          }
-          width={width}
-          height={height}
-          className={className}
-          onError={() => handleImageError(currentIndex)}
-        />
+        {imageErrors[currentIndex] ? (
+          <Image
+            src="/no-image.svg"
+            alt="image load failed"
+            width={width}
+            height={height}
+            className={className}
+          />
+        ) : (
+          renderImage(
+            images[currentIndex].url,
+            currentIndex,
+            `${alt} ${currentIndex + 1}`
+          )
+        )}
       </div>
 
       {/* Dots indicator */}
