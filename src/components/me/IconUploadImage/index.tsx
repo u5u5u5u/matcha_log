@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import styles from "./index.module.scss";
 import { heicTo } from "heic-to";
+import { compressImage, getFileSizeMB } from "@/lib/imageUtils";
 
 export default function PostUploadImage({
   onUpload,
@@ -139,6 +140,21 @@ export default function PostUploadImage({
       (file) => file.type.startsWith("image/") || isHeicFile(file)
     );
 
+    // ファイルサイズをチェック（4MB制限）
+    const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB
+    const oversizedFiles = imageFiles.filter(
+      (file) => file.size > MAX_FILE_SIZE
+    );
+
+    if (oversizedFiles.length > 0) {
+      const fileNames = oversizedFiles.map((f) => f.name).join(", ");
+      alert(
+        `以下のファイルが大きすぎます（4MB以下にしてください）：\n${fileNames}`
+      );
+      setIsUploading(false);
+      return;
+    }
+
     // 最大数を超えないようにファイルを制限
     // プロフィールモードまたはmaxCount=1の場合は、置き換えなので制限を緩和
     let validFiles: File[];
@@ -154,11 +170,13 @@ export default function PostUploadImage({
     }
 
     try {
-      // HEICファイルを変換し、その他の画像ファイルはそのまま使用
+      // HEICファイルを変換し、その他の画像ファイルは圧縮
       const processedFilesAndUrls = [];
 
       for (const file of validFiles) {
         try {
+          let processedFile = file;
+
           if (isHeicFile(file)) {
             try {
               // HEICをPNGに変換（ファイルオブジェクトを直接渡す）
@@ -166,7 +184,7 @@ export default function PostUploadImage({
 
               // 変換されたBlobからファイルを再作成
               const convertedFileName = file.name.replace(/\.heic$/i, ".png");
-              const convertedFile = new File(
+              processedFile = new File(
                 [convertResult.blob],
                 convertedFileName,
                 {
@@ -174,19 +192,33 @@ export default function PostUploadImage({
                   lastModified: Date.now(),
                 }
               );
-
-              processedFilesAndUrls.push({
-                file: convertedFile,
-                url: convertResult.url,
-              });
             } catch (convertError) {
               throw convertError;
             }
-          } else {
-            // 通常の画像ファイル
-            const url = URL.createObjectURL(file);
-            processedFilesAndUrls.push({ file, url });
           }
+
+          // ファイルサイズが2MBを超える場合は圧縮
+          const COMPRESS_THRESHOLD = 2 * 1024 * 1024; // 2MB
+          if (processedFile.size > COMPRESS_THRESHOLD) {
+            try {
+              // プロフィール画像は正方形に近い形でリサイズ
+              processedFile = await compressImage(processedFile, 800, 800, 0.8);
+              console.log(
+                `プロフィール画像を圧縮しました: ${getFileSizeMB(file).toFixed(
+                  2
+                )}MB → ${getFileSizeMB(processedFile).toFixed(2)}MB`
+              );
+            } catch (compressionError) {
+              console.warn(
+                "画像圧縮に失敗しました。元のファイルを使用します:",
+                compressionError
+              );
+              // 圧縮に失敗した場合は元のファイルを使用
+            }
+          }
+
+          const url = URL.createObjectURL(processedFile);
+          processedFilesAndUrls.push({ file: processedFile, url });
         } catch (fileError) {
           console.error(`ファイル ${file.name} の処理に失敗:`, fileError);
 
@@ -472,12 +504,16 @@ export default function PostUploadImage({
             )}
             <p className={styles.limit}>
               最大{maxCount}枚まで（JPEG, PNG推奨, HEIC対応※）
+              <br />
+              ファイルサイズ: 4MB以下
             </p>
             <p
               className={styles.subText}
               style={{ fontSize: "0.8em", color: "#666" }}
             >
               ※HEIC形式は変換に失敗する場合があります
+              <br />
+              大きなファイルは自動で圧縮されます
             </p>
           </div>
         )}
