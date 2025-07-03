@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const imageUrl = searchParams.get("url");
+  const convert = searchParams.get("convert"); // HEICファイルの変換指示
 
   if (!imageUrl) {
     return new NextResponse("URL parameter is required", { status: 400 });
@@ -32,12 +33,33 @@ export async function GET(request: NextRequest) {
     const contentType = response.headers.get("content-type") || "image/jpeg";
     const arrayBuffer = await response.arrayBuffer();
 
+    // HEICファイルで変換指示がある場合はJPEGに変換
+    const isHeicFile =
+      contentType === "image/heic" ||
+      contentType === "image/heif" ||
+      imageUrl.toLowerCase().includes(".heic") ||
+      imageUrl.toLowerCase().includes(".heif");
+
+    if (isHeicFile && convert === "true") {
+      try {
+        // Server-side HEIC conversion would require a different library
+        // For now, return the original file and let client handle conversion
+        console.log(
+          "HEIC file detected, returning original for client-side conversion"
+        );
+      } catch (conversionError) {
+        console.error("HEIC conversion failed:", conversionError);
+      }
+    }
+
     return new NextResponse(arrayBuffer, {
       status: 200,
       headers: {
         "Content-Type": contentType,
         "Cache-Control": "public, max-age=31536000, immutable",
         "Access-Control-Allow-Origin": "*",
+        "X-Original-Content-Type": contentType,
+        "X-Is-HEIC": isHeicFile ? "true" : "false",
       },
     });
   } catch (error) {

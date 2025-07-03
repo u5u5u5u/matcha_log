@@ -3,6 +3,7 @@ import { SquarePen, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import HeicImage from "../../util/HeicImage";
 import CategoryTag from "../../posts/CategoryTag";
 import ImageGallery from "../../posts/ImageGallery";
 import CircularProgress from "../../util/CircularProgress";
@@ -89,7 +90,7 @@ export default function PageClient({
     <div className={styles.container}>
       <div className={styles.userInfo}>
         <div className={styles.userDetails}>
-          <Image
+          <HeicImage
             src={userIconUrl || "/file.svg"}
             alt="icon"
             width={60}

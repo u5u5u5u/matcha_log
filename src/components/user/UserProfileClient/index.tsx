@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import React from "react";
+import HeicImage from "../../util/HeicImage";
 import TasteProfile from "../../me/TasteProfile";
 import TitleDisplay from "../../me/TitleDisplay";
 import UserList from "../../me/UserList";
@@ -61,7 +62,7 @@ export default function UserProfileClient({
     <div className={styles.container}>
       <div className={styles.userInfo}>
         <div className={styles.userDetails}>
-          <Image
+          <HeicImage
             src={user.iconUrl || "/file.svg"}
             alt="icon"
             width={60}

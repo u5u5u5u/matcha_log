@@ -54,7 +54,14 @@ const ImageGallery = ({
 
     // Vercel Blob Storage の URL の場合、プロキシ経由で取得
     if (url.includes("blob.vercel-storage.com")) {
-      return `/api/image-proxy?url=${encodeURIComponent(url)}`;
+      // HEICファイルかどうかを判定
+      const isHeicFile =
+        url.toLowerCase().includes(".heic") ||
+        url.toLowerCase().includes(".heif");
+
+      // HEICファイルの場合は変換指示を追加
+      const convertParam = isHeicFile ? "&convert=true" : "";
+      return `/api/image-proxy?url=${encodeURIComponent(url)}${convertParam}`;
     }
 
     return url;

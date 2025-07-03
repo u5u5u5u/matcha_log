@@ -141,6 +141,7 @@ export default function PostUploadImage({
     );
 
     // ファイルサイズをチェック（4MB制限）
+    // HEICファイルは元のファイルサイズで判定（変換後のサイズではない）
     const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB
     const oversizedFiles = imageFiles.filter(
       (file) => file.size > MAX_FILE_SIZE
@@ -170,55 +171,74 @@ export default function PostUploadImage({
     }
 
     try {
-      // HEICファイルを変換し、その他の画像ファイルは圧縮
+      // HEICファイルとその他の画像ファイルを処理
       const processedFilesAndUrls = [];
 
       for (const file of validFiles) {
         try {
-          let processedFile = file;
+          let fileForSaving = file; // 保存用ファイル（HEICの場合は元のまま）
+          let previewUrl = ""; // プレビュー用URL
 
           if (isHeicFile(file)) {
             try {
-              // HEICをPNGに変換（ファイルオブジェクトを直接渡す）
-              const convertResult = await convertHeicToPng(file);
+              // HEICファイルの場合：
+              // 1. 保存用は元のHEICファイルをそのまま使用
+              fileForSaving = file;
 
-              // 変換されたBlobからファイルを再作成
-              const convertedFileName = file.name.replace(/\.heic$/i, ".png");
-              processedFile = new File(
-                [convertResult.blob],
-                convertedFileName,
-                {
-                  type: "image/png",
-                  lastModified: Date.now(),
-                }
+              // 2. プレビュー用にPNGに変換
+              const convertResult = await convertHeicToPng(file);
+              previewUrl = convertResult.url;
+
+              console.log(
+                `HEICファイルを処理: 保存用=${getFileSizeMB(file).toFixed(
+                  2
+                )}MB (HEIC), プレビュー用=${(
+                  convertResult.blob.size /
+                  (1024 * 1024)
+                ).toFixed(2)}MB (PNG)`
               );
             } catch (convertError) {
               throw convertError;
             }
-          }
+          } else {
+            // 通常の画像ファイルの場合
+            let processedFile = file;
 
-          // ファイルサイズが2MBを超える場合は圧縮
-          const COMPRESS_THRESHOLD = 2 * 1024 * 1024; // 2MB
-          if (processedFile.size > COMPRESS_THRESHOLD) {
-            try {
-              // プロフィール画像は正方形に近い形でリサイズ
-              processedFile = await compressImage(processedFile, 800, 800, 0.8);
-              console.log(
-                `プロフィール画像を圧縮しました: ${getFileSizeMB(file).toFixed(
-                  2
-                )}MB → ${getFileSizeMB(processedFile).toFixed(2)}MB`
-              );
-            } catch (compressionError) {
-              console.warn(
-                "画像圧縮に失敗しました。元のファイルを使用します:",
-                compressionError
-              );
-              // 圧縮に失敗した場合は元のファイルを使用
+            // ファイルサイズが2MBを超える場合は圧縮
+            const COMPRESS_THRESHOLD = 2 * 1024 * 1024; // 2MB
+            if (processedFile.size > COMPRESS_THRESHOLD) {
+              try {
+                // プロフィール画像は正方形に近い形でリサイズ
+                processedFile = await compressImage(
+                  processedFile,
+                  800,
+                  800,
+                  0.8
+                );
+                console.log(
+                  `プロフィール画像を圧縮しました: ${getFileSizeMB(
+                    file
+                  ).toFixed(2)}MB → ${getFileSizeMB(processedFile).toFixed(
+                    2
+                  )}MB`
+                );
+              } catch (compressionError) {
+                console.warn(
+                  "画像圧縮に失敗しました。元のファイルを使用します:",
+                  compressionError
+                );
+                // 圧縮に失敗した場合は元のファイルを使用
+              }
             }
+
+            fileForSaving = processedFile;
+            previewUrl = URL.createObjectURL(processedFile);
           }
 
-          const url = URL.createObjectURL(processedFile);
-          processedFilesAndUrls.push({ file: processedFile, url });
+          processedFilesAndUrls.push({
+            file: fileForSaving,
+            url: previewUrl,
+          });
         } catch (fileError) {
           console.error(`ファイル ${file.name} の処理に失敗:`, fileError);
 
