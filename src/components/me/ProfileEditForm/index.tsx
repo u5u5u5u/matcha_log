@@ -58,7 +58,10 @@ export default function ProfileEditForm({
         });
 
         if (!uploadResponse.ok) {
-          throw new Error("画像のアップロードに失敗しました");
+          const errorData = await uploadResponse.json().catch(() => ({}));
+          const errorMessage =
+            errorData.error || "画像のアップロードに失敗しました";
+          throw new Error(errorMessage);
         }
 
         const uploadResult = await uploadResponse.json();
