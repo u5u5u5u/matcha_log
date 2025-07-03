@@ -99,7 +99,10 @@ export default function PostEditForm({ postId, initialPost }: Props) {
           });
 
           if (!response.ok) {
-            throw new Error("画像のアップロードに失敗しました");
+            const errorData = await response.json().catch(() => ({}));
+            const errorMessage =
+              errorData.error || "画像のアップロードに失敗しました";
+            throw new Error(errorMessage);
           }
 
           const data = await response.json();
