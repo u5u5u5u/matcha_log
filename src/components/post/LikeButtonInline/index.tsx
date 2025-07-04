@@ -42,9 +42,7 @@ export default function LikeButtonInline({
       disabled={loading}
       className={liked ? styles.likeButton : styles.unlikeButton}
     >
-      <span>
-        <Heart size={20} />
-      </span>
+      <Heart size={20} />
       {likeCount}
     </button>
   );
