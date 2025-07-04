@@ -3,6 +3,7 @@ import { SquarePen, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import HeicImage from "../../util/HeicImage";
 import CategoryTag from "../../posts/CategoryTag";
 import ImageGallery from "../../posts/ImageGallery";
 import CircularProgress from "../../util/CircularProgress";
@@ -89,7 +90,7 @@ export default function PageClient({
     <div className={styles.container}>
       <div className={styles.userInfo}>
         <div className={styles.userDetails}>
-          <Image
+          <HeicImage
             src={userIconUrl || "/file.svg"}
             alt="icon"
             width={60}
@@ -345,31 +346,16 @@ export default function PageClient({
                   onClick={() => handlePostClick(post)}
                 >
                   {post.images.length > 0 ? (
-                    <Image
-                      src={`/api/image-proxy?url=${encodeURIComponent(
-                        post.images[0].url
-                      )}`}
+                    <ImageGallery
+                      images={[post.images[0]]}
                       alt={post.title}
                       width={200}
                       height={200}
                       className={styles.gridImage}
-                      onError={(e) => {
-                        console.error(
-                          "Image failed to load:",
-                          post.images[0].url
-                        );
-                        e.currentTarget.style.display = "none";
-                        e.currentTarget.nextElementSibling?.classList.remove(
-                          "hidden"
-                        );
-                      }}
                     />
                   ) : (
                     <div className={styles.noImagePlaceholder}>画像なし</div>
                   )}
-                  <div className={`${styles.noImagePlaceholder} hidden`}>
-                    画像読み込みエラー
-                  </div>
                 </div>
               ))}
             </div>
@@ -385,31 +371,16 @@ export default function PageClient({
                 onClick={() => handlePostClick(post)}
               >
                 {post.images.length > 0 ? (
-                  <Image
-                    src={`/api/image-proxy?url=${encodeURIComponent(
-                      post.images[0].url
-                    )}`}
+                  <ImageGallery
+                    images={[post.images[0]]}
                     alt={post.title}
                     width={200}
                     height={200}
                     className={styles.gridImage}
-                    onError={(e) => {
-                      console.error(
-                        "Image failed to load:",
-                        post.images[0].url
-                      );
-                      e.currentTarget.style.display = "none";
-                      e.currentTarget.nextElementSibling?.classList.remove(
-                        "hidden"
-                      );
-                    }}
                   />
                 ) : (
                   <div className={styles.noImagePlaceholder}>画像なし</div>
                 )}
-                <div className={`${styles.noImagePlaceholder} hidden`}>
-                  画像読み込みエラー
-                </div>
               </div>
             ))}
           </div>
