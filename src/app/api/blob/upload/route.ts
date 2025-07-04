@@ -23,7 +23,20 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const blob = await put(`user-icons/${Date.now()}_${file.name}`, file, {
+  // HEIC/HEIFファイルの判定
+  const isHeicFile =
+    file.type === "image/heic" ||
+    file.type === "image/heif" ||
+    /\.heic$/i.test(file.name) ||
+    /\.heif$/i.test(file.name);
+
+  // ファイル名の生成（HEICファイルは元の拡張子を保持）
+  const timestamp = Date.now();
+  const filename = isHeicFile
+    ? `user-icons/${timestamp}_${file.name}`
+    : `user-icons/${timestamp}_${file.name}`;
+
+  const blob = await put(filename, file, {
     access: "public",
   });
 
