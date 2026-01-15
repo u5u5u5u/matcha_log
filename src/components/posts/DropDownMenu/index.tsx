@@ -4,6 +4,7 @@ import { Edit, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import styles from "./index.module.scss";
+import { deletePost } from "@/app/actions/posts";
 
 interface DropdownMenuProps {
   isOpen: boolean;
@@ -100,11 +101,9 @@ const DropdownMenu = ({
     setIsDeleting(true);
 
     try {
-      const response = await fetch(`/api/post/${postId}/delete`, {
-        method: "POST",
-      });
+      const result = await deletePost(postId);
 
-      if (response.ok) {
+      if (result.ok) {
         // SWRのmutateを呼び出してリスト更新
         if (onUpdate) {
           onUpdate();
@@ -113,8 +112,7 @@ const DropdownMenu = ({
           window.location.reload();
         }
       } else {
-        const errorData = await response.json();
-        alert(errorData.error || "削除に失敗しました");
+        alert(result.error || "削除に失敗しました");
       }
     } catch (error) {
       console.error("削除エラー:", error);

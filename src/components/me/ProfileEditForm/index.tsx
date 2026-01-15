@@ -5,6 +5,8 @@ import { Input } from "@/components/util/input";
 import { Button } from "@/components/util/button";
 import styles from "./index.module.scss";
 import IconUploadImage from "@/components/me/IconUploadImage";
+import { uploadUserIcon } from "@/app/actions/blob";
+import { updateProfile } from "@/app/actions/me";
 
 export default function ProfileEditForm({
   initialName,
@@ -52,32 +54,21 @@ export default function ProfileEditForm({
         const formData = new FormData();
         formData.append("file", uploadedFiles[0]);
 
-        const uploadResponse = await fetch("/api/blob/upload", {
-          method: "POST",
-          body: formData,
-        });
+        const uploadResult = await uploadUserIcon(formData);
 
-        if (!uploadResponse.ok) {
-          const errorData = await uploadResponse.json().catch(() => ({}));
-          const errorMessage =
-            errorData.error || "画像のアップロードに失敗しました";
-          throw new Error(errorMessage);
+        if (uploadResult.error) {
+          throw new Error(uploadResult.error);
         }
 
-        const uploadResult = await uploadResponse.json();
-        finalIconUrl = uploadResult.url;
+        finalIconUrl = uploadResult.url || "";
       }
 
       if (onSave) {
         await onSave({ name, email, iconUrl: finalIconUrl });
         setSuccess(true);
       } else {
-        const res = await fetch("/api/me/profile", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, email, iconUrl: finalIconUrl }),
-        });
-        if (!res.ok) throw new Error();
+        const result = await updateProfile(name, email, finalIconUrl);
+        if (result.error) throw new Error(result.error);
         setSuccess(true);
       }
     } catch (error) {

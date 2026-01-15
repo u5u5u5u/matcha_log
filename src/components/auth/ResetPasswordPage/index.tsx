@@ -6,6 +6,7 @@ import { Button } from "../../util/button";
 import Link from "next/link";
 import styles from "./index.module.scss";
 import { z } from "zod";
+import { requestPasswordReset } from "@/app/actions/auth";
 
 const schema = z.object({
   email: z
@@ -42,16 +43,10 @@ export default function ResetPasswordPage() {
 
     setLoading(true);
     try {
-      const res = await fetch("/api/auth/reset-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
+      const data = await requestPasswordReset(form.email);
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.error || "パスワードリセットの送信に失敗しました");
+      if (data.error) {
+        setError(data.error);
       } else {
         setSuccess(
           data.resetUrl

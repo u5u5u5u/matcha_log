@@ -12,6 +12,8 @@ import {
   ImageUploadField,
 } from "./fields";
 import styles from "./PostForm.module.scss";
+import { uploadPostImage } from "@/app/actions/blob";
+import { createPost } from "@/app/actions/posts";
 
 const schema = z.object({
   title: z.string().min(1, "タイトルは必須です"),
@@ -75,20 +77,13 @@ export default function PostForm({ initialForm }: Props) {
           const formData = new FormData();
           formData.append("file", file);
 
-          const response = await fetch("/api/blob/post-upload", {
-            method: "POST",
-            body: formData,
-          });
+          const result = await uploadPostImage(formData);
 
-          if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            const errorMessage =
-              errorData.error || "画像のアップロードに失敗しました";
-            throw new Error(errorMessage);
+          if (result.error) {
+            throw new Error(result.error);
           }
 
-          const data = await response.json();
-          return data.url;
+          return result.url || "";
         });
 
         uploadedImageUrls = await Promise.all(uploadPromises);
@@ -109,13 +104,9 @@ export default function PostForm({ initialForm }: Props) {
         if (url) fd.append("images[]", url);
       });
 
-      const res = await fetch("/api/post/new", {
-        method: "POST",
-        body: fd,
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error || "投稿に失敗しました");
+      const data = await createPost(fd);
+      if (data.error) {
+        setError(data.error);
       } else {
         router.push("/posts");
       }

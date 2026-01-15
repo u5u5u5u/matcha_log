@@ -2,6 +2,7 @@
 import { Button } from "@/components/util/button";
 import { useState } from "react";
 import styles from "./index.module.scss";
+import { followUser, unfollowUser } from "@/app/actions/users";
 
 export default function FollowButton({
   userId,
@@ -15,14 +16,14 @@ export default function FollowButton({
 
   const handleFollow = async () => {
     setLoading(true);
-    const res = await fetch(`/api/user/${userId}/follow`, { method: "POST" });
-    if (res.ok) setIsFollowing(true);
+    const result = await followUser(userId);
+    if (result.ok) setIsFollowing(true);
     setLoading(false);
   };
   const handleUnfollow = async () => {
     setLoading(true);
-    const res = await fetch(`/api/user/${userId}/follow`, { method: "DELETE" });
-    if (res.ok) setIsFollowing(false);
+    const result = await unfollowUser(userId);
+    if (result.ok) setIsFollowing(false);
     setLoading(false);
   };
 

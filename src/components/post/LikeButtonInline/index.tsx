@@ -3,6 +3,7 @@
 import { Heart } from "lucide-react";
 import { useState } from "react";
 import styles from "./index.module.scss";
+import { likePost, unlikePost } from "@/app/actions/posts";
 
 export default function LikeButtonInline({
   postId,
@@ -22,10 +23,8 @@ export default function LikeButtonInline({
   async function handleLike() {
     if (loading) return;
     setLoading(true);
-    const res = await fetch(`/api/post/${postId}/like`, {
-      method: liked ? "DELETE" : "POST",
-    });
-    if (res.ok) {
+    const result = liked ? await unlikePost(postId) : await likePost(postId);
+    if (result.ok) {
       setLiked(!liked);
       setLikeCount((c) => c + (liked ? -1 : 1));
       // いいね状態が変更されたらリスト更新

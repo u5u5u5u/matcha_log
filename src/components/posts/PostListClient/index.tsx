@@ -2,9 +2,9 @@
 
 import PostCard from "@/components/posts/PostCard";
 import type { Post } from "@/types/post";
-import { fetcher } from "@/lib/fetcher";
-import useSWR from "swr";
+import { useEffect, useState } from "react";
 import styles from "./index.module.scss";
+import { getPosts } from "@/app/actions/posts";
 
 interface PostsResponse {
   posts: Post[];
@@ -12,10 +12,28 @@ interface PostsResponse {
 }
 
 export default function PostListClient() {
-  const { data, error, isLoading, mutate } = useSWR<PostsResponse>(
-    "/api/posts",
-    fetcher
-  );
+  const [data, setData] = useState<PostsResponse | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchData = async () => {
+    try {
+      const result = await getPosts();
+      if (result.error) {
+        setError(result.error);
+      } else {
+        setData(result as PostsResponse);
+      }
+    } catch (err) {
+      setError("投稿の取得に失敗しました");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   if (isLoading) {
     return (
@@ -28,9 +46,7 @@ export default function PostListClient() {
   if (error) {
     return (
       <div className={styles.errorContainer}>
-        <div className={styles.errorText}>
-          エラーが発生しました: {error.message}
-        </div>
+        <div className={styles.errorText}>エラーが発生しました: {error}</div>
       </div>
     );
   }
@@ -50,7 +66,7 @@ export default function PostListClient() {
           key={post.id}
           post={post}
           myId={data.myId || undefined}
-          onUpdate={() => mutate()}
+          onUpdate={() => fetchData()}
         />
       ))}
     </div>

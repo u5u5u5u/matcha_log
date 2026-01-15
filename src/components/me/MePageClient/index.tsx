@@ -13,6 +13,7 @@ import TasteProfile from "../TasteProfile";
 import TitleCollectionButton from "../TitleCollectionButton";
 import TitleDisplay from "../TitleDisplay";
 import UserList from "../UserList";
+import { deletePost } from "@/app/actions/posts";
 
 type Post = {
   id: string;
@@ -63,10 +64,8 @@ export default function PageClient({
   async function handleDelete() {
     if (!selectedPost) return;
 
-    const res = await fetch(`/api/post/${selectedPost.id}/delete`, {
-      method: "POST",
-    });
-    if (res.ok) {
+    const result = await deletePost(selectedPost.id);
+    if (result.ok) {
       window.location.reload();
     } else {
       alert("削除に失敗しました");

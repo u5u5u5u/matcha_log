@@ -3,6 +3,10 @@ import { useEffect, useState } from "react";
 import Modal from "../../util/Modal";
 import TitleCard from "../TitleCard";
 import styles from "./index.module.scss";
+import {
+  getTitles,
+  setActiveTitle as setActiveTitleAction,
+} from "@/app/actions/titles";
 
 type Title = {
   id: string;
@@ -39,9 +43,8 @@ export default function TitleCollectionClient() {
 
   const fetchTitles = async () => {
     try {
-      const response = await fetch("/api/titles");
-      if (response.ok) {
-        const data = await response.json();
+      const data = await getTitles();
+      if (!data.error) {
         setTitleData(data);
       }
     } catch (error) {
@@ -53,15 +56,8 @@ export default function TitleCollectionClient() {
 
   const setActiveTitle = async (titleId: string | null) => {
     try {
-      const response = await fetch("/api/titles/set-active", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ titleId }),
-      });
-
-      if (response.ok) {
+      const result = await setActiveTitleAction(titleId);
+      if (result.success) {
         await fetchTitles(); // データを再取得
       }
     } catch (error) {

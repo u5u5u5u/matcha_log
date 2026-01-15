@@ -7,6 +7,7 @@ import { Button } from "../../util/button";
 import Link from "next/link";
 import styles from "./index.module.scss";
 import { z } from "zod";
+import { confirmPasswordReset } from "@/app/actions/auth";
 
 const schema = z
   .object({
@@ -66,19 +67,10 @@ export default function ResetPasswordConfirmPage() {
 
     setLoading(true);
     try {
-      const res = await fetch("/api/auth/reset-password/confirm", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          token,
-          password: form.password,
-        }),
-      });
+      const data = await confirmPasswordReset(token, form.password);
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.error || "パスワードの更新に失敗しました");
+      if (data.error) {
+        setError(data.error);
       } else {
         setSuccess(
           "パスワードが正常に更新されました。ログインページに移動します。"

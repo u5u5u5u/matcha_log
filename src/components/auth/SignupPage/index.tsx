@@ -6,6 +6,7 @@ import { Button } from "../../util/button";
 import Link from "next/link";
 import styles from "./index.module.scss";
 import { z } from "zod";
+import { signup } from "@/app/actions/auth";
 
 const schema = z.object({
   email: z
@@ -40,14 +41,14 @@ export default function SignupPage() {
     }
     setLoading(true);
     try {
-      const res = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error || "登録に失敗しました");
+      const formData = new FormData();
+      formData.append("email", form.email);
+      formData.append("password", form.password);
+      formData.append("name", form.name);
+
+      const data = await signup(formData);
+      if (data.error) {
+        setError(data.error);
       } else {
         window.location.href = "/login";
       }

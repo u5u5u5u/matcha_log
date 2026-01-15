@@ -1,9 +1,9 @@
 "use client";
 
-import { fetcher } from "@/lib/fetcher";
-import useSWR from "swr";
+import { useEffect, useState } from "react";
 import MePageClient from "@/components/me/MePageClient";
 import styles from "./index.module.scss";
+import { getMyProfile } from "@/app/actions/me";
 
 type Post = {
   id: string;
@@ -32,7 +32,27 @@ interface MePageData {
 }
 
 export default function MePageClientSWR() {
-  const { data, error, isLoading } = useSWR<MePageData>("/api/me", fetcher);
+  const [data, setData] = useState<MePageData | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await getMyProfile();
+        if (result.error) {
+          setError(result.error);
+        } else {
+          setData(result as MePageData);
+        }
+      } catch (err) {
+        setError("データの取得に失敗しました");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   if (isLoading) {
     return (
@@ -45,9 +65,7 @@ export default function MePageClientSWR() {
   if (error) {
     return (
       <div className={styles.errorContainer}>
-        <div className={styles.errorText}>
-          エラーが発生しました: {error.message}
-        </div>
+        <div className={styles.errorText}>エラーが発生しました: {error}</div>
       </div>
     );
   }

@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { likePost, unlikePost } from "@/app/actions/posts";
 
 export default function LikeButton({
   postId,
@@ -15,10 +16,8 @@ export default function LikeButton({
   async function handleLike() {
     if (loading) return;
     setLoading(true);
-    const res = await fetch(`/api/post/${postId}/like`, {
-      method: liked ? "DELETE" : "POST",
-    });
-    if (res.ok) {
+    const result = liked ? await unlikePost(postId) : await likePost(postId);
+    if (result.ok) {
       setLiked(!liked);
       setLikeCount((c) => c + (liked ? -1 : 1));
     }

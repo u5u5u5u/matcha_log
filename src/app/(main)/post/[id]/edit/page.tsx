@@ -1,10 +1,9 @@
 "use client";
 import PostEditForm from "@/components/post/edit/PostEditForm";
 import type { Post } from "@/types/post";
-import { fetcher } from "@/lib/fetcher";
-import { use } from "react";
-import useSWR from "swr";
+import { use, useEffect, useState } from "react";
 import styles from "./page.module.scss";
+import { getPostById } from "@/app/actions/posts";
 
 export default function PostEditPage({
   params,
@@ -17,10 +16,27 @@ export default function PostEditPage({
     post: Post;
   }
 
-  const { data, error, isLoading } = useSWR<PostResponse>(
-    `/api/post/${id}`,
-    fetcher
-  );
+  const [data, setData] = useState<PostResponse | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await getPostById(id);
+        if (result.error) {
+          setError(result.error);
+        } else {
+          setData(result as PostResponse);
+        }
+      } catch (err) {
+        setError("投稿の取得に失敗しました");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, [id]);
 
   if (isLoading) {
     return (
@@ -34,7 +50,7 @@ export default function PostEditPage({
     return (
       <div className={styles.container}>
         <div className={styles.errorMessage}>
-          {error.message || "投稿が見つかりません"}
+          {error || "投稿が見つかりません"}
         </div>
       </div>
     );

@@ -1,9 +1,9 @@
 "use client";
 
-import { fetcher } from "@/lib/fetcher";
-import useSWR from "swr";
+import { useEffect, useState } from "react";
 import UserProfileClient from "@/components/user/UserProfileClient";
 import styles from "./index.module.scss";
+import { getUserProfile } from "@/app/actions/users";
 
 type Post = {
   id: string;
@@ -38,10 +38,27 @@ interface Props {
 }
 
 export default function UserProfileClientSWR({ userId }: Props) {
-  const { data, error, isLoading } = useSWR<UserProfileData>(
-    `/api/user/${userId}`,
-    fetcher
-  );
+  const [data, setData] = useState<UserProfileData | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await getUserProfile(userId);
+        if (result.error) {
+          setError(result.error);
+        } else {
+          setData(result as UserProfileData);
+        }
+      } catch (err) {
+        setError("データの取得に失敗しました");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, [userId]);
 
   if (isLoading) {
     return (
@@ -54,9 +71,7 @@ export default function UserProfileClientSWR({ userId }: Props) {
   if (error) {
     return (
       <div className={styles.errorContainer}>
-        <div className={styles.errorText}>
-          エラーが発生しました: {error.message}
-        </div>
+        <div className={styles.errorText}>エラーが発生しました: {error}</div>
       </div>
     );
   }
