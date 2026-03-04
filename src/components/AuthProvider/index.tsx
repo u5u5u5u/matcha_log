@@ -23,9 +23,19 @@ const AuthContext = createContext<AuthContextType>({
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const supabase = createSupabaseBrowserClient();
 
   useEffect(() => {
+    const hasSupabaseEnv =
+      !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
+      !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    if (!hasSupabaseEnv) {
+      setLoading(false);
+      return;
+    }
+
+    const supabase = createSupabaseBrowserClient();
+
     // 初期セッション取得
     supabase.auth.getUser().then(({ data: { user } }) => {
       setUser(user);
@@ -41,7 +51,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     return () => subscription.unsubscribe();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
