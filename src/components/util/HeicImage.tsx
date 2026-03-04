@@ -2,6 +2,7 @@
 
 import { heicTo } from "heic-to";
 import { useEffect, useState } from "react";
+import { isSupportedRemoteStorageUrl } from "@/lib/storageUrl";
 
 interface HeicImageProps {
   src: string;
@@ -49,9 +50,9 @@ export default function HeicImage({
       setIsConverting(true);
 
       try {
-        // Vercel Blob StorageのHEICファイルはプロキシ経由で取得
+        // 外部StorageのHEICファイルはプロキシ経由で取得
         let fetchUrl = src;
-        if (src.includes("blob.vercel-storage.com")) {
+        if (isSupportedRemoteStorageUrl(src)) {
           fetchUrl = `/api/image-proxy?url=${encodeURIComponent(src)}`;
         }
 
@@ -63,7 +64,7 @@ export default function HeicImage({
         const response = await fetch(fetchUrl);
         if (!response.ok) {
           throw new Error(
-            `Failed to fetch image: ${response.status} ${response.statusText}`
+            `Failed to fetch image: ${response.status} ${response.statusText}`,
           );
         }
 

@@ -1,5 +1,18 @@
 import type { NextConfig } from "next";
 
+const supabaseHostname = (() => {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  if (!supabaseUrl) {
+    return null;
+  }
+
+  try {
+    return new URL(supabaseUrl).hostname;
+  } catch {
+    return null;
+  }
+})();
+
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
@@ -11,6 +24,14 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "bllpqopak64zwvsz.public.blob.vercel-storage.com",
       },
+      ...(supabaseHostname
+        ? [
+            {
+              protocol: "https" as const,
+              hostname: supabaseHostname,
+            },
+          ]
+        : []),
     ],
     formats: ["image/webp", "image/avif"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],

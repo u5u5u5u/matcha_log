@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { isSupportedRemoteStorageUrl } from "@/lib/storageUrl";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -10,8 +11,8 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // Vercel Blob Storage のURLかどうかを確認
-    if (!imageUrl.includes("blob.vercel-storage.com")) {
+    // サポート対象のStorage URLかどうかを確認
+    if (!isSupportedRemoteStorageUrl(imageUrl)) {
       return new NextResponse("Invalid image URL", { status: 400 });
     }
 
@@ -23,7 +24,7 @@ export async function GET(request: NextRequest) {
 
     if (!response.ok) {
       console.error(
-        `Failed to fetch image: ${response.status} ${response.statusText}`
+        `Failed to fetch image: ${response.status} ${response.statusText}`,
       );
       return new NextResponse("Failed to fetch image", {
         status: response.status,
@@ -45,7 +46,7 @@ export async function GET(request: NextRequest) {
         // Server-side HEIC conversion would require a different library
         // For now, return the original file and let client handle conversion
         console.log(
-          "HEIC file detected, returning original for client-side conversion"
+          "HEIC file detected, returning original for client-side conversion",
         );
       } catch (conversionError) {
         console.error("HEIC conversion failed:", conversionError);

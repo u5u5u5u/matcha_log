@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState, useRef } from "react";
 import HeicImage from "../../util/HeicImage";
+import { isSupportedRemoteStorageUrl } from "@/lib/storageUrl";
 import styles from "./index.module.scss";
 
 interface ImageGalleryProps {
@@ -22,7 +23,7 @@ const ImageGallery = ({
 }: ImageGalleryProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [imageErrors, setImageErrors] = useState<{ [key: number]: boolean }>(
-    {}
+    {},
   );
   const touchStartX = useRef<number>(0);
   const touchEndX = useRef<number>(0);
@@ -42,7 +43,7 @@ const ImageGallery = ({
 
   const handleImageError = (index: number) => {
     console.error(
-      `Image loading failed for index ${index}: ${images[index].url}`
+      `Image loading failed for index ${index}: ${images[index].url}`,
     );
     setImageErrors((prev) => ({ ...prev, [index]: true }));
   };
@@ -90,8 +91,8 @@ const ImageGallery = ({
       return "/no-image.svg";
     }
 
-    // Vercel Blob Storage の URL の場合、プロキシ経由で取得
-    if (url.includes("blob.vercel-storage.com")) {
+    // 外部StorageのURLはプロキシ経由で取得
+    if (isSupportedRemoteStorageUrl(url)) {
       // HEICファイルかどうかを判定
       const isHeicFile =
         url.toLowerCase().includes(".heic") ||
@@ -212,7 +213,7 @@ const ImageGallery = ({
           renderImage(
             images[currentIndex].url,
             currentIndex,
-            `${alt} ${currentIndex + 1}`
+            `${alt} ${currentIndex + 1}`,
           )
         )}
       </div>

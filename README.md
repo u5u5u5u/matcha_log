@@ -16,6 +16,49 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Supabase Storage setup
+
+This app stores uploaded images in Supabase Storage.
+
+1. Create public buckets in Supabase:
+   - `post-images`
+   - `user-icons`
+2. Ensure these environment variables are set:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `SUPABASE_SERVICE_ROLE_KEY`
+3. (Optional) Override bucket names:
+   - `SUPABASE_STORAGE_POST_IMAGES_BUCKET`
+   - `SUPABASE_STORAGE_USER_ICONS_BUCKET`
+
+### Migrate existing Blob URLs to Supabase Storage
+
+If you already have image URLs saved from Vercel Blob, run this script to migrate them.
+
+1. Dry-run (count only):
+
+```bash
+pnpm migrate-storage
+```
+
+2. Apply migration:
+
+```bash
+pnpm migrate-storage -- --apply
+```
+
+3. Optional flags:
+
+```bash
+# 先頭20件のみ確認
+pnpm migrate-storage -- --limit=20
+
+# users.icon_url のみ移行
+pnpm migrate-storage -- --apply --users-only
+
+# images.url のみ移行
+pnpm migrate-storage -- --apply --images-only
+```
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
