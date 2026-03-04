@@ -45,7 +45,7 @@ export default function MePageClientSWR() {
         } else {
           setData(result as MePageData);
         }
-      } catch (err) {
+      } catch {
         setError("データの取得に失敗しました");
       } finally {
         setIsLoading(false);

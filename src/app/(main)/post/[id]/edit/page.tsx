@@ -29,7 +29,7 @@ export default function PostEditPage({
         } else {
           setData(result as PostResponse);
         }
-      } catch (err) {
+      } catch {
         setError("投稿の取得に失敗しました");
       } finally {
         setIsLoading(false);

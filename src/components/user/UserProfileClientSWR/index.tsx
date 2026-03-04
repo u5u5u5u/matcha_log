@@ -51,7 +51,7 @@ export default function UserProfileClientSWR({ userId }: Props) {
         } else {
           setData(result as UserProfileData);
         }
-      } catch (err) {
+      } catch {
         setError("データの取得に失敗しました");
       } finally {
         setIsLoading(false);

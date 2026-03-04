@@ -44,7 +44,9 @@ export default function TitleCollectionClient() {
   const fetchTitles = async () => {
     try {
       const data = await getTitles();
-      if (!data.error) {
+      if ("error" in data) {
+        console.error("Error fetching titles:", data.error);
+      } else {
         setTitleData(data);
       }
     } catch (error) {

@@ -49,11 +49,11 @@ export default function ResetPasswordPage() {
         setError(data.error);
       } else {
         setSuccess(
-          data.resetUrl
+          "resetUrl" in data && data.resetUrl
             ? "開発環境のため、下記のリンクからパスワードをリセットしてください。"
             : "パスワードリセットのメールを送信しました。メールをご確認ください。"
         );
-        if (data.resetUrl) {
+        if ("resetUrl" in data && data.resetUrl) {
           setResetUrl(data.resetUrl);
         }
       }

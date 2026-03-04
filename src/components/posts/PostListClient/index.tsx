@@ -24,7 +24,7 @@ export default function PostListClient() {
       } else {
         setData(result as PostsResponse);
       }
-    } catch (err) {
+    } catch {
       setError("投稿の取得に失敗しました");
     } finally {
       setIsLoading(false);
