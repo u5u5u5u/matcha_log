@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
 import styles from "./page.module.scss";
+import MatchLogLogo from "../../public/matcha_log_logo.svg";
 
 export default function Home() {
   const router = useRouter();
@@ -20,13 +21,10 @@ export default function Home() {
     >
       <Image
         className={styles.logo}
-        src="/matcha_log_logo.svg"
+        src={MatchLogLogo}
         alt="Matcha Log Logo"
-        width={393}
-        height={288}
         priority
       />
-      <p>タップ</p>
     </div>
   );
 }
