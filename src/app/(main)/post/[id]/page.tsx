@@ -1,9 +1,7 @@
-import { PrismaClient } from "@/generated/prisma";
+import { supabase, mapToCamel } from "@/lib/supabase";
 import { notFound } from "next/navigation";
 import React from "react";
 import PostDetailClient from "@/components/post/id/PostDetailClient";
-
-const prisma = new PrismaClient();
 
 export default async function PostDetailPage({
   params,
@@ -11,16 +9,16 @@ export default async function PostDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const post = await prisma.post.findUnique({
-    where: { id: id },
-    include: {
-      images: true,
-      shop: true,
-      user: true,
-      likes: true,
-    },
-  });
-  const likeCount = post?.likes.length || 0;
-  if (!post) return notFound();
+  const { data: rawPost } = await supabase
+    .from("posts")
+    .select(
+      "*, images(*), shop:shops(*), user:users(id,email,name,icon_url,created_at,updated_at), likes(*)"
+    )
+    .eq("id", id)
+    .single();
+  if (!rawPost) return notFound();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const post = mapToCamel(rawPost) as any;
+  const likeCount = (rawPost.likes as { id: string }[])?.length ?? 0;
   return <PostDetailClient post={post} likeCount={likeCount} />;
 }

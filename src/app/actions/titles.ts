@@ -1,40 +1,47 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
-import { authOptions } from "@/lib/authOptions";
-import { getServerSession } from "next-auth";
+import { supabase, mapToCamel } from "@/lib/supabase";
+import { getServerUser } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
 export async function getTitles() {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
+    const currentUser = await getServerUser();
+    if (!currentUser) {
       return { error: "Unauthorized" };
     }
 
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      include: {
-        userTitles: {
-          include: {
-            title: true,
-          },
-        },
-        activeTitle: true,
-      },
-    });
+    const { data: user } = await supabase
+      .from("users")
+      .select(
+        "id, active_title_id, user_titles(title_id, title:titles(*)), active_title:titles!active_title_id(*)",
+      )
+      .eq("id", currentUser.id)
+      .single();
 
     if (!user) {
       return { error: "User not found" };
     }
 
     // すべての称号を取得
-    const allTitles = await prisma.title.findMany({
-      orderBy: [{ createdAt: "asc" }],
-    });
+    const { data: rawAllTitles } = await supabase
+      .from("titles")
+      .select("*")
+      .order("created_at", { ascending: true });
 
-    // ユーザーが獲得した称号のIDセット
-    const unlockedTitleIds = new Set(user.userTitles.map((ut) => ut.titleId));
+    const allTitles = mapToCamel<
+      {
+        id: string;
+        name: string;
+        description: string | null;
+        type: string;
+        rarity: string;
+      }[]
+    >(rawAllTitles ?? []);
+
+    type RawUserTitleEntry = { title_id: string };
+    const userTitleEntries = (user.user_titles ?? []) as RawUserTitleEntry[];
+    const unlockedTitleIds = new Set(userTitleEntries.map((ut) => ut.title_id));
 
     // 称号をカテゴリ別に整理
     const titlesByCategory = allTitles.reduce(
@@ -46,7 +53,7 @@ export async function getTitles() {
         acc[category].push({
           ...title,
           isUnlocked: unlockedTitleIds.has(title.id),
-          isActive: user.activeTitleId === title.id,
+          isActive: (user.active_title_id ?? null) === title.id,
         });
         return acc;
       },
@@ -60,13 +67,17 @@ export async function getTitles() {
           isUnlocked: boolean;
           isActive: boolean;
         }[]
-      >
+      >,
     );
+
+    const activeTitle = user.active_title
+      ? mapToCamel<{ id: string; name: string }>(user.active_title)
+      : null;
 
     return {
       titlesByCategory,
-      activeTitle: user.activeTitle,
-      totalUnlocked: user.userTitles.length,
+      activeTitle,
+      totalUnlocked: userTitleEntries.length,
       totalTitles: allTitles.length,
     };
   } catch (error) {
@@ -79,39 +90,29 @@ export async function getTitles() {
 
 export async function setActiveTitle(titleId: string | null) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
+    const currentUser = await getServerUser();
+    if (!currentUser) {
       return { error: "Unauthorized" };
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-    });
-
-    if (!user) {
-      return { error: "User not found" };
     }
 
     // titleIdがnullの場合は称号を無効化
     if (titleId === null) {
-      await prisma.user.update({
-        where: { id: user.id },
-        data: { activeTitleId: null },
-      });
+      await supabase
+        .from("users")
+        .update({ active_title_id: null })
+        .eq("id", currentUser.id);
       revalidatePath("/me");
       revalidatePath("/titles");
       return { success: true, message: "Title deactivated" };
     }
 
     // ユーザーがその称号を獲得しているか確認
-    const userTitle = await prisma.userTitle.findUnique({
-      where: {
-        userId_titleId: {
-          userId: user.id,
-          titleId: titleId,
-        },
-      },
-    });
+    const { data: userTitle } = await supabase
+      .from("user_titles")
+      .select("id")
+      .eq("user_id", currentUser.id)
+      .eq("title_id", titleId)
+      .maybeSingle();
 
     if (!userTitle) {
       return {
@@ -120,10 +121,10 @@ export async function setActiveTitle(titleId: string | null) {
     }
 
     // アクティブな称号を更新
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { activeTitleId: titleId },
-    });
+    await supabase
+      .from("users")
+      .update({ active_title_id: titleId })
+      .eq("id", currentUser.id);
 
     revalidatePath("/me");
     revalidatePath("/titles");

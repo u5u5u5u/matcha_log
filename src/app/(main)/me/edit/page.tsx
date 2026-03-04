@@ -1,18 +1,18 @@
 import ProfileEditForm from "@/components/me/ProfileEditForm";
-import { authOptions } from "@/lib/authOptions";
-import { prisma } from "@/lib/prisma";
-import { getServerSession } from "next-auth";
+import { getServerUser } from "@/lib/auth";
+import { supabase } from "@/lib/supabase";
 import styles from "./page.module.scss";
 
 export default async function ProfileEditPage() {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.email) {
+  const currentUser = await getServerUser();
+  if (!currentUser) {
     return <div>ログインしてください</div>;
   }
-  const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
-    select: { name: true, email: true, iconUrl: true },
-  });
+  const { data: user } = await supabase
+    .from("users")
+    .select("name, email, icon_url")
+    .eq("id", currentUser.id)
+    .single();
   if (!user) {
     return <div>ユーザーが見つかりません</div>;
   }
@@ -20,8 +20,8 @@ export default async function ProfileEditPage() {
     <div className={styles.container}>
       <ProfileEditForm
         initialName={user.name || ""}
-        initialEmail={session.user.email}
-        initialIconUrl={user.iconUrl || ""}
+        initialEmail={currentUser.email ?? ""}
+        initialIconUrl={user.icon_url || ""}
       />
     </div>
   );

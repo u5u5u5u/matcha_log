@@ -1,14 +1,26 @@
-import { PrismaClient } from "@/generated/prisma";
+import { createClient } from "@supabase/supabase-js";
 import { updateUserTitles } from "../src/lib/titleUtils";
+import * as dotenv from "dotenv";
+dotenv.config();
 
-const prisma = new PrismaClient();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const supabase = createClient<any>(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  { auth: { persistSession: false } }
+);
 
 async function updateAllUserTitles() {
   console.log("Updating titles for all users...");
 
-  const users = await prisma.user.findMany({
-    select: { id: true, name: true, email: true },
-  });
+  const { data: users } = await supabase
+    .from("users")
+    .select("id, name, email");
+
+  if (!users) {
+    console.log("No users found");
+    return;
+  }
 
   console.log(`Found ${users.length} users`);
 
@@ -19,7 +31,7 @@ async function updateAllUserTitles() {
       if (newTitles && newTitles.length > 0) {
         console.log(
           `  -> Unlocked ${newTitles.length} new titles: ${newTitles
-            .map((t) => t.name)
+            .map((t: { name: string }) => t.name)
             .join(", ")}`
         );
       } else {
@@ -30,14 +42,10 @@ async function updateAllUserTitles() {
     }
   }
 
-  console.log("Finished updating titles for all users!");
+  console.log("Done!");
 }
 
-updateAllUserTitles()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+updateAllUserTitles().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});

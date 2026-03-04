@@ -1,161 +1,168 @@
-import { PrismaClient, TitleType, TitleRarity } from "@/generated/prisma";
+import { createClient } from "@supabase/supabase-js";
+import * as dotenv from "dotenv";
+dotenv.config();
 
-const prisma = new PrismaClient();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const supabase = createClient<any>(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  { auth: { persistSession: false } },
+);
 
 const titles = [
   // 投稿数系
   {
     name: "抹茶ビギナー",
     description: "初めての投稿をお疲れ様！",
-    type: TitleType.POST_COUNT,
+    type: "POST_COUNT",
     condition: { minPosts: 1 },
-    rarity: TitleRarity.COMMON,
+    rarity: "COMMON",
   },
   {
     name: "茶葉鑑定士",
     description: "10回の投稿を達成しました",
-    type: TitleType.POST_COUNT,
+    type: "POST_COUNT",
     condition: { minPosts: 10 },
-    rarity: TitleRarity.COMMON,
+    rarity: "COMMON",
   },
   {
     name: "抹茶博士",
     description: "50回の投稿を達成しました",
-    type: TitleType.POST_COUNT,
+    type: "POST_COUNT",
     condition: { minPosts: 50 },
-    rarity: TitleRarity.COMMON,
+    rarity: "COMMON",
   },
   {
     name: "ティーマイスター",
     description: "100回の投稿を達成しました",
-    type: TitleType.POST_COUNT,
+    type: "POST_COUNT",
     condition: { minPosts: 100 },
-    rarity: TitleRarity.COMMON,
+    rarity: "COMMON",
   },
   {
     name: "抹茶の匠",
     description: "200回の投稿を達成しました",
-    type: TitleType.POST_COUNT,
+    type: "POST_COUNT",
     condition: { minPosts: 200 },
-    rarity: TitleRarity.COMMON,
+    rarity: "COMMON",
   },
   {
     name: "ゴッド・オブ・マッチャ",
     description: "500回の投稿を達成しました",
-    type: TitleType.POST_COUNT,
+    type: "POST_COUNT",
     condition: { minPosts: 500 },
-    rarity: TitleRarity.COMMON,
+    rarity: "COMMON",
   },
 
   // 苦味系
   {
     name: "苦味チャレンジャー",
     description: "苦味合計50を達成しました",
-    type: TitleType.TASTE_BITTER,
+    type: "TASTE_BITTER",
     condition: { minTotal: 50 },
-    rarity: TitleRarity.COMMON,
+    rarity: "COMMON",
   },
   {
     name: "苦味鑑定士",
     description: "苦味合計150を達成しました",
-    type: TitleType.TASTE_BITTER,
+    type: "TASTE_BITTER",
     condition: { minTotal: 150 },
-    rarity: TitleRarity.COMMON,
+    rarity: "COMMON",
   },
   {
     name: "苦味コレクター",
     description: "苦味合計300を達成しました",
-    type: TitleType.TASTE_BITTER,
+    type: "TASTE_BITTER",
     condition: { minTotal: 300 },
-    rarity: TitleRarity.COMMON,
+    rarity: "COMMON",
   },
   {
     name: "The Bitterness Taster",
     description: "苦味合計500を達成しました",
-    type: TitleType.TASTE_BITTER,
+    type: "TASTE_BITTER",
     condition: { minTotal: 500 },
-    rarity: TitleRarity.COMMON,
+    rarity: "COMMON",
   },
   {
     name: "ゴッド・オブ・ビター",
     description: "苦味合計1000を達成しました",
-    type: TitleType.TASTE_BITTER,
+    type: "TASTE_BITTER",
     condition: { minTotal: 1000 },
-    rarity: TitleRarity.COMMON,
+    rarity: "COMMON",
   },
 
   // 濃厚系
   {
     name: "コクの探求者",
     description: "濃さ合計50を達成しました",
-    type: TitleType.TASTE_RICH,
+    type: "TASTE_RICH",
     condition: { minTotal: 50 },
-    rarity: TitleRarity.COMMON,
+    rarity: "COMMON",
   },
   {
     name: "濃厚鑑定士",
     description: "濃さ合計150を達成しました",
-    type: TitleType.TASTE_RICH,
+    type: "TASTE_RICH",
     condition: { minTotal: 150 },
-    rarity: TitleRarity.COMMON,
+    rarity: "COMMON",
   },
   {
     name: "濃厚コレクター",
     description: "濃さ合計300を達成しました",
-    type: TitleType.TASTE_RICH,
+    type: "TASTE_RICH",
     condition: { minTotal: 300 },
-    rarity: TitleRarity.COMMON,
+    rarity: "COMMON",
   },
   {
     name: "The Richness Taster",
     description: "濃さ合計500を達成しました",
-    type: TitleType.TASTE_RICH,
+    type: "TASTE_RICH",
     condition: { minTotal: 500 },
-    rarity: TitleRarity.COMMON,
+    rarity: "COMMON",
   },
   {
     name: "ゴッド・オブ・リッチ",
     description: "濃さ合計1000を達成しました",
-    type: TitleType.TASTE_RICH,
+    type: "TASTE_RICH",
     condition: { minTotal: 1000 },
-    rarity: TitleRarity.COMMON,
+    rarity: "COMMON",
   },
 
   // 甘味系
   {
     name: "シュガーラバー",
     description: "甘さ合計50を達成しました",
-    type: TitleType.TASTE_SWEET,
+    type: "TASTE_SWEET",
     condition: { minTotal: 50 },
-    rarity: TitleRarity.COMMON,
+    rarity: "COMMON",
   },
   {
     name: "甘味鑑定士",
     description: "甘さ合計150を達成しました",
-    type: TitleType.TASTE_SWEET,
+    type: "TASTE_SWEET",
     condition: { minTotal: 150 },
-    rarity: TitleRarity.COMMON,
+    rarity: "COMMON",
   },
   {
     name: "甘味コレクター",
     description: "甘さ合計300を達成しました",
-    type: TitleType.TASTE_SWEET,
+    type: "TASTE_SWEET",
     condition: { minTotal: 300 },
-    rarity: TitleRarity.COMMON,
+    rarity: "COMMON",
   },
   {
     name: "The Sweetness Taster",
     description: "甘さ合計500を達成しました",
-    type: TitleType.TASTE_SWEET,
+    type: "TASTE_SWEET",
     condition: { minTotal: 500 },
-    rarity: TitleRarity.COMMON,
+    rarity: "COMMON",
   },
   {
     name: "ゴッド・オブ・スイーツ",
     description: "甘さ合計1000を達成しました",
-    type: TitleType.TASTE_SWEET,
+    type: "TASTE_SWEET",
     condition: { minTotal: 1000 },
-    rarity: TitleRarity.COMMON,
+    rarity: "COMMON",
   },
 ];
 
@@ -163,27 +170,25 @@ async function seedTitles() {
   console.log("Seeding titles...");
 
   for (const title of titles) {
-    await prisma.title.upsert({
-      where: { name: title.name },
-      update: {},
-      create: {
+    const { error } = await supabase.from("titles").upsert(
+      {
         name: title.name,
         description: title.description,
         type: title.type,
         condition: title.condition,
         rarity: title.rarity,
       },
-    });
+      { onConflict: "name" },
+    );
+    if (error) {
+      console.error(`Error upserting title "${title.name}":`, error);
+    }
   }
 
   console.log("Titles seeded successfully!");
 }
 
-seedTitles()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+seedTitles().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});

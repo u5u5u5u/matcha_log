@@ -1,8 +1,6 @@
-import { PrismaClient } from "@/generated/prisma";
+import { supabase, mapToCamel } from "@/lib/supabase";
 import Image from "next/image";
 import React from "react";
-
-const prisma = new PrismaClient();
 
 export default async function SearchPage({
   searchParams,
@@ -16,21 +14,39 @@ export default async function SearchPage({
   }>;
 }) {
   const { q, cat, shop, min, max } = (await searchParams) || {};
-  const where: import("@/generated/prisma").Prisma.PostWhereInput = {};
-  if (q) where.title = { contains: q };
-  if (cat) where.category = cat;
-  if (shop) where.shop = { name: { contains: shop } };
-  if (min || max) {
-    where.richness = {};
-    if (min) where.richness.gte = Number(min);
-    if (max) where.richness.lte = Number(max);
+
+  let query = supabase
+    .from("posts")
+    .select("*, images(*), shop:shops(*), user:users(id,email,name,icon_url)")
+    .order("created_at", { ascending: false })
+    .limit(20);
+
+  if (q) query = query.ilike("title", `%${q}%`);
+  if (cat) query = query.eq("category", cat);
+  if (min) query = query.gte("richness", Number(min));
+  if (max) query = query.lte("richness", Number(max));
+
+  // 店舗名フィルターは shops テーブルを別途取得して絞り込み
+  const { data: rawPosts } = await query;
+  let posts = mapToCamel<
+    {
+      id: string;
+      title: string;
+      category: string;
+      richness: number;
+      bitterness: number;
+      sweetness: number;
+      images: { url: string }[];
+      shop: { name: string } | null;
+    }[]
+  >(rawPosts ?? []);
+
+  // 店舗名フィルター（クライアントサイドで絞り込み）
+  if (shop) {
+    posts = posts.filter((p) =>
+      p.shop?.name?.toLowerCase().includes(shop.toLowerCase())
+    );
   }
-  const posts = await prisma.post.findMany({
-    where,
-    include: { images: true, shop: true, user: true },
-    orderBy: { createdAt: "desc" },
-    take: 20,
-  });
   return (
     <div style={{ maxWidth: 700, margin: "40px auto" }}>
       <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", marginBottom: 24 }}>

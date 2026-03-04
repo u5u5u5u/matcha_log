@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Input } from "../../util/input";
 import { Button } from "../../util/button";
 import Link from "next/link";
 import styles from "./index.module.scss";
 import { z } from "zod";
-import { confirmPasswordReset } from "@/app/actions/auth";
+import { createSupabaseBrowserClient } from "@/lib/supabase-browser";
 
 const schema = z
   .object({
@@ -31,19 +31,26 @@ export default function ResetPasswordConfirmPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [token, setToken] = useState<string | null>(null);
+  const [ready, setReady] = useState(false);
 
-  const searchParams = useSearchParams();
   const router = useRouter();
 
   useEffect(() => {
-    const tokenParam = searchParams.get("token");
-    if (!tokenParam) {
-      setError("無効なリセットリンクです");
-    } else {
-      setToken(tokenParam);
-    }
-  }, [searchParams]);
+    // SupabaseのリカバリーリンクのURLフラグメントを処理
+    const supabase = createSupabaseBrowserClient();
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY") {
+        setReady(true);
+      }
+    });
+    // 既にセッションがある場合も有効
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) setReady(true);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -54,11 +61,6 @@ export default function ResetPasswordConfirmPage() {
     setError(null);
     setSuccess(null);
 
-    if (!token) {
-      setError("無効なリセットリンクです");
-      return;
-    }
-
     const result = schema.safeParse(form);
     if (!result.success) {
       setError(result.error.errors[0].message);
@@ -67,17 +69,20 @@ export default function ResetPasswordConfirmPage() {
 
     setLoading(true);
     try {
-      const data = await confirmPasswordReset(token, form.password);
+      const supabase = createSupabaseBrowserClient();
+      const { error: updateError } = await supabase.auth.updateUser({
+        password: result.data.password,
+      });
 
-      if (data.error) {
-        setError(data.error);
+      if (updateError) {
+        setError(
+          "パスワードの更新に失敗しました。リセットリンクの有効期限が切れている可能性があります。",
+        );
       } else {
         setSuccess(
-          "パスワードが正常に更新されました。ログインページに移動します。"
+          "パスワードが正常に更新されました。ログインページに移動します。",
         );
-        setTimeout(() => {
-          router.push("/login");
-        }, 3000);
+        setTimeout(() => router.push("/login"), 2000);
       }
     } catch {
       setError("通信エラーが発生しました");
@@ -86,10 +91,13 @@ export default function ResetPasswordConfirmPage() {
     }
   };
 
-  if (!token && !error) {
+  if (!ready) {
     return (
       <div className={styles.container}>
         <div className={styles.title}>読み込み中...</div>
+        <p className={styles.description}>
+          リセットリンクを検証しています。しばらお待ちください。
+        </p>
       </div>
     );
   }
@@ -130,7 +138,7 @@ export default function ResetPasswordConfirmPage() {
         <Button
           className={styles.button}
           type="submit"
-          disabled={loading || !token}
+          disabled={loading || !ready}
         >
           {loading ? "更新中..." : "パスワードを更新"}
         </Button>

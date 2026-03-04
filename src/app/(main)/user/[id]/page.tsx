@@ -1,6 +1,5 @@
 import UserProfileClientSWR from "@/components/user/UserProfileClientSWR";
-import { authOptions } from "@/lib/authOptions";
-import { getServerSession } from "next-auth";
+import { getServerUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
 export default async function UserProfilePage({
@@ -9,8 +8,8 @@ export default async function UserProfilePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const session = await getServerSession(authOptions);
-  const meId = session?.user?.id;
+  const currentUser = await getServerUser();
+  const meId = currentUser?.id;
 
   // 自分のプロフィールを見ようとした場合は /me にリダイレクト
   if (meId && meId === id) {

@@ -1,9 +1,7 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
-import { compare, hash } from "bcryptjs";
+import { supabase } from "@/lib/supabase";
 import { z } from "zod";
-import { randomBytes } from "crypto";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -18,11 +16,6 @@ const signupSchema = z.object({
 
 const resetPasswordSchema = z.object({
   email: z.string().email(),
-});
-
-const resetPasswordConfirmSchema = z.object({
-  token: z.string(),
-  password: z.string().min(6),
 });
 
 export async function login(formData: FormData) {
@@ -41,23 +34,27 @@ export async function login(formData: FormData) {
 
     const { email, password } = result.data;
 
-    const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) {
-      return {
-        error: "メールアドレスまたはパスワードが違います",
-      };
+    // Supabase Auth でパスワード検証
+    const { data: authData, error: authError } =
+      await supabase.auth.signInWithPassword({ email, password });
+    if (authError || !authData.user) {
+      return { error: "メールアドレスまたはパスワードが違います" };
     }
 
-    const valid = await compare(password, user.password);
-    if (!valid) {
-      return {
-        error: "メールアドレスまたはパスワードが違います",
-      };
-    }
+    // プロフィール情報を public.users から取得
+    const { data: profile } = await supabase
+      .from("users")
+      .select("name")
+      .eq("id", authData.user.id)
+      .single();
 
     return {
       ok: true,
-      user: { id: user.id, email: user.email, name: user.name },
+      user: {
+        id: authData.user.id,
+        email: authData.user.email!,
+        name: profile?.name ?? null,
+      },
     };
   } catch {
     return { error: "サーバーエラー" };
@@ -81,19 +78,34 @@ export async function signup(formData: FormData) {
 
     const { email, password, name } = result.data;
 
-    // 既存ユーザー確認
-    const exists = await prisma.user.findUnique({ where: { email } });
-    if (exists) {
-      return {
-        error: "このメールアドレスは既に登録されています",
-      };
+    // Supabase Auth にユーザー作成
+    const { data: authData, error: authError } =
+      await supabase.auth.admin.createUser({
+        email,
+        password,
+        email_confirm: true,
+        user_metadata: { name },
+      });
+
+    if (authError) {
+      if (authError.message.includes("already registered")) {
+        return { error: "このメールアドレスは既に登録されています" };
+      }
+      return { error: "ユーザー作成に失敗しました" };
     }
 
-    // パスワードハッシュ化
-    const hashed = await hash(password, 10);
-    const user = await prisma.user.create({
-      data: { email, password: hashed, name },
-    });
+    // プロフィールを public.users に登録（パスワード不要）
+    const { data: user, error: profileError } = await supabase
+      .from("users")
+      .insert({ id: authData.user.id, email, name })
+      .select("id, email, name")
+      .single();
+
+    if (profileError || !user) {
+      // ロールバック: auth ユーザーを削除
+      await supabase.auth.admin.deleteUser(authData.user.id);
+      return { error: "ユーザー作成に失敗しました" };
+    }
 
     return {
       ok: true,
@@ -107,104 +119,27 @@ export async function signup(formData: FormData) {
 export async function requestPasswordReset(email: string) {
   try {
     const result = resetPasswordSchema.safeParse({ email });
-
     if (!result.success) {
-      return {
-        error: "有効なメールアドレスを入力してください",
-      };
+      return { error: "有効なメールアドレスを入力してください" };
     }
 
-    // ユーザーの存在確認
-    const user = await prisma.user.findUnique({
-      where: { email: result.data.email },
-    });
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+    const { error } = await supabase.auth.resetPasswordForEmail(
+      result.data.email,
+      { redirectTo: `${siteUrl}/reset-password/confirm` },
+    );
 
-    if (!user) {
-      // セキュリティ上、ユーザーが存在しなくても成功レスポンスを返す
-      return {
-        message: "パスワードリセットのメールを送信しました",
-      };
+    if (error) {
+      console.error("Password reset error:", error.message);
     }
 
-    // パスワードリセットトークンの生成
-    const resetToken = randomBytes(32).toString("hex");
-    const resetTokenExpiry = new Date(Date.now() + 3600000); // 1時間後
-
-    // データベースにリセットトークンを保存
-    await prisma.user.update({
-      where: { email: result.data.email },
-      data: {
-        resetToken,
-        resetTokenExpiry,
-      },
-    });
-
-    // 実際のアプリケーションでは、ここでメール送信を行う
-    console.log(`Password reset token for ${email}: ${resetToken}`);
-    const resetUrl = `${
-      process.env.NEXTAUTH_URL || "http://localhost:3000"
-    }/reset-password/confirm?token=${resetToken}`;
-    console.log(`Reset URL: ${resetUrl}`);
-
-    // 開発環境では、リセットURLもレスポンスに含める
-    const isDev = process.env.NODE_ENV === "development";
-
+    // セキュリティ上、メールが存在しなくても成功レスポンスを返す
     return {
-      message: "パスワードリセットのメールを送信しました",
-      ...(isDev && { resetUrl }),
+      message:
+        "パスワードリセットのメールを送信しました。メールをご確認ください",
     };
   } catch (error) {
     console.error("Password reset error:", error);
-    return {
-      error: "サーバーエラーが発生しました",
-    };
-  }
-}
-
-export async function confirmPasswordReset(token: string, password: string) {
-  try {
-    const result = resetPasswordConfirmSchema.safeParse({ token, password });
-
-    if (!result.success) {
-      return { error: "無効なデータです" };
-    }
-
-    // トークンでユーザーを検索
-    const user = await prisma.user.findFirst({
-      where: {
-        resetToken: result.data.token,
-        resetTokenExpiry: {
-          gt: new Date(),
-        },
-      },
-    });
-
-    if (!user) {
-      return {
-        error: "無効または期限切れのリセットトークンです",
-      };
-    }
-
-    // パスワードをハッシュ化
-    const hashedPassword = await hash(result.data.password, 12);
-
-    // パスワードを更新し、リセットトークンをクリア
-    await prisma.user.update({
-      where: { id: user.id },
-      data: {
-        password: hashedPassword,
-        resetToken: null,
-        resetTokenExpiry: null,
-      },
-    });
-
-    return {
-      message: "パスワードが正常に更新されました",
-    };
-  } catch (error) {
-    console.error("Password reset confirm error:", error);
-    return {
-      error: "サーバーエラーが発生しました",
-    };
+    return { error: "サーバーエラーが発生しました" };
   }
 }

@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/util/button";
 import { Input } from "@/components/util/input";
-import { signIn } from "next-auth/react";
+import { createSupabaseBrowserClient } from "@/lib/supabase-browser";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -19,16 +19,17 @@ export default function LoginForm() {
     e.preventDefault();
     setError(null);
     setLoading(true);
-    const res = await signIn("credentials", {
+    const supabase = createSupabaseBrowserClient();
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
-      redirect: false,
     });
     setLoading(false);
-    if (res?.error) {
+    if (error) {
       setError("メールアドレスまたはパスワードが正しくありません");
     } else {
       router.push("/posts");
+      router.refresh();
     }
   };
 
@@ -66,9 +67,9 @@ export default function LoginForm() {
         </Button>
       </form>
       <div className={styles.links}>
-        {/* <Link href="/reset-password" className={styles.link}>
+        <Link href="/reset-password" className={styles.link}>
           パスワードをお忘れですか？
-        </Link> */}
+        </Link>
         <Link href="/signup" className={styles.link}>
           新規登録はこちら
         </Link>

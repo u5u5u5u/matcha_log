@@ -1,17 +1,17 @@
 "use client";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/components/AuthProvider";
 import { useRouter, usePathname } from "next/navigation";
 import styles from "./index.module.scss";
 import { House, Leaf, CircleUser } from "lucide-react";
 
 export default function BottomBar() {
-  const { data: session } = useSession();
+  const { user } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
 
   const handleProtectedNavigation = (path: string) => {
-    if (!session) {
+    if (!user) {
       router.push("/login");
     } else {
       router.push(path);

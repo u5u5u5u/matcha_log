@@ -1,11 +1,10 @@
 import MePageClientSWR from "@/components/me/MePageClientSWR";
-import { authOptions } from "@/lib/authOptions";
-import { getServerSession } from "next-auth";
+import { getServerUser } from "@/lib/auth";
 
 export default async function MePage() {
-  const session = await getServerSession(authOptions);
+  const currentUser = await getServerUser();
 
-  if (!session?.user?.email) {
+  if (!currentUser) {
     return <div>ログインしてください</div>;
   }
 

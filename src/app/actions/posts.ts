@@ -1,31 +1,28 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
-import { authOptions } from "@/lib/authOptions";
-import { getServerSession } from "next-auth";
-import { Category } from "@/generated/prisma";
+import { supabase, mapToCamel } from "@/lib/supabase";
+import { getServerUser } from "@/lib/auth";
+import type { Category } from "@/types/post";
 import { updateUserTitles } from "@/lib/titleUtils";
 import { revalidatePath } from "next/cache";
 
 export async function getPosts(take: number = 10, skip: number = 0) {
   try {
-    const session = await getServerSession(authOptions);
+    const currentUser = await getServerUser();
 
-    const posts = await prisma.post.findMany({
-      include: {
-        images: true,
-        shop: true,
-        user: true,
-        likes: true,
-      },
-      orderBy: { createdAt: "desc" },
-      take: take,
-      skip: skip,
-    });
+    const { data: rawPosts } = await supabase
+      .from("posts")
+      .select(
+        "*, images(*), shop:shops(*), user:users(id,email,name,icon_url,created_at,updated_at), likes(*)",
+      )
+      .order("created_at", { ascending: false })
+      .range(skip, skip + take - 1);
+
+    const posts = mapToCamel(rawPosts ?? []);
 
     return {
       posts,
-      myId: session?.user?.id || null,
+      myId: currentUser?.id || null,
     };
   } catch (error) {
     console.error("Failed to fetch posts:", error);
@@ -37,17 +34,19 @@ export async function getPosts(take: number = 10, skip: number = 0) {
 
 export async function getPostById(id: string) {
   try {
-    const post = await prisma.post.findUnique({
-      where: { id: id },
-      include: { images: true, shop: true },
-    });
+    const { data: rawPost } = await supabase
+      .from("posts")
+      .select("*, images(*), shop:shops(*)")
+      .eq("id", id)
+      .single();
 
-    if (!post) {
+    if (!rawPost) {
       return {
         error: "投稿が見つかりません",
       };
     }
 
+    const post = mapToCamel(rawPost);
     return { post };
   } catch (error) {
     console.error("投稿取得エラー:", error);
@@ -57,8 +56,8 @@ export async function getPostById(id: string) {
 
 export async function createPost(formData: FormData) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
+    const currentUser = await getServerUser();
+    if (!currentUser) {
       return { error: "認証が必要です" };
     }
 
@@ -84,46 +83,61 @@ export async function createPost(formData: FormData) {
     }
 
     // 店舗情報の登録・取得
-    let shop = null;
+    let shopId: string | null = null;
     if (shopName) {
-      shop = await prisma.shop.findFirst({ where: { name: shopName } });
-      if (!shop) {
-        shop = await prisma.shop.create({
-          data: {
-            name: shopName,
-          },
-        });
+      const { data: existingShop } = await supabase
+        .from("shops")
+        .select("id")
+        .eq("name", shopName)
+        .maybeSingle();
+      if (existingShop) {
+        shopId = existingShop.id;
+      } else {
+        const { data: newShop } = await supabase
+          .from("shops")
+          .insert({ name: shopName })
+          .select("id")
+          .single();
+        shopId = newShop?.id ?? null;
       }
     }
 
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-    });
-    if (!user) {
-      return {
-        error: "ユーザーが見つかりません",
-      };
-    }
-
-    const post = await prisma.post.create({
-      data: {
+    const { data: newPost, error } = await supabase
+      .from("posts")
+      .insert({
         title,
         category,
         bitterness,
         richness,
         sweetness,
-        comment,
-        userId: user.id,
-        shopId: shop?.id,
-        images: {
-          create: images.filter(Boolean).map((url) => ({ url })),
-        },
-      },
-      include: { images: true },
-    });
+        comment: comment || null,
+        user_id: currentUser.id,
+        shop_id: shopId,
+      })
+      .select("id")
+      .single();
+
+    if (error || !newPost) {
+      return { error: "投稿の作成に失敗しました" };
+    }
+
+    if (images.filter(Boolean).length > 0) {
+      await supabase
+        .from("images")
+        .insert(
+          images.filter(Boolean).map((url) => ({ url, post_id: newPost.id })),
+        );
+    }
 
     // 称号獲得状況を更新
-    await updateUserTitles(user.id);
+    await updateUserTitles(currentUser.id);
+
+    const { data: rawPost } = await supabase
+      .from("posts")
+      .select("*, images(*)")
+      .eq("id", newPost.id)
+      .single();
+    const post = mapToCamel(rawPost);
 
     revalidatePath("/posts");
     revalidatePath("/me");
@@ -136,8 +150,8 @@ export async function createPost(formData: FormData) {
 
 export async function updatePost(id: string, formData: FormData) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
+    const currentUser = await getServerUser();
+    if (!currentUser) {
       return { error: "認証が必要です" };
     }
 
@@ -167,72 +181,81 @@ export async function updatePost(id: string, formData: FormData) {
     }
 
     // 投稿取得＆認可
-    const post = await prisma.post.findUnique({
-      where: { id: id },
-      include: { user: true },
-    });
-    if (!post) {
+    const { data: rawPost } = await supabase
+      .from("posts")
+      .select("*, user:users(id)")
+      .eq("id", id)
+      .single();
+    if (!rawPost) {
       return {
         error: "投稿が見つかりません",
       };
     }
-    if (post.user.email !== session.user.email) {
+    const postData = mapToCamel<{ id: string; user: { id: string } }>(rawPost);
+    if (postData.user.id !== currentUser.id) {
       return {
         error: "編集権限がありません",
       };
     }
 
     // 店舗情報の登録・取得
-    let shop = null;
+    let shopId: string | null = null;
     if (shopName) {
-      shop = await prisma.shop.findFirst({ where: { name: shopName } });
-      if (!shop) {
-        shop = await prisma.shop.create({
-          data: {
-            name: shopName,
-            lat: shopLat ? Number(shopLat) : undefined,
-            lng: shopLng ? Number(shopLng) : undefined,
-          },
-        });
+      const { data: existingShop } = await supabase
+        .from("shops")
+        .select("id")
+        .eq("name", shopName)
+        .maybeSingle();
+      if (existingShop) {
+        // 既存店舗の緯度・経度を更新
+        if (shopLat || shopLng) {
+          await supabase
+            .from("shops")
+            .update({
+              lat: shopLat ? Number(shopLat) : undefined,
+              lng: shopLng ? Number(shopLng) : undefined,
+            })
+            .eq("id", existingShop.id);
+        }
+        shopId = existingShop.id;
       } else {
-        // 既存の店舗がある場合、緯度・経度を更新
-        shop = await prisma.shop.update({
-          where: { id: shop.id },
-          data: {
-            lat: shopLat ? Number(shopLat) : undefined,
-            lng: shopLng ? Number(shopLng) : undefined,
-          },
-        });
+        const { data: newShop } = await supabase
+          .from("shops")
+          .insert({
+            name: shopName,
+            lat: shopLat ? Number(shopLat) : null,
+            lng: shopLng ? Number(shopLng) : null,
+          })
+          .select("id")
+          .single();
+        shopId = newShop?.id ?? null;
       }
     }
 
-    const updated = await prisma.post.update({
-      where: { id: id },
-      data: {
+    await supabase
+      .from("posts")
+      .update({
         title,
         category,
         bitterness,
         richness,
         sweetness,
-        comment,
-        shopId: shop?.id,
-      },
-    });
+        comment: comment || null,
+        shop_id: shopId,
+      })
+      .eq("id", id);
 
-    // 既存の画像を削除
-    await prisma.image.deleteMany({
-      where: { postId: id },
-    });
+    // 既存画像を削除
+    await supabase.from("images").delete().eq("post_id", id);
 
     // 新しい画像を追加
     if (imageUrls.length > 0) {
-      await prisma.image.createMany({
-        data: imageUrls.map((url) => ({
-          postId: id,
-          url: url,
-        })),
-      });
+      await supabase
+        .from("images")
+        .insert(imageUrls.map((url) => ({ url, post_id: id })));
     }
+
+    const updated = mapToCamel(rawPost);
 
     revalidatePath("/posts");
     revalidatePath(`/post/${id}`);
@@ -246,31 +269,34 @@ export async function updatePost(id: string, formData: FormData) {
 
 export async function deletePost(id: string) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
+    const currentUserDel = await getServerUser();
+    if (!currentUserDel) {
       return { error: "認証が必要です" };
     }
 
-    const post = await prisma.post.findUnique({
-      where: { id: id },
-      include: { user: true },
-    });
+    const { data: rawPost2 } = await supabase
+      .from("posts")
+      .select("*, user:users(id)")
+      .eq("id", id)
+      .single();
 
-    if (!post) {
+    if (!rawPost2) {
       return {
         error: "投稿が見つかりません",
       };
     }
-
-    if (post.user.email !== session.user.email) {
+    const deletePost = mapToCamel<{ id: string; user: { id: string } }>(
+      rawPost2,
+    );
+    if (deletePost.user.id !== currentUserDel.id) {
       return {
         error: "削除権限がありません",
       };
     }
 
-    await prisma.image.deleteMany({ where: { postId: id } });
-    await prisma.like.deleteMany({ where: { postId: id } });
-    await prisma.post.delete({ where: { id: id } });
+    await supabase.from("images").delete().eq("post_id", id);
+    await supabase.from("likes").delete().eq("post_id", id);
+    await supabase.from("posts").delete().eq("id", id);
 
     revalidatePath("/posts");
     revalidatePath("/me");
@@ -283,15 +309,18 @@ export async function deletePost(id: string) {
 
 export async function likePost(postId: string) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
+    const currentUser = await getServerUser();
+    if (!currentUser) {
       return { error: "Unauthorized" };
     }
 
-    const userId = session.user.id;
-    await prisma.like.create({
-      data: { postId, userId },
-    });
+    const userId = currentUser.id;
+    const { error } = await supabase
+      .from("likes")
+      .insert({ post_id: postId, user_id: userId });
+    if (error) {
+      return { error: "いいねに失敗しました" };
+    }
 
     revalidatePath("/posts");
     revalidatePath(`/post/${postId}`);
@@ -304,15 +333,17 @@ export async function likePost(postId: string) {
 
 export async function unlikePost(postId: string) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
+    const currentUser = await getServerUser();
+    if (!currentUser) {
       return { error: "Unauthorized" };
     }
 
-    const userId = session.user.id;
-    await prisma.like.deleteMany({
-      where: { postId, userId },
-    });
+    const userId = currentUser.id;
+    await supabase
+      .from("likes")
+      .delete()
+      .eq("post_id", postId)
+      .eq("user_id", userId);
 
     revalidatePath("/posts");
     revalidatePath(`/post/${postId}`);

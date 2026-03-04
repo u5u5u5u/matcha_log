@@ -1,3 +1,13 @@
+// Prisma から移行。Enum 型を再定義
+export type Category = "SWEET" | "DRINK";
+export type TitleType =
+  | "POST_COUNT"
+  | "TASTE_BITTER"
+  | "TASTE_RICH"
+  | "TASTE_SWEET"
+  | "TASTE_BALANCE";
+export type TitleRarity = "COMMON" | "RARE" | "EPIC" | "LEGENDARY";
+
 // Post型定義
 export type Post = {
   id: string;

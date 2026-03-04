@@ -1,11 +1,10 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/authOptions";
+import { getServerUser } from "@/lib/auth";
 import TitleCollectionClient from "@/components/titles/TitleCollectionClient";
 
 export default async function TitleCollectionPage() {
-  const session = await getServerSession(authOptions);
+  const currentUser = await getServerUser();
 
-  if (!session?.user?.email) {
+  if (!currentUser) {
     return <div>ログインしてください</div>;
   }
 

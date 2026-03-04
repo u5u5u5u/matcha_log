@@ -22,7 +22,6 @@ export default function ResetPasswordPage() {
   });
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const [resetUrl, setResetUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,7 +32,6 @@ export default function ResetPasswordPage() {
     e.preventDefault();
     setError(null);
     setSuccess(null);
-    setResetUrl(null);
 
     const result = schema.safeParse(form);
     if (!result.success) {
@@ -49,13 +47,8 @@ export default function ResetPasswordPage() {
         setError(data.error);
       } else {
         setSuccess(
-          "resetUrl" in data && data.resetUrl
-            ? "開発環境のため、下記のリンクからパスワードをリセットしてください。"
-            : "パスワードリセットのメールを送信しました。メールをご確認ください。"
+          "パスワードリセットのメールを送信しました。メールをご確認ください。",
         );
-        if ("resetUrl" in data && data.resetUrl) {
-          setResetUrl(data.resetUrl);
-        }
       }
     } catch {
       setError("通信エラーが発生しました");
@@ -87,13 +80,6 @@ export default function ResetPasswordPage() {
         </div>
         {error && <div className={styles.error}>{error}</div>}
         {success && <div className={styles.success}>{success}</div>}
-        {resetUrl && (
-          <div className={styles.resetLink}>
-            <a href={resetUrl} className={styles.resetButton}>
-              パスワードをリセットする
-            </a>
-          </div>
-        )}
         <Button className={styles.button} type="submit" disabled={loading}>
           {loading ? "送信中..." : "リセットメールを送信"}
         </Button>

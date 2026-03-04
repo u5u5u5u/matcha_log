@@ -1,75 +1,89 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
-import { authOptions } from "@/lib/authOptions";
-import { getServerSession } from "next-auth";
+import { supabase, mapToCamel } from "@/lib/supabase";
+import { getServerUser } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
 export async function getMyProfile() {
   try {
-    const session = await getServerSession(authOptions);
+    const currentUser = await getServerUser();
 
-    if (!session?.user?.email) {
+    if (!currentUser) {
       return { error: "認証が必要です" };
     }
 
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      select: {
-        name: true,
-        email: true,
-        iconUrl: true,
-        activeTitle: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        following: {
-          select: {
-            followingId: true,
-            following: { select: { name: true, iconUrl: true, id: true } },
-          },
-        },
-        followers: {
-          select: {
-            followerId: true,
-            follower: { select: { name: true, iconUrl: true, id: true } },
-          },
-        },
-      },
-    });
+    const { data: rawUser } = await supabase
+      .from("users")
+      .select(
+        `name, email, icon_url, active_title_id,
+         active_title:titles!active_title_id(id, name),
+         following:follows!follower_id(following_id, following_user:users!following_id(name, icon_url, id)),
+         followers:follows!following_id(follower_id, follower_user:users!follower_id(name, icon_url, id))`,
+      )
+      .eq("id", currentUser.id)
+      .single();
 
-    const posts = await prisma.post.findMany({
-      where: { user: { email: session.user.email } },
-      include: {
-        images: { select: { url: true } },
-        shop: { select: { name: true } },
-      },
-      orderBy: { createdAt: "desc" },
-    });
+    type RawFollow = {
+      following_id: string;
+      following_user: {
+        name: string | null;
+        icon_url: string | null;
+        id: string;
+      } | null;
+    };
+    type RawFollower = {
+      follower_id: string;
+      follower_user: {
+        name: string | null;
+        icon_url: string | null;
+        id: string;
+      } | null;
+    };
+    type RawUser = {
+      name: string | null;
+      email: string;
+      icon_url: string | null;
+      active_title_id: string | null;
+      active_title: { id: string; name: string } | null;
+      following: RawFollow[];
+      followers: RawFollower[];
+    };
 
-    const likedPosts = await prisma.post.findMany({
-      where: {
-        likes: {
-          some: { user: { email: session.user.email } },
-        },
-      },
-      include: {
-        images: { select: { url: true } },
-        shop: { select: { name: true } },
-      },
-      orderBy: { createdAt: "desc" },
-    });
+    const user = rawUser as RawUser | null;
+
+    const { data: rawPosts } = await supabase
+      .from("posts")
+      .select("*, images(url), shop:shops(name)")
+      .eq("user_id", currentUser.id)
+      .order("created_at", { ascending: false });
+
+    const { data: rawLikedPosts } = await supabase
+      .from("posts")
+      .select("*, images(url), shop:shops(name), likes!inner(user_id)")
+      .eq("likes.user_id", currentUser.id)
+      .order("created_at", { ascending: false });
+
+    const posts = mapToCamel(rawPosts ?? []);
+    const likedPosts = mapToCamel(rawLikedPosts ?? []);
 
     return {
       user: {
         name: user?.name || "",
         email: user?.email || "",
-        iconUrl: user?.iconUrl || undefined,
-        activeTitle: user?.activeTitle || null,
-        followingList: user?.following?.map((f) => f.following) || [],
-        followerList: user?.followers?.map((f) => f.follower) || [],
+        iconUrl: user?.icon_url || undefined,
+        activeTitle: user?.active_title || null,
+        followingList:
+          user?.following?.map((f) => ({
+            id: f.following_user?.id ?? "",
+            name: f.following_user?.name ?? null,
+            iconUrl: f.following_user?.icon_url ?? null,
+          })) || [],
+        followerList:
+          user?.followers?.map((f) => ({
+            id: f.follower_user?.id ?? "",
+            name: f.follower_user?.name ?? null,
+            iconUrl: f.follower_user?.icon_url ?? null,
+          })) || [],
       },
       posts,
       likedPosts,
@@ -85,11 +99,11 @@ export async function getMyProfile() {
 export async function updateProfile(
   name: string,
   email: string,
-  iconUrl?: string
+  iconUrl?: string,
 ) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
+    const currentUser = await getServerUser();
+    if (!currentUser) {
       return { error: "認証が必要です" };
     }
 
@@ -99,10 +113,10 @@ export async function updateProfile(
       };
     }
 
-    await prisma.user.update({
-      where: { email: session.user.email },
-      data: { name, email, iconUrl },
-    });
+    await supabase
+      .from("users")
+      .update({ name, email, icon_url: iconUrl ?? null })
+      .eq("id", currentUser.id);
 
     revalidatePath("/me");
     return { ok: true };

@@ -1,7 +1,7 @@
 "use client";
 
 import { LogOut } from "lucide-react";
-import { signOut } from "next-auth/react";
+import { createSupabaseBrowserClient } from "@/lib/supabase-browser";
 import { useState } from "react";
 import { Button } from "../button";
 import Modal from "../Modal";
@@ -10,9 +10,11 @@ import styles from "./index.module.scss"; // Assuming you have some styles defin
 export default function LogoutButton() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleLogout = () => {
-    signOut({ callbackUrl: "/login" });
+  const handleLogout = async () => {
+    const supabase = createSupabaseBrowserClient();
+    await supabase.auth.signOut();
     setIsModalOpen(false);
+    window.location.href = "/login";
   };
 
   return (
@@ -22,7 +24,7 @@ export default function LogoutButton() {
         variant="ghost"
         onClick={() => setIsModalOpen(true)}
       >
-        <LogOut strokeWidth={3}/>
+        <LogOut strokeWidth={3} />
       </Button>
 
       <Modal
