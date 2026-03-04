@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 
-import MePageClientSWR from "@/components/me/MePageClientSWR";
+import { getMyProfile } from "@/app/actions/me";
+import MePageClient from "@/components/me/MePageClient";
 import { getServerUser } from "@/lib/auth";
 
 export default async function MePage() {
@@ -10,5 +11,22 @@ export default async function MePage() {
     return <div>ログインしてください</div>;
   }
 
-  return <MePageClientSWR />;
+  const profile = await getMyProfile();
+
+  if ("error" in profile) {
+    return <div>{profile.error}</div>;
+  }
+
+  return (
+    <MePageClient
+      posts={profile.posts}
+      likedPosts={profile.likedPosts}
+      userName={profile.user.name}
+      userEmail={profile.user.email}
+      userIconUrl={profile.user.iconUrl}
+      activeTitle={profile.user.activeTitle}
+      followingList={profile.user.followingList}
+      followerList={profile.user.followerList}
+    />
+  );
 }

@@ -4,7 +4,39 @@ import { supabase, mapToCamel } from "@/lib/supabase";
 import { getServerUser } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
-export async function getMyProfile() {
+type Post = {
+  id: string;
+  title: string;
+  category: string;
+  bitterness: number;
+  richness: number;
+  sweetness: number;
+  images: { url: string }[];
+  shop?: { name?: string | null };
+};
+
+type UserData = {
+  name: string;
+  email: string;
+  iconUrl?: string;
+  activeTitle: { id: string; name: string } | null;
+  followingList: Array<{ name: string | null; iconUrl: string | null; id: string }>;
+  followerList: Array<{ name: string | null; iconUrl: string | null; id: string }>;
+};
+
+type MyProfileSuccess = {
+  user: UserData;
+  posts: Post[];
+  likedPosts: Post[];
+};
+
+type MyProfileError = {
+  error: string;
+};
+
+export type MyProfileResult = MyProfileSuccess | MyProfileError;
+
+export async function getMyProfile(): Promise<MyProfileResult> {
   try {
     const currentUser = await getServerUser();
 
@@ -63,8 +95,8 @@ export async function getMyProfile() {
       .eq("likes.user_id", currentUser.id)
       .order("created_at", { ascending: false });
 
-    const posts = mapToCamel(rawPosts ?? []);
-    const likedPosts = mapToCamel(rawLikedPosts ?? []);
+    const posts = mapToCamel<Post[]>(rawPosts ?? []);
+    const likedPosts = mapToCamel<Post[]>(rawLikedPosts ?? []);
 
     return {
       user: {

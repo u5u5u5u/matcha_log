@@ -19,7 +19,7 @@
 - Next.js 15 (App Router)
 - React 19 / TypeScript
 - Supabase (Auth / PostgreSQL / Storage)
-- SWR / Zod
+- Zod
 - Sass Modules
 - react-leaflet（店舗位置の地図表示）
 

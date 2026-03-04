@@ -1,6 +1,6 @@
 /**
  * 汎用的なfetcher関数
- * SWRやその他のデータフェッチングライブラリで使用可能
+ * データフェッチング処理で再利用可能
  */
 export const fetcher = async <T = unknown>(url: string): Promise<T> => {
   const response = await fetch(url);

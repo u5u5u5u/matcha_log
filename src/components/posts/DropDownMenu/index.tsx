@@ -104,7 +104,7 @@ const DropdownMenu = ({
       const result = await deletePost(postId);
 
       if (result.ok) {
-        // SWRのmutateを呼び出してリスト更新
+        // 一覧更新
         if (onUpdate) {
           onUpdate();
         } else {

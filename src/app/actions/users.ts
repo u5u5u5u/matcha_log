@@ -4,7 +4,43 @@ import { supabase, mapToCamel } from "@/lib/supabase";
 import { getServerUser } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
-export async function getUserProfile(userId: string) {
+type Post = {
+  id: string;
+  title: string;
+  category: string;
+  bitterness: number;
+  richness: number;
+  sweetness: number;
+  images: { url: string }[];
+  shop?: { name?: string | null };
+};
+
+type UserData = {
+  id: string;
+  name: string | null;
+  email: string;
+  iconUrl: string | null;
+  activeTitle: { id: string; name: string } | null;
+};
+
+type UserSimple = { id: string; name: string | null; iconUrl: string | null };
+
+type UserProfileSuccess = {
+  user: UserData;
+  posts: Post[];
+  followingList: UserSimple[];
+  followerList: UserSimple[];
+  initialIsFollowing: boolean;
+  showFollowButton: boolean;
+};
+
+type UserProfileError = {
+  error: string;
+};
+
+export type UserProfileResult = UserProfileSuccess | UserProfileError;
+
+export async function getUserProfile(userId: string): Promise<UserProfileResult> {
   try {
     const currentUser = await getServerUser();
     const meId = currentUser?.id;
@@ -32,7 +68,7 @@ export async function getUserProfile(userId: string) {
       .eq("user_id", userId)
       .order("created_at", { ascending: false });
 
-    const posts = mapToCamel(rawPosts ?? []);
+    const posts = mapToCamel<Post[]>(rawPosts ?? []);
 
     let initialIsFollowing = false;
     if (meId && meId !== userId) {
