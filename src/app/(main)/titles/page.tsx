@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getServerUser } from "@/lib/auth";
 import TitleCollectionClient from "@/components/titles/TitleCollectionClient";
 

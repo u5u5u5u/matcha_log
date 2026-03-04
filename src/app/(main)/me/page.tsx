@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import MePageClientSWR from "@/components/me/MePageClientSWR";
 import { getServerUser } from "@/lib/auth";
 

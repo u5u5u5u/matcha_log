@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import ProfileEditForm from "@/components/me/ProfileEditForm";
 import { getServerUser } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";

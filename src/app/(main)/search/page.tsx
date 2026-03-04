@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { supabase, mapToCamel } from "@/lib/supabase";
 import Image from "next/image";
 import React from "react";

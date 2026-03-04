@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import UserProfileClientSWR from "@/components/user/UserProfileClientSWR";
 import { getServerUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
