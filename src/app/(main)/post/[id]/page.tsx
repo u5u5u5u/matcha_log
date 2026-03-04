@@ -14,7 +14,7 @@ export default async function PostDetailPage({
   const { data: rawPost } = await supabase
     .from("posts")
     .select(
-      "*, images(*), shop:shops(*), user:users(id,email,name,icon_url,created_at,updated_at), likes(*)"
+      "*, images(*), shop:shops(*), user:users(id,email,name,icon_url,created_at,updated_at), likes(*)",
     )
     .eq("id", id)
     .single();

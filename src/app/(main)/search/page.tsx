@@ -46,7 +46,7 @@ export default async function SearchPage({
   // 店舗名フィルター（クライアントサイドで絞り込み）
   if (shop) {
     posts = posts.filter((p) =>
-      p.shop?.name?.toLowerCase().includes(shop.toLowerCase())
+      p.shop?.name?.toLowerCase().includes(shop.toLowerCase()),
     );
   }
   return (
