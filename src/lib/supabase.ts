@@ -24,11 +24,16 @@ function getSupabaseClient(): SupabaseClient<any> {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const supabase: SupabaseClient<any> = new Proxy({} as SupabaseClient<any>, {
-  get(_target, prop) {
-    return getSupabaseClient()[prop as keyof SupabaseClient<any>];
-  },
-});
+export const supabase: SupabaseClient<any> = new Proxy(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  {} as SupabaseClient<any>,
+  {
+    get(_target, prop) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      return getSupabaseClient()[prop as keyof SupabaseClient<any>];
+    },
+  }
+);
 
 // ========================================
 // snake_case → camelCase 変換ユーティリティ
