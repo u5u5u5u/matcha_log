@@ -42,9 +42,9 @@ export default function PostEditForm({ postId, initialPost }: Props) {
   const [form, setForm] = useState<FormData>({
     title: initialPost.title || "",
     category: initialPost.category || "SWEET",
-    bitterness: initialPost.bitterness || 5,
-    richness: initialPost.richness || 5,
-    sweetness: initialPost.sweetness || 5,
+    bitterness: initialPost.bitterness || 3,
+    richness: initialPost.richness || 3,
+    sweetness: initialPost.sweetness || 3,
     comment: initialPost.comment || "",
     shop: initialPost.shop?.name || "",
     shopLat: initialPost.shop?.lat?.toString() || "",
@@ -53,7 +53,7 @@ export default function PostEditForm({ postId, initialPost }: Props) {
   });
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [imageUrls, setImageUrls] = useState<string[]>(
-    initialPost.images?.map((img: { url: string }) => img.url) || []
+    initialPost.images?.map((img: { url: string }) => img.url) || [],
   );
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -61,7 +61,7 @@ export default function PostEditForm({ postId, initialPost }: Props) {
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
+    >,
   ) => {
     const { name, value, type } = e.target;
     setForm({ ...form, [name]: type === "number" ? Number(value) : value });
@@ -71,6 +71,13 @@ export default function PostEditForm({ postId, initialPost }: Props) {
     setImageFiles(files);
     setImageUrls(urls);
     setForm({ ...form, images: urls });
+  };
+
+  const handleRatingChange = (
+    name: "bitterness" | "richness" | "sweetness",
+    value: number,
+  ) => {
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -86,7 +93,7 @@ export default function PostEditForm({ postId, initialPost }: Props) {
 
       // 既存の画像URLs（blob:で始まらないもの）
       const existingImageUrls = imageUrls.filter(
-        (url) => !url.startsWith("blob:")
+        (url) => !url.startsWith("blob:"),
       );
 
       // 新しい画像ファイルをアップロード
@@ -144,7 +151,7 @@ export default function PostEditForm({ postId, initialPost }: Props) {
       ) {
         setError(
           (err as { errors?: { message?: string }[] }).errors?.[0]?.message ||
-            "入力内容に誤りがあります"
+            "入力内容に誤りがあります",
         );
       } else if (err instanceof Error) {
         setError(err.message);
@@ -183,7 +190,7 @@ export default function PostEditForm({ postId, initialPost }: Props) {
         bitterness={form.bitterness}
         richness={form.richness}
         sweetness={form.sweetness}
-        onChange={handleChange}
+        onChange={handleRatingChange}
       />
 
       <CommentField value={form.comment || ""} onChange={handleChange} />

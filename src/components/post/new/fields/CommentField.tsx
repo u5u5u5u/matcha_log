@@ -17,7 +17,6 @@ export default function CommentField({ value, onChange }: Props) {
         onChange={onChange}
         rows={3}
         className={styles.textarea}
-        placeholder="感想やメモを自由に入力してください（任意）"
       />
     </div>
   );

@@ -16,7 +16,6 @@ export default function ShopField({ value, onChange }: Props) {
         name="shop"
         value={value}
         onChange={onChange}
-        placeholder="店舗名を入力してください（任意）"
       />
     </div>
   );

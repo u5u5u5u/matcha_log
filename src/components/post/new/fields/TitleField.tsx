@@ -1,6 +1,7 @@
 import React from "react";
 import { Input } from "@/components/util/input";
 import styles from "./TitleField.module.scss";
+import { Asterisk } from "lucide-react";
 
 type Props = {
   value: string;
@@ -11,7 +12,10 @@ type Props = {
 export default function TitleField({ value, onChange, error }: Props) {
   return (
     <div className={styles.field}>
-      <label htmlFor="title">タイトル</label>
+      <label htmlFor="title">
+        タイトル
+        <Asterisk size={12} color={"#dc3545"} />
+      </label>
       <Input
         id="title"
         name="title"

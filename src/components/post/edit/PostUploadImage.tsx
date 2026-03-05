@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import styles from "./PostUploadImage.module.scss";
 import { compressImage, getFileSizeMB } from "@/lib/imageUtils";
+import Modal from "@/components/util/Modal";
 
 export default function PostUploadImage({
   onUpload,
@@ -23,6 +24,7 @@ export default function PostUploadImage({
   const [isUploading, setIsUploading] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
+  const [isGuideModalOpen, setIsGuideModalOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const hasAutoOpenedRef = useRef(false);
 
@@ -134,27 +136,28 @@ export default function PostUploadImage({
 
     // 画像ファイル（HEIC含む）をフィルタリング
     const imageFiles = fileArray.filter(
-      (file) => file.type.startsWith("image/") || isHeicFile(file)
+      (file) => file.type.startsWith("image/") || isHeicFile(file),
     );
 
     // ファイルサイズをチェック（4MB制限）
     // HEICファイルは元のファイルサイズで判定（変換後のサイズではない）
     const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB
     const oversizedFiles = imageFiles.filter(
-      (file) => file.size > MAX_FILE_SIZE
+      (file) => file.size > MAX_FILE_SIZE,
     );
 
     if (oversizedFiles.length > 0) {
       const fileNames = oversizedFiles.map((f) => f.name).join(", ");
       alert(
-        `以下のファイルが大きすぎます（4MB以下にしてください）：\n${fileNames}`
+        `以下のファイルが大きすぎます（4MB以下にしてください）：\n${fileNames}`,
       );
       setIsUploading(false);
       return;
     }
 
     // 最大数を超えないようにファイルを制限
-    const validFiles = imageFiles.slice(0, maxCount - files.length);
+    const remainingSlots = Math.max(maxCount - urls.length, 0);
+    const validFiles = imageFiles.slice(0, remainingSlots);
 
     if (validFiles.length === 0) {
       setIsUploading(false);
@@ -182,11 +185,11 @@ export default function PostUploadImage({
 
               console.log(
                 `HEICファイルを処理: 保存用=${getFileSizeMB(file).toFixed(
-                  2
+                  2,
                 )}MB (HEIC), プレビュー用=${(
                   convertResult.blob.size /
                   (1024 * 1024)
-                ).toFixed(2)}MB (PNG)`
+                ).toFixed(2)}MB (PNG)`,
               );
             } catch (convertError) {
               throw convertError;
@@ -203,17 +206,17 @@ export default function PostUploadImage({
                   processedFile,
                   1200,
                   1200,
-                  0.8
+                  0.8,
                 );
                 console.log(
                   `画像を圧縮しました: ${getFileSizeMB(file).toFixed(
-                    2
-                  )}MB → ${getFileSizeMB(processedFile).toFixed(2)}MB`
+                    2,
+                  )}MB → ${getFileSizeMB(processedFile).toFixed(2)}MB`,
                 );
               } catch (compressionError) {
                 console.warn(
                   "画像圧縮に失敗しました。元のファイルを使用します:",
-                  compressionError
+                  compressionError,
                 );
                 // 圧縮に失敗した場合は元のファイルを使用
               }
@@ -279,7 +282,7 @@ export default function PostUploadImage({
         `以下のHEIC形式のファイルが選択されています：\n${heicFileNames}\n\n` +
           `HEIC形式はブラウザでサポートされていない可能性があります。\n` +
           `変換を試行しますが、失敗する場合があります。\n\n` +
-          `続行しますか？（推奨：JPEG/PNG形式に変換してからアップロード）`
+          `続行しますか？（推奨：JPEG/PNG形式に変換してからアップロード）`,
       );
 
       if (!proceed) {
@@ -372,14 +375,14 @@ export default function PostUploadImage({
 
   // クリックイベントでファイル選択ダイアログを開く
   const handleClick = () => {
-    if (files.length < maxCount && !isUploading) {
+    if (urls.length < maxCount && !isUploading) {
       inputRef.current?.click();
     }
   };
 
   // スマホでのタッチ体験向上
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (isMobile && files.length < maxCount && !isUploading) {
+    if (isMobile && urls.length < maxCount && !isUploading) {
       // タッチフィードバックのためのクラス追加などの処理
       e.currentTarget.style.transform = "scale(0.98)";
     }
@@ -389,6 +392,13 @@ export default function PostUploadImage({
   const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
     if (isMobile) {
       e.currentTarget.style.transform = "";
+    }
+  };
+
+  const handleUploadTileKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleClick();
     }
   };
 
@@ -427,16 +437,18 @@ export default function PostUploadImage({
       if (error && typeof error === "object" && "code" in error) {
         if (error.code === 2) {
           throw new Error(
-            "HEIC形式はこのブラウザではサポートされていません。\nファイルをJPEGまたはPNG形式に変換してからアップロードしてください。"
+            "HEIC形式はこのブラウザではサポートされていません。\nファイルをJPEGまたはPNG形式に変換してからアップロードしてください。",
           );
         }
       }
 
       throw new Error(
-        "HEIC画像の変換に失敗しました。\nJPEGまたはPNG形式でアップロードしてください。"
+        "HEIC画像の変換に失敗しました。\nJPEGまたはPNG形式でアップロードしてください。",
       );
     }
   };
+
+  const canAddMore = urls.length < maxCount;
 
   return (
     <div className={styles.container}>
@@ -449,108 +461,104 @@ export default function PostUploadImage({
         style={{ display: "none" }}
       />
 
-      <div
-        className={`${styles.dropzone} ${
-          !isMobile && isDragOver ? styles.dragOver : ""
-        } ${files.length >= maxCount ? styles.disabled : ""} ${
-          isMobile ? styles.mobileOnly : ""
-        }`}
-        onDragOver={!isMobile ? handleDragOver : preventDragEvents}
-        onDragLeave={!isMobile ? handleDragLeave : preventDragEvents}
-        onDragEnter={!isMobile ? preventDragEvents : preventDragEvents}
-        onDrop={!isMobile ? handleDrop : preventDragEvents}
-        onTouchStart={isMobile ? handleTouchStart : undefined}
-        onTouchEnd={isMobile ? handleTouchEnd : undefined}
-        onClick={handleClick}
-      >
-        {isUploading ? (
-          <div className={styles.uploading}>
-            <div className={styles.spinner}></div>
-            <p>アップロード中...</p>
-          </div>
-        ) : files.length >= maxCount ? (
-          <div className={styles.message}>
-            <p>最大{maxCount}枚までアップロードできます</p>
-          </div>
-        ) : (
-          <div className={styles.message}>
-            <div className={styles.icon}>
-              <Upload size={48} />
-            </div>
-            {isMobile ? (
-              <>
-                <p>📸 タップして画像を選択</p>
-                <p className={styles.subText}>カメラ・ギャラリーから選択</p>
-              </>
-            ) : (
-              <>
-                <p>画像をドラッグ&ドロップ</p>
-                <p className={styles.subText}>またはクリックして選択</p>
-              </>
-            )}
-            <p className={styles.limit}>
-              最大{maxCount}枚まで（JPEG, PNG推奨, HEIC対応※）
-              <br />
-              ファイルサイズ: 4MB以下
-            </p>
-            <p
-              className={styles.subText}
-              style={{ fontSize: "0.8em", color: "#666" }}
+      <div className={styles.previewContainer}>
+        {urls.map((url, idx) => {
+          const isLoaded = loadedImages.has(url);
+
+          return (
+            <div
+              key={`preview-${idx}-${url.substring(url.lastIndexOf("/") + 1)}`}
+              className={`${styles.previewItem} ${
+                !isLoaded ? styles.loading : ""
+              }`}
             >
-              ※HEIC形式は変換に失敗する場合があります
-              <br />
-              大きなファイルは自動で圧縮されます
-            </p>
+              <Image
+                src={url}
+                alt="preview"
+                width={80}
+                height={80}
+                className={styles.previewImage}
+                unoptimized
+                onLoad={() => handleImageLoad(url)}
+                onError={() => handleImageError(url)}
+              />
+              {!isLoaded && (
+                <div className={styles.imageLoading}>
+                  <div className={styles.imageSpinner}></div>
+                </div>
+              )}
+
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleRemove(idx);
+                }}
+                className={styles.removeButton}
+                aria-label="画像を削除"
+              >
+                ×
+              </button>
+            </div>
+          );
+        })}
+
+        {canAddMore && (
+          <div
+            className={`${styles.uploadTile} ${
+              !isMobile && isDragOver ? styles.dragOver : ""
+            } ${isUploading ? styles.uploading : ""}`}
+            onDragOver={!isMobile ? handleDragOver : preventDragEvents}
+            onDragLeave={!isMobile ? handleDragLeave : preventDragEvents}
+            onDragEnter={!isMobile ? preventDragEvents : preventDragEvents}
+            onDrop={!isMobile ? handleDrop : preventDragEvents}
+            onTouchStart={isMobile ? handleTouchStart : undefined}
+            onTouchEnd={isMobile ? handleTouchEnd : undefined}
+            onClick={handleClick}
+            onKeyDown={handleUploadTileKeyDown}
+            role="button"
+            tabIndex={0}
+            aria-label="画像を追加"
+            aria-disabled={isUploading}
+          >
+            {isUploading ? (
+              <div className={styles.spinner}></div>
+            ) : (
+              <div className={styles.tileContent}>
+                <Upload size={24} />
+                <span>追加</span>
+              </div>
+            )}
           </div>
         )}
       </div>
 
-      {urls.length > 0 && (
-        <div className={styles.previewContainer}>
-          {urls.map((url, idx) => {
-            const isLoaded = loadedImages.has(url);
+      <div className={styles.helperActions}>
+        <button
+          type="button"
+          className={styles.helpButton}
+          onClick={() => setIsGuideModalOpen(true)}
+        >
+          画像アップロードの説明を見る
+        </button>
+      </div>
 
-            return (
-              <div
-                key={`preview-${idx}-${url.substring(
-                  url.lastIndexOf("/") + 1
-                )}`}
-                className={`${styles.previewItem} ${
-                  !isLoaded ? styles.loading : ""
-                }`}
-              >
-                <Image
-                  src={url}
-                  alt="preview"
-                  width={80}
-                  height={80}
-                  className={styles.previewImage}
-                  unoptimized
-                  onLoad={() => handleImageLoad(url)}
-                  onError={() => handleImageError(url)}
-                />
-                {!isLoaded && (
-                  <div className={styles.imageLoading}>
-                    <div className={styles.imageSpinner}></div>
-                  </div>
-                )}
-
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleRemove(idx);
-                  }}
-                  className={styles.removeButton}
-                  aria-label="画像を削除"
-                >
-                  ×
-                </button>
-              </div>
-            );
-          })}
+      <Modal
+        isOpen={isGuideModalOpen}
+        onClose={() => setIsGuideModalOpen(false)}
+        title="画像アップロードの説明"
+      >
+        <div className={styles.guideModalContent}>
+          <h3>画像アップロードの説明</h3>
+          <ul>
+            <li>画像は最大{maxCount}枚まで選択できます。</li>
+            <li>推奨形式はJPEG/PNGです（HEIC形式も変換を試行します）。</li>
+            <li>1ファイルあたり4MB以下でアップロードしてください。</li>
+            <li>2MBを超える画像は自動で圧縮されます。</li>
+            <li>HEIC形式は環境によって変換に失敗する場合があります。</li>
+          </ul>
         </div>
-      )}
+      </Modal>
     </div>
   );
 }

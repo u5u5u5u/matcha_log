@@ -1,10 +1,11 @@
 import React from "react";
 import dynamic from "next/dynamic";
 import styles from "./ImageUploadField.module.scss";
+import { Asterisk } from "lucide-react";
 
 const UploadImage = dynamic(
   () => import("@/components/post/edit/PostUploadImage"),
-  { ssr: false }
+  { ssr: false },
 );
 
 type Props = {
@@ -22,7 +23,10 @@ export default function ImageUploadField({
 }: Props) {
   return (
     <div className={styles.field}>
-      <label>画像アップロード（必須）</label>
+      <label>
+        画像アップロード
+        <Asterisk size={12} color={"#dc3545"} />
+      </label>
       <UploadImage
         onUpload={onUpload}
         maxCount={maxCount}

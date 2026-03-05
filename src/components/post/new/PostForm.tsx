@@ -38,9 +38,9 @@ export default function PostForm({ initialForm }: Props) {
   const [form, setForm] = useState<FormData>({
     title: initialForm?.title || "",
     category: initialForm?.category || "SWEET",
-    bitterness: initialForm?.bitterness || 5,
-    richness: initialForm?.richness || 5,
-    sweetness: initialForm?.sweetness || 5,
+    bitterness: initialForm?.bitterness || 3,
+    richness: initialForm?.richness || 3,
+    sweetness: initialForm?.sweetness || 3,
     comment: initialForm?.comment || "",
     shop: initialForm?.shop || "",
     images: initialForm?.images || [],
@@ -54,7 +54,7 @@ export default function PostForm({ initialForm }: Props) {
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
+    >,
   ) => {
     const { name, value, type } = e.target;
     setForm({ ...form, [name]: type === "number" ? Number(value) : value });
@@ -63,6 +63,13 @@ export default function PostForm({ initialForm }: Props) {
   const handleImageUpload = (files: File[], urls: string[]) => {
     setImageFiles(files);
     setForm({ ...form, images: urls });
+  };
+
+  const handleRatingChange = (
+    name: "bitterness" | "richness" | "sweetness",
+    value: number,
+  ) => {
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -122,7 +129,7 @@ export default function PostForm({ initialForm }: Props) {
       ) {
         setError(
           (err as { errors?: { message?: string }[] }).errors?.[0]?.message ||
-            "入力内容に誤りがあります"
+            "入力内容に誤りがあります",
         );
       } else if (err instanceof Error) {
         setError(err.message);
@@ -164,7 +171,7 @@ export default function PostForm({ initialForm }: Props) {
             bitterness={form.bitterness}
             richness={form.richness}
             sweetness={form.sweetness}
-            onChange={handleChange}
+            onChange={handleRatingChange}
           />
 
           <CommentField value={form.comment || ""} onChange={handleChange} />
