@@ -1,13 +1,15 @@
 .loadingContainer {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 1rem;
   min-height: 50vh;
   padding: 2rem;
 }
 
 .loadingText {
-  font-size: 1.125rem;
+  font-size: 1rem;
   color: #6b7280;
 }
 

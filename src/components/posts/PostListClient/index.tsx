@@ -5,6 +5,7 @@ import type { Post } from "@/types/post";
 import { useEffect, useState } from "react";
 import styles from "./index.module.scss";
 import { getPosts } from "@/app/actions/posts";
+import Loading from "@/components/util/Loading";
 
 interface PostsResponse {
   posts: Post[];
@@ -38,6 +39,7 @@ export default function PostListClient() {
   if (isLoading) {
     return (
       <div className={styles.loadingContainer}>
+        <Loading />
         <div className={styles.loadingText}>読み込み中...</div>
       </div>
     );
