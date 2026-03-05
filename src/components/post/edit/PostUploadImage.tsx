@@ -10,10 +10,12 @@ export default function PostUploadImage({
   onUpload,
   maxCount = 3,
   initialUrls = [],
+  autoOpen = false,
 }: {
   onUpload: (files: File[], urls: string[]) => void;
   maxCount?: number;
   initialUrls?: string[];
+  autoOpen?: boolean;
 }) {
   const [urls, setUrls] = useState<string[]>(initialUrls);
   const [files, setFiles] = useState<File[]>([]);
@@ -22,6 +24,7 @@ export default function PostUploadImage({
   const [isMobile, setIsMobile] = useState(false);
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
   const inputRef = useRef<HTMLInputElement>(null);
+  const hasAutoOpenedRef = useRef(false);
 
   // 初期URLsがある場合は、読み込み済みとして設定
   useEffect(() => {
@@ -41,6 +44,21 @@ export default function PostUploadImage({
       onUpload([], initialUrls);
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (!autoOpen || hasAutoOpenedRef.current || initialUrls.length > 0) {
+      return;
+    }
+
+    hasAutoOpenedRef.current = true;
+    const timer = window.setTimeout(() => {
+      inputRef.current?.click();
+    }, 0);
+
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [autoOpen, initialUrls.length]);
 
   // クリーンアップ: コンポーネントのアンマウント時のみObject URLを解放
   const urlsRef = useRef<string[]>([]);

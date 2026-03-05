@@ -11,12 +11,14 @@ type Props = {
   onUpload: (files: File[], urls: string[]) => void;
   initialUrls?: string[];
   maxCount?: number;
+  autoOpen?: boolean;
 };
 
 export default function ImageUploadField({
   onUpload,
   initialUrls = [],
   maxCount = 3,
+  autoOpen = false,
 }: Props) {
   return (
     <div className={styles.field}>
@@ -25,6 +27,7 @@ export default function ImageUploadField({
         onUpload={onUpload}
         maxCount={maxCount}
         initialUrls={initialUrls}
+        autoOpen={autoOpen}
       />
     </div>
   );

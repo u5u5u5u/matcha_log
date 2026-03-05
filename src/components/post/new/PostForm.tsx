@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { z } from "zod";
 import { Button } from "@/components/util/button";
 import {
@@ -34,6 +34,7 @@ type Props = {
 
 export default function PostForm({ initialForm }: Props) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [form, setForm] = useState<FormData>({
     title: initialForm?.title || "",
     category: initialForm?.category || "SWEET",
@@ -47,6 +48,8 @@ export default function PostForm({ initialForm }: Props) {
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const hasSelectedImages = form.images.length > 0;
+  const autoOpenImagePicker = searchParams.get("openImagePicker") === "1";
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -133,34 +136,45 @@ export default function PostForm({ initialForm }: Props) {
 
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
-      <TitleField value={form.title} onChange={handleChange} />
-
-      <CategoryField
-        value={form.category}
-        onChange={(category) => setForm({ ...form, category })}
-      />
-
-      <ShopField value={form.shop || ""} onChange={handleChange} />
-
       <ImageUploadField
         onUpload={handleImageUpload}
         initialUrls={form.images || []}
         maxCount={3}
+        autoOpen={autoOpenImagePicker}
       />
 
-      <RatingSliders
-        bitterness={form.bitterness}
-        richness={form.richness}
-        sweetness={form.sweetness}
-        onChange={handleChange}
-      />
+      {!hasSelectedImages && (
+        <p className={styles.helperText}>
+          最初に画像を1枚以上選択すると、投稿内容の入力欄が表示されます。
+        </p>
+      )}
 
-      <CommentField value={form.comment || ""} onChange={handleChange} />
+      {hasSelectedImages && (
+        <>
+          <TitleField value={form.title} onChange={handleChange} />
 
-      {error && <div className={styles.error}>{error}</div>}
-      <Button type="submit" disabled={loading}>
-        {loading ? "送信中..." : "投稿する"}
-      </Button>
+          <CategoryField
+            value={form.category}
+            onChange={(category) => setForm({ ...form, category })}
+          />
+
+          <ShopField value={form.shop || ""} onChange={handleChange} />
+
+          <RatingSliders
+            bitterness={form.bitterness}
+            richness={form.richness}
+            sweetness={form.sweetness}
+            onChange={handleChange}
+          />
+
+          <CommentField value={form.comment || ""} onChange={handleChange} />
+
+          {error && <div className={styles.error}>{error}</div>}
+          <Button type="submit" disabled={loading}>
+            {loading ? "送信中..." : "投稿する"}
+          </Button>
+        </>
+      )}
     </form>
   );
 }

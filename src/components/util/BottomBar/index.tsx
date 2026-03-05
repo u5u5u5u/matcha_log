@@ -47,7 +47,9 @@ export default function BottomBar() {
           <House size={38} strokeWidth={2} />
         </Link>
         <button
-          onClick={() => handleProtectedNavigation("/post/new")}
+          onClick={() =>
+            handleProtectedNavigation("/post/new?openImagePicker=1")
+          }
           className={`${styles.bottomNavLink} ${
             isActivePage("/post/new") ? styles.active : styles.inactive
           }`}
