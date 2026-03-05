@@ -1,4 +1,13 @@
 @use "../../../../styles/_tokens" as tokens;
+@use "sass:color";
+@use "sass:math";
+
+$score-base-hue: math.div(
+  color.channel(tokens.$main, "hue", $space: hsl),
+  1deg
+);
+$score-base-saturation: color.channel(tokens.$main, "saturation", $space: hsl);
+$score-base-lightness: color.channel(tokens.$main, "lightness", $space: hsl);
 
 .postCard {
   margin-bottom: 16px;
@@ -15,7 +24,7 @@
   align-items: center;
   justify-content: space-between;
   height: 48px;
-  padding: 4px;
+  padding: 8px;
 
   a {
     display: flex;
@@ -56,8 +65,8 @@
 .postCardContent {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding: 8px 16px;
+  gap: 8px;
+  padding: 12px 16px;
 
   .postCardTitle {
     display: flex;
@@ -92,19 +101,36 @@
 
     p {
       display: flex;
+      align-items: center;
+      font-size: 0.9rem;
 
-      span {
+      .scoreBadge {
+        --score-level: 1;
         display: flex;
         align-items: center;
         justify-content: center;
         width: 32px;
         height: 32px;
         font-weight: bold;
-        color: tokens.$accent;
-        text-shadow: 1px 1px 5px #000;
+        color: #fff;
         border-radius: 50%;
-        background-color: tokens.$main;
         margin-left: 4px;
+        transition: background-color 0.2s ease;
+        background-color: hsl(
+          $score-base-hue,
+          $score-base-saturation,
+          calc(#{$score-base-lightness} + (10 - var(--score-level)) * 3%)
+        );
+      }
+
+      .richnessScore,
+      .bitternessScore,
+      .sweetnessScore {
+        background-color: hsl(
+          $score-base-hue,
+          $score-base-saturation,
+          calc(#{$score-base-lightness} + (10 - var(--score-level)) * 3%)
+        );
       }
     }
   }
@@ -137,7 +163,8 @@
   width: 100%;
   max-width: 400px;
   margin: 20px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
   overflow: hidden;
 }

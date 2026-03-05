@@ -60,7 +60,7 @@ export default function PostListClient() {
   }
 
   return (
-    <div>
+    <div className={styles.postList}>
       {data.posts.map((post) => (
         <PostCard
           key={post.id}

@@ -6,6 +6,7 @@ import MeetBallsMenu from "@/components/posts/MeetBallsMenu";
 import type { Post } from "@/types/post";
 import Image from "next/image";
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import styles from "./index.module.scss";
 
 interface PostCardProps {
@@ -13,6 +14,12 @@ interface PostCardProps {
   myId?: string;
   onUpdate?: () => void;
 }
+
+const clampScore = (score: number) =>
+  Math.min(10, Math.max(1, Math.round(score)));
+
+const scoreStyle = (score: number): CSSProperties =>
+  ({ "--score-level": clampScore(score) }) as CSSProperties;
 
 const PostCard = ({ post, myId, onUpdate }: PostCardProps) => {
   return (
@@ -66,13 +73,31 @@ const PostCard = ({ post, myId, onUpdate }: PostCardProps) => {
           </div>
           <div className={styles.postCardScores}>
             <p>
-              濃さ <span>{post.richness}</span>
+              濃さ
+              <span
+                className={`${styles.scoreBadge} ${styles.richnessScore}`}
+                style={scoreStyle(post.richness)}
+              >
+                {post.richness}
+              </span>
             </p>
             <p>
-              苦さ <span>{post.bitterness}</span>
+              苦さ
+              <span
+                className={`${styles.scoreBadge} ${styles.bitternessScore}`}
+                style={scoreStyle(post.bitterness)}
+              >
+                {post.bitterness}
+              </span>
             </p>
             <p>
-              甘さ <span>{post.sweetness}</span>
+              甘さ
+              <span
+                className={`${styles.scoreBadge} ${styles.sweetnessScore}`}
+                style={scoreStyle(post.sweetness)}
+              >
+                {post.sweetness}
+              </span>
             </p>
           </div>
           {post.comment && <Comment comment={post.comment} />}
