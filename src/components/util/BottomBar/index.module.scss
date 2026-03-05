@@ -21,6 +21,21 @@
   position: relative;
 }
 
+.circle {
+  --active-circle-gap: 8px;
+  position: absolute;
+  top: calc(anchor(top) - 14px);
+  left: calc(anchor(left) - 8px);
+  width: 70px;
+  height: 70px;
+  background: var(--color-accent);
+  box-shadow: 0 0 0 var(--active-circle-gap) var(--color-main);
+  border-radius: 50%;
+  z-index: -1;
+  position-anchor: --anchor;
+  transition: all 0.3s ease;
+}
+
 .bottomNavLink {
   color: #000;
   text-decoration: none;
@@ -33,20 +48,14 @@
   justify-content: center;
   border: none;
   background: none;
-}
-
-.addPostButton {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  background: var(--color-accent);
-  padding: 12px;
-  margin-bottom: 36px;
+  transition: all 0.3s ease;
 }
 
 .active {
   color: #000;
   opacity: 1;
+  transform: translateY(-30px);
+  anchor-name: --anchor;
 }
 
 .inactive {
