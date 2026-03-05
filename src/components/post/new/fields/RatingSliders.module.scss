@@ -42,14 +42,14 @@
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: tokens.$main;
+    background: var(--color-main);
     cursor: pointer;
     border: 2px solid #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     transition: all 0.2s ease;
 
     &:hover {
-      background: tokens.$main;
+      background: var(--color-main);
       transform: scale(1.1);
     }
   }
@@ -58,27 +58,27 @@
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: tokens.$main;
+    background: var(--color-main);
     cursor: pointer;
     border: 2px solid #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     transition: all 0.2s ease;
 
     &:hover {
-      background: tokens.$main;
+      background: var(--color-main);
       transform: scale(1.1);
     }
   }
 
   &::-webkit-slider-track {
     height: 6px;
-    background: linear-gradient(to right, #e9ecef 0%, tokens.$main 100%);
+    background: linear-gradient(to right, #e9ecef 0%, var(--color-main) 100%);
     border-radius: 3px;
   }
 
   &::-moz-range-track {
     height: 6px;
-    background: linear-gradient(to right, #e9ecef 0%, tokens.$main 100%);
+    background: linear-gradient(to right, #e9ecef 0%, var(--color-main) 100%);
     border-radius: 3px;
     border: none;
   }
@@ -89,7 +89,7 @@
   text-align: center;
   font-weight: 600;
   font-size: 1.1rem;
-  color: tokens.$main;
+  color: var(--color-main);
   background: #fff;
   border-radius: 6px;
   padding: 0.25rem 0.5rem;

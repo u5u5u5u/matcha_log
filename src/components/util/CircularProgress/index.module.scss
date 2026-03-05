@@ -1,5 +1,3 @@
-@use "../../../../styles/_tokens" as tokens;
-
 .container {
   position: relative;
 }
@@ -17,7 +15,7 @@
   fill: none;
   stroke-linecap: round;
   transition: stroke-dashoffset 0.5s ease-in-out;
-  stroke: tokens.$main;
+  stroke: var(--color-main);
 }
 
 .content {

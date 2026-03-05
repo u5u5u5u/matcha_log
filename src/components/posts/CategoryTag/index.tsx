@@ -4,8 +4,7 @@ import styles from "./index.module.scss";
 const CategoryTag = ({ category }: { category: string }) => {
   return (
     <div className={styles.categoryTag}>
-      {category === "SWEET" ? <CakeSlice size={12} /> : <CupSoda size={12} />}
-      <span>{category === "SWEET" ? "スイーツ" : "ドリンク"}</span>
+      {category === "SWEET" ? <CakeSlice size={16} /> : <CupSoda size={16} />}
     </div>
   );
 };

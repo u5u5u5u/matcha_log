@@ -1,9 +1,7 @@
-@use "../../../../styles/_tokens" as tokens;
-
 .followButton {
   font-size: 0.8rem;
   color: white;
-  background-color: tokens.$main;
+  background-color: var(--color-main);
   border: none;
   border-radius: 8px;
   cursor: pointer;

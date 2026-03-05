@@ -18,12 +18,12 @@
   justify-content: center;
 
   &:hover:not(.disabled) {
-    border-color: tokens.$main;
+    border-color: var(--color-main);
     background: #fff;
   }
 
   &.dragOver {
-    border-color: tokens.$main;
+    border-color: var(--color-main);
     background: #fff;
     transform: scale(1.02);
   }
@@ -36,18 +36,18 @@
 
   &.mobileOnly {
     background: #fff;
-    border: 3px solid tokens.$main;
+    border: 3px solid var(--color-main);
     border-radius: 12px;
     padding: 2rem 1rem;
 
     &:active {
       background: #fff;
       transform: scale(0.96);
-      border-color: tokens.$main;
+      border-color: var(--color-main);
     }
 
     &:hover {
-      border-color: tokens.$main;
+      border-color: var(--color-main);
       background: #fff;
     }
   }
@@ -106,13 +106,13 @@
 }
 
 .uploading {
-  color: tokens.$main;
+  color: var(--color-main);
 
   .spinner {
     width: 24px;
     height: 24px;
     border: 2px solid #fff;
-    border-top: 2px solid tokens.$main;
+    border-top: 2px solid var(--color-main);
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin: 0 auto 0.5rem;

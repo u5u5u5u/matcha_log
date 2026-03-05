@@ -1,12 +1,10 @@
-@use "../../styles/_tokens.scss" as tokens;
-
 .page {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: tokens.$main;
+  background: var(--color-main);
 }
 @keyframes scale {
   from {

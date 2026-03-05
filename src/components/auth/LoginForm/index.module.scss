@@ -1,5 +1,3 @@
-@use "../../../../styles/_tokens.scss" as tokens;
-
 .container {
   width: 90%;
   max-width: 400px;
@@ -54,7 +52,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  color: tokens.$main-dark;
+  color: var(--color-main-dark);
   margin-top: 1rem;
 
   a {

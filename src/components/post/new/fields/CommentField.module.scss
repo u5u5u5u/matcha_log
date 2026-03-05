@@ -22,7 +22,7 @@
   min-height: 80px;
   transition: border-color 0.2s ease;
   background: #fff;
-  color: tokens.$text;
+  color: var(--color-text);
 
   &:focus {
     outline: none;

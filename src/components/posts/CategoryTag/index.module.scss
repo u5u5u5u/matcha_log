@@ -1,13 +1,10 @@
-@use "../../../../styles/_tokens" as tokens;
-
 .categoryTag {
   display: flex;
   align-items: center;
   gap: 2px;
   width: fit-content;
-  font-size: 0.8rem;
-  color: tokens.$accent;
-  background: tokens.$main-dark;
+  color: var(--color-accent);
+  background: var(--color-main-dark);
   border-radius: 20px;
-  padding: 2px 8px;
+  padding: 4px;
 }
