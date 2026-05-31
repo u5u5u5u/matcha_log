@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import styles from "./page.module.scss";
 import MatchLogLogo from "../../public/matcha_log_logo.svg";
+import Reindeer from "@/components/Reindeer";
 
 export default function Home() {
   const router = useRouter();
@@ -25,6 +26,8 @@ export default function Home() {
         alt="Matcha Log Logo"
         priority
       />
+      <Reindeer imgUrl={"reindeer.png"} />
+      <Reindeer imgUrl={"reindeer2.png"} msgPos="left" />
     </div>
   );
 }

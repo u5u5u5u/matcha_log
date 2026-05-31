@@ -5,7 +5,65 @@
   justify-content: center;
   min-height: 100vh;
   background: var(--color-main);
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
 }
+
+.page::before,
+.page::after {
+  content: "";
+  position: absolute;
+  inset: -140px 0 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.8;
+  --snow-start-x: 0px;
+  --snow-drift: -30px;
+  background-image:
+    radial-gradient(
+      circle at 20px 26px,
+      rgba(255, 255, 255, 0.92) 2px,
+      transparent 2.6px
+    ),
+    radial-gradient(
+      circle at 76px 132px,
+      rgba(255, 255, 255, 0.92) 1.6px,
+      transparent 2.2px
+    ),
+    radial-gradient(
+      circle at 148px 64px,
+      rgba(255, 255, 255, 0.95) 2.2px,
+      transparent 2.9px
+    ),
+    radial-gradient(
+      circle at 228px 168px,
+      rgba(255, 255, 255, 0.88) 1.7px,
+      transparent 2.3px
+    ),
+    radial-gradient(
+      circle at 306px 42px,
+      rgba(255, 255, 255, 0.95) 2px,
+      transparent 2.6px
+    ),
+    radial-gradient(
+      circle at 352px 122px,
+      rgba(255, 255, 255, 0.9) 1.5px,
+      transparent 2.1px
+    );
+  background-size: 380px 220px;
+  animation: snowFall 15s linear infinite;
+}
+
+.page::after {
+  opacity: 0.55;
+  filter: blur(0.5px);
+  --snow-start-x: -90px;
+  --snow-drift: -70px;
+  animation-duration: 24s;
+  animation-delay: -7s;
+}
+
 @keyframes scale {
   from {
     transform: scale(1);
@@ -15,8 +73,27 @@
   }
 }
 
+@keyframes snowFall {
+  from {
+    transform: translate3d(var(--snow-start-x), -120px, 0);
+  }
+  to {
+    transform: translate3d(
+      calc(var(--snow-start-x) + var(--snow-drift)),
+      calc(100vh + 120px),
+      0
+    );
+  }
+}
+
 .logo {
   width: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+.logoCenter {
+  cursor: pointer;
 }
 
 // 投稿詳細ページ

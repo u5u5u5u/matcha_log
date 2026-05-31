@@ -1,0 +1,39 @@
+.reindeer-image {
+  position: fixed;
+  bottom: 10px;
+  height: auto;
+  z-index: 10;
+
+  img {
+    height: 150px;
+    width: auto;
+  }
+
+  .message-bubble {
+    position: absolute;
+    top: -40px;
+    background: white;
+    color: black;
+    padding: 8px 12px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    white-space: nowrap;
+  }
+
+  .message-bubble-right {
+    left: 60px;
+  }
+
+  .message-bubble-left {
+    right: 60px;
+  }
+}
+
+.reindeer-image-right {
+  left: 20px;
+}
+
+.reindeer-image-left {
+  right: 20px;
+}
